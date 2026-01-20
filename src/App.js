@@ -14,6 +14,7 @@ import Gift from './Gift';
 import Tasks from './Tasks';
 import Rating from './Rating';
 import Shop from './Shop';
+import Profile from './Profile';
 
 import { Icon28CoinsOutline, 
   Icon28ListOutline, 
@@ -73,6 +74,7 @@ export default function App() {
   const goToTasks = () => setActivePanel('tasks');
   const goToRating = () => setActivePanel('rating');
   const goToShop = () => setActivePanel('shop');
+  const goToProfile = () => setActivePanel('profile');
 
   const cardStyle = {
     borderRadius: 14,
@@ -94,7 +96,7 @@ export default function App() {
     <View activePanel={activePanel}>
       <Panel id="main">
 
-        <Div style={{ height: 32 }} />
+        <Div style={{ height: 32, backgroundColor: '#ffffff' }} />
 
         {/* Кастомный хедер */}
         <Div
@@ -109,9 +111,10 @@ export default function App() {
             alignItems: 'center',
             padding: '0 16px',
             zIndex: 1000,
-            boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+            boxShadow: '0 15px 15px rgba(0,0,0,0.08)',
             transform: showHeader ? 'translateY(0)' : 'translateY(-100%)',
             transition: 'transform 0.25s ease',
+            borderBottom: '1px solid #bdbdbd',
           }}
         >
           {/* Аватар */}
@@ -119,20 +122,17 @@ export default function App() {
             <img
               src={user.photo_200}
               alt="avatar"
+              onClick={goToProfile}
               style={{
                 width: 36,
                 height: 36,
                 borderRadius: '50%',
                 objectFit: 'cover',
                 marginRight: 12,
+                cursor: 'pointer',
               }}
             />
           )}
-
-          {/* Название */}
-          <Text weight="3" style={{ fontSize: 16, color: '#311f68' }}>
-            Заголовок приложения
-          </Text>
         </Div>
 
         { /* Галерея с 2 картинками сверху */ }
@@ -143,8 +143,6 @@ export default function App() {
             style={{ height: 400 }}
             timeout={4000}
             looped
-            showArrows
-            arrowSize="m"
           >
             {images.map((src, i) => (
               <img
@@ -467,6 +465,9 @@ export default function App() {
 
       {/* Панель Магазина */}
       <Shop id="shop" goBack={goBack} />
+
+      {/* Панель профиля */}
+      <Profile id="profile" goBack={goBack} user={user} />
     </View>
   )
 }
