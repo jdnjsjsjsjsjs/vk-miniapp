@@ -24,22 +24,21 @@ export default function Balance({ id, goBack, balance, goToTasks }) {
           borderBottom: '1px solid #bdbdbd',
         }}
       >
-        {/* Назад */}
-        <div
+        {/* Кнопка назад */}
+        <Button
+          mode="tertiary"
+          size="l"
+          before={<Icon28ChevronBack />}
           onClick={goBack}
           style={{
-            display: 'flex',
-            alignItems: 'center',
-            cursor: 'pointer',
-            marginRight: 12,
+            paddingLeft: 0,
+            paddingRight: 8,
+            marginRight: 4,
+            color: '#311f68',
           }}
         >
-          <Icon28ChevronBack color="#311f68" />
-        </div>
-
-        <Text weight="3" style={{ fontSize: 16, color: '#311f68' }}>
-          Баланс
-        </Text>
+          Назад
+        </Button>
       </Div>
 
       {/* Контент */}

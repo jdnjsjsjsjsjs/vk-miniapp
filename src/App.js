@@ -155,6 +155,33 @@ export default function App() {
               }}
             />
           )}
+
+          {/* Баланс-капсула */}
+          <div
+            onClick={goToBalance}
+            style={{
+              marginLeft: 'auto',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6,
+              padding: '6px 12px',
+              backgroundColor: '#f2f2f2',
+              borderRadius: 999,
+              cursor: 'pointer',
+            }}
+          >
+            <Icon28CoinsOutline width={20} height={20} color="#311f68" />
+            <Text
+              weight="3"
+              style={{
+                fontSize: 14,
+                color: '#4000ff',
+                lineHeight: '18px',
+              }}
+            >
+              {balance}
+            </Text>
+          </div>
         </Div>
 
         { /* Галерея с 2 картинками сверху */ }
@@ -320,7 +347,7 @@ export default function App() {
                 color: '#311f68',
               }}
             >
-              Рейтинг лучших
+              Рейтинг
             </Text>
 
             {/* Картинка */}
@@ -477,19 +504,19 @@ export default function App() {
       <Balance id="balance" goBack={goBack} balance={balance} goToTasks={goToTasks} />
 
       {/* Панель подарок за вход*/}
-      <Gift id="gift" goBack={goBack} />
+      <Gift id="gift" goBack={goBack} balance={balance} goToBalance={goToBalance} />
 
       {/* Панель Список заданий */}
-      <Tasks id="tasks" goBack={goBack} />
+      <Tasks id="tasks" goBack={goBack} balance={balance} goToBalance={goToBalance} />
 
       {/* Панель Рейтинг */}
-      <Rating id="rating" goBack={goBack} />
+      <Rating id="rating" goBack={goBack} balance={balance} goToBalance={goToBalance} />
 
       {/* Панель Магазина */}
-      <Shop id="shop" goBack={goBack} />
+      <Shop id="shop" goBack={goBack} balance={balance} goToBalance={goToBalance} />
 
       {/* Панель профиля */}
-      <Profile id="profile" goBack={goBack} user={user} />
+      <Profile id="profile" goBack={goBack} user={user} balance={balance} goToBalance={goToBalance} />
     </View>
   )
 }

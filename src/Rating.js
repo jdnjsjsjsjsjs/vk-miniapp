@@ -1,7 +1,7 @@
-import { Panel, Div, Text } from '@vkontakte/vkui';
-import { Icon28ChevronBack } from '@vkontakte/icons';
+import { Panel, Div, Text, Button } from '@vkontakte/vkui';
+import { Icon28ChevronBack, Icon28CoinsOutline } from '@vkontakte/icons';
 
-export default function Balance({ id, goBack, balance }) {
+export default function Balance({ id, goBack, balance, goToBalance }) {
     return (
         <Panel id={id}>
             <Div style={{ height: 32, backgroundColor: '#ffffff' }} />
@@ -24,22 +24,47 @@ export default function Balance({ id, goBack, balance }) {
                 }}
             >
                 {/* Кнопка назад */}
-                <div
+                <Button
+                    mode="tertiary"
+                    size="l"
+                    before={<Icon28ChevronBack />}
                     onClick={goBack}
                     style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        cursor: 'pointer',
-                        marginRight: 12,
+                        paddingLeft: 0,
+                        paddingRight: 8,
+                        marginRight: 4,
+                        color: '#311f68',
                     }}
                 >
-                    <Icon28ChevronBack color="#311f68" />
-                </div>
+                    Назад
+                </Button>
                             
-                {/* Заголовок */}
-                <Text weight="3" style={{ fontSize: 16, color: '#311f68' }}>
-                    Рейтинг
-                </Text>
+                {/* Баланс-капсула */}
+                <div
+                    onClick={goToBalance}
+                    style={{
+                        marginLeft: 'auto',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 6,
+                        padding: '6px 12px',
+                        backgroundColor: '#f2f2f2',
+                        borderRadius: 999,
+                        cursor: 'pointer',
+                    }}
+                >
+                    <Icon28CoinsOutline width={20} height={20} color="#311f68" />
+                    <Text
+                        weight="3"
+                        style={{
+                            fontSize: 14,
+                            color: '#4000ff',
+                            lineHeight: '18px',
+                        }}
+                    >
+                        {balance}
+                    </Text>
+                </div>
             </Div>
 
             <Div style={{ 
