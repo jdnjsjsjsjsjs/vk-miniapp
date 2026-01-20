@@ -19,10 +19,7 @@ import Profile from './Profile';
 import { Icon28CoinsOutline, 
   Icon28ListOutline, 
   Icon28CupOutline,
-  Icon28GhostSimpleOutline,
-  Icon28HangerOutline,
-  Icon28GiftOutline,
-  Icon28Hearts2Outline } from '@vkontakte/icons';
+  Icon28GiftOutline } from '@vkontakte/icons';
 import image1 from './imgs/1.jpg'
 import image2 from './imgs/2.jpg'
 
@@ -397,25 +394,25 @@ export default function App() {
           >
             {/* Шапки */}
             <Card mode="shadow" style={cardStyle} onClick={goToShop}>
-              <Icon28GhostSimpleOutline color="#311f68" />
-              <Text style={cardText}>Шапки</Text>
+              <Icon28GiftOutline color="#311f68" />
+              <Text style={cardText}>От 100 баллов</Text>
             </Card>
 
             {/* Толстовки */}
             <Card mode="shadow" style={cardStyle} onClick={goToShop}>
-              <Icon28HangerOutline color="#311f68" />
-              <Text style={cardText}>Толстовки</Text>
+              <Icon28GiftOutline color="#311f68" />
+              <Text style={cardText}>От 500 баллов</Text>
             </Card>
 
             {/* Аксессуары */}
             <Card mode="shadow" style={cardStyle} onClick={goToShop}>
               <Icon28GiftOutline color="#311f68" />
-              <Text style={cardText}>Аксессуары</Text>
+              <Text style={cardText}>От 1000 баллов</Text>
             </Card>
 
             {/* Пожертвования */}
             <Card mode="shadow" style={cardStyle} onClick={goToShop}>
-              <Icon28Hearts2Outline color="#311f68" />
+              <Icon28GiftOutline color="#311f68" />
               <Text style={cardText}>Пожертвования</Text>
             </Card>
           </Div>
