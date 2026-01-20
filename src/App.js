@@ -31,10 +31,11 @@ export default function App() {
   
   const [activePanel, setActivePanel] = useState('main');
   const [openedFaq, setOpenedFaq] = useState(null);
-  const balance = 1234;
   const [user, setUser] = useState(null);
   const [showHeader, setShowHeader] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [balance, setBalance] = useState(0);
+  const [totalEarned, setTotalEarned] = useState(0);
 
   useEffect(() => {
     const onScroll = () => {
@@ -66,6 +67,27 @@ export default function App() {
     }
 
     fetchUser();
+  }, []);
+
+  useEffect(() => {
+    async function fetchUserAndBalance() {
+      try {
+        // Получаем данные пользователя через VK Bridge
+        const userInfo = await bridge.send('VKWebAppGetUserInfo');
+        setUser(userInfo);
+
+        // Получаем баланс с нашего сервера
+        const res = await fetch(`http://localhost:3001/api/user/${userInfo.id}`);
+        const data = await res.json();
+
+        setBalance(data.balance);
+        setTotalEarned(data.totalEarned);
+      } catch (error) {
+        console.error('Ошибка при получении данных пользователя и баланса', error);
+      }
+    }
+
+    fetchUserAndBalance();
   }, []);
 
   const goBack = () => setActivePanel('main');
@@ -186,7 +208,7 @@ export default function App() {
                   Баланс
                 </Text>
                 <Text weight="3" style={{ fontSize: 18, color: '#4000ff' }}>
-                  1234
+                  {balance}
                 </Text>
               </div>
             </div>
