@@ -1,8 +1,7 @@
 import bridge from '@vkontakte/vk-bridge';
 import { useState, useEffect } from 'react';
 import { View, 
-  Panel, 
-  PanelHeader, 
+  Panel,
   Div, 
   Gallery,
   Card,
@@ -33,6 +32,27 @@ export default function App() {
   const [openedFaq, setOpenedFaq] = useState(null);
   const balance = 1234;
   const [user, setUser] = useState(null);
+  const [showHeader, setShowHeader] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+
+  useEffect(() => {
+    const onScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      if (currentScrollY > lastScrollY && currentScrollY > 80) {
+        // скролл вниз
+        setShowHeader(false);
+      } else {
+        // скролл вверх
+        setShowHeader(true);
+      }
+
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [lastScrollY]);
 
   useEffect(() => {
     async function fetchUser() {
@@ -73,9 +93,47 @@ export default function App() {
   return (
     <View activePanel={activePanel}>
       <Panel id="main">
-        <PanelHeader>
-          Заголовок приложения
-        </PanelHeader>
+
+        <Div style={{ height: 32 }} />
+
+        {/* Кастомный хедер */}
+        <Div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: 56,
+            backgroundColor: '#ffffff',
+            display: 'flex',
+            alignItems: 'center',
+            padding: '0 16px',
+            zIndex: 1000,
+            boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+            transform: showHeader ? 'translateY(0)' : 'translateY(-100%)',
+            transition: 'transform 0.25s ease',
+          }}
+        >
+          {/* Аватар */}
+          {user?.photo_200 && (
+            <img
+              src={user.photo_200}
+              alt="avatar"
+              style={{
+                width: 36,
+                height: 36,
+                borderRadius: '50%',
+                objectFit: 'cover',
+                marginRight: 12,
+              }}
+            />
+          )}
+
+          {/* Название */}
+          <Text weight="3" style={{ fontSize: 16, color: '#311f68' }}>
+            Заголовок приложения
+          </Text>
+        </Div>
 
         { /* Галерея с 2 картинками сверху */ }
         <Div style={{ padding: 0 }}>
