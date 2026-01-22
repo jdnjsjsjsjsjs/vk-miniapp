@@ -48,8 +48,6 @@ export default function Gift({ id, goBack, balance, goToBalance}) {
 
         if (!res.ok) return;
 
-        const data = await res.json();
-
         setGiftDay(prev => prev + 1);
         setCanClaim(false);
         setTimeLeft(calculateTimeLeft());
@@ -247,17 +245,6 @@ export default function Gift({ id, goBack, balance, goToBalance}) {
                     );
                 })}
             </Div>
-
-            {canClaim && (
-                <Button
-                size="l"
-                stretched
-                style={{ marginTop: 20 }}
-                onClick={claimGift}
-                >
-                Забрать награду
-                </Button>
-            )}
             </Div>
         </Panel>
     );
