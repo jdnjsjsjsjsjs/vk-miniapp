@@ -144,12 +144,9 @@ app.get('/api/users', (req, res) => {
 });
 
 // СОЗДАНИЕ ТЕСТОВЫХ ЮЗЕРОВ
-// Добавляем тестовых пользователей
 app.get('/api/createTestUsers', (req, res) => {
   const testUsers = [
-    { id: 101, first_name: 'Иван', last_name: 'Иванов', totalEarned: 3 },
-    { id: 102, first_name: 'Пётр', last_name: 'Петров', totalEarned: 7 },
-    { id: 103, first_name: 'Сергей', last_name: 'Сергеев', totalEarned: 10 },
+    { id: 103, first_name: 'Сергей', last_name: 'Сергеев', totalEarned: 3 },
     { id: 104, first_name: 'Анна', last_name: 'Ананьева', totalEarned: 15 },
     { id: 105, first_name: 'Мария', last_name: 'Миронова', totalEarned: 20 },
   ];

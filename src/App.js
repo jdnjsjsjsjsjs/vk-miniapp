@@ -35,6 +35,7 @@ export default function App() {
   const [totalEarned, setTotalEarned] = useState(0);
   const [canClaimGift, setCanClaimGift] = useState(false);
   const [giftTimeLeft, setGiftTimeLeft] = useState('00:00:00');
+  const [usersList, setUsersList] = useState([]);
 
   useEffect(() => {
     const onScroll = () => {
@@ -111,6 +112,20 @@ export default function App() {
 
     return () => clearInterval(interval);
   }, [canClaimGift]);
+
+  useEffect(() => {
+    async function fetchUsers() {
+      try {
+        const res = await fetch('http://localhost:3001/api/users'); 
+        const data = await res.json();
+        setUsersList(data);
+      } catch (error) {
+        console.error('Ошибка получения списка пользователей', error);
+      }
+    }
+
+    fetchUsers();
+  }, []);
 
   function calculateTimeLeft() {
     const now = new Date();
@@ -391,24 +406,64 @@ export default function App() {
                 textAlign: 'center',
                 fontSize: 16,
                 color: '#311f68',
+                paddingBottom: '16px',
               }}
             >
               Рейтинг
             </Text>
 
-            {/* Картинка */}
-            <div style={{ marginTop: 12 }}>
-              <img
-                src={image1} // пока используем одну из уже импортированных картинок
-                alt="Tasks preview"
-                style={{
-                  width: '100%',
-                  height: '200px',
-                  borderRadius: 12,
-                  objectFit: 'cover',
-                  display: 'block',
-                }}
-              />
+            {/* Таблица рейтинга */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              {usersList
+                .sort((a, b) => b.totalEarned - a.totalEarned)
+                .slice(0, 3) // топ-3
+                .map((u, index) => (
+                  <div
+                    key={u.id}
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      padding: '6px 12px',
+                      borderRadius: 8,
+                      backgroundColor: user && user.id === u.id ? '#f0edff' : '#f7f7f7',
+                      fontWeight: user && user.id === u.id ? '600' : '400',
+                      color: '#311f68',
+                    }}
+                  >
+                    <span>{index + 1}.</span>
+                    <span>{u.first_name} {u.last_name}</span>
+                    <span>{u.totalEarned}</span>
+                  </div>
+                ))}
+
+              {/* Текущий пользователь */}
+              {user && (() => {
+                const allSorted = [...usersList].sort((a, b) => b.totalEarned - a.totalEarned);
+                const currentIndex = allSorted.findIndex(u => u.id === user.id);
+                if (currentIndex >= 3) { // если не в топ-3, показываем отдельной строкой
+                  const currentUser = allSorted[currentIndex];
+                  return (
+                    <div
+                      key={currentUser.id}
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        padding: '6px 12px',
+                        borderRadius: 8,
+                        backgroundColor: '#f0edff',
+                        fontWeight: 600,
+                        marginTop: 6,
+                        color: '#311f68',
+                      }}
+                    >
+                      <span>{currentIndex + 1}.</span>
+                      <span>{currentUser.first_name} {currentUser.last_name}</span>
+                      <span>{currentUser.totalEarned}</span>
+                    </div>
+                  );
+                }
+                return null;
+              })()}
             </div>
           </Card>
         </Div>
