@@ -20,6 +20,8 @@ const db = new sqlite3.Database('./users.db', (err) => {
 db.run(`
   CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY,
+    first_name TEXT DEFAULT '',
+    last_name TEXT DEFAULT '',
     balance INTEGER DEFAULT 0,
     totalEarned INTEGER DEFAULT 0,
     gift_day INTEGER DEFAULT 1,
@@ -30,19 +32,38 @@ db.run(`
 // Получить данные пользователя
 app.get('/api/user/:id', (req, res) => {
   const userId = req.params.id;
+
   db.get('SELECT * FROM users WHERE id = ?', [userId], (err, row) => {
     if (err) return res.status(500).json({ error: err.message });
 
     if (!row) {
-      // Если пользователя нет — создаем
-      db.run('INSERT INTO users (id, balance, totalEarned) VALUES (?, ?, ?)', [userId, 0, 0], function(err) {
-        if (err) return res.status(500).json({ error: err.message });
-        res.json({ id: userId, balance: 0, totalEarned: 0 });
-      });
+      db.run(
+        'INSERT INTO users (id, first_name, last_name, balance, totalEarned) VALUES (?, ?, ?, ?, ?)',
+        [userId, '', '', 0, 0],
+        function(err) {
+          if (err) return res.status(500).json({ error: err.message });
+          res.json({ id: userId, first_name: '', last_name: '', balance: 0, totalEarned: 0 });
+        }
+      );
     } else {
       res.json(row);
     }
   });
+});
+
+// Обновить имя/фамилию
+app.post('/api/user/:id/updateName', (req, res) => {
+  const userId = req.params.id;
+  const { first_name = '', last_name = '' } = req.body;
+
+  db.run(
+    'UPDATE users SET first_name = ?, last_name = ? WHERE id = ?',
+    [first_name, last_name, userId],
+    function(err) {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ id: userId, first_name, last_name });
+    }
+  );
 });
 
 // Добавить награду / пополнить баланс
@@ -52,7 +73,6 @@ app.post('/api/user/:id/addBalance', (req, res) => {
 
   db.get('SELECT * FROM users WHERE id = ?', [userId], (err, row) => {
     if (err) return res.status(500).json({ error: err.message });
-
     if (!row) return res.status(404).json({ error: 'User not found' });
 
     const newBalance = row.balance + amount;
@@ -65,6 +85,7 @@ app.post('/api/user/:id/addBalance', (req, res) => {
   });
 });
 
+// Забрать ежедневный подарок
 app.post('/api/user/:id/claimGift', (req, res) => {
   const userId = req.params.id;
 
@@ -111,6 +132,14 @@ app.post('/api/user/:id/claimGift', (req, res) => {
         });
       }
     );
+  });
+});
+
+// Рейтинг
+app.get('/api/users', (req, res) => {
+  db.all('SELECT id, first_name, last_name, totalEarned FROM users ORDER BY totalEarned DESC', (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(rows);
   });
 });
 

@@ -60,6 +60,15 @@ export default function App() {
       try {
         const userInfo = await bridge.send('VKWebAppGetUserInfo');
         setUser(userInfo);
+
+        await fetch(`http://localhost:3001/api/user/${userInfo.id}/updateName`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            first_name: userInfo.first_name,
+            last_name: userInfo.last_name
+          })
+        });
       } catch (error) {
         console.error('Ошибка получения данных пользователя', error);
       }

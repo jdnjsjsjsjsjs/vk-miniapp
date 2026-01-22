@@ -1,7 +1,27 @@
-import { Panel, Div, Text, Button } from '@vkontakte/vkui';
+import { useEffect, useState } from 'react';
+import { Panel, Div, Text, Button, Card } from '@vkontakte/vkui';
 import { Icon28ChevronBack, Icon28CoinsOutline } from '@vkontakte/icons';
+import bridge from '@vkontakte/vk-bridge';
 
 export default function Balance({ id, goBack, balance, goToBalance }) {
+    const [user, setUser] = useState(null);
+    const [usersList, setUsersList] = useState([]);
+    
+    useEffect(() => {
+        bridge.send('VKWebAppGetUserInfo')
+            .then(u => setUser(u))
+            .catch(err => console.error(err));
+    }, []);
+
+    useEffect(() => {
+        fetch('http://localhost:3001/api/users') // endpoint для всех пользователей
+            .then(res => res.json())
+            .then(data => {
+                const sorted = data.sort((a, b) => b.totalEarned - a.totalEarned);
+                setUsersList(sorted);
+            });
+    }, []);
+
     return (
         <Panel id={id}>
             <Div style={{ height: 32, backgroundColor: '#ffffff' }} />
@@ -67,27 +87,40 @@ export default function Balance({ id, goBack, balance, goToBalance }) {
                 </div>
             </Div>
 
-            <Div style={{ 
-                textAlign: 'center',
-                backgroundColor: '#ffffff',
-                padding: '32px 0 0 0', 
-            }}>
-                <Text weight="medium" style={{ 
-                    fontSize: 18,
-                    color: '#311f68' 
-                }}>
-                    Заготовочное окно для рейтинга
+            <Div style={{ paddingTop: 64, paddingBottom: 32, backgroundColor: '#ffffff' }}>
+                <Text weight="3" style={{ fontSize: 20, color: '#311f68', textAlign: 'center', marginBottom: 16 }}>
+                    Рейтинг пользователей
                 </Text>
-            </Div>
 
-            <Div 
-                style={{
-                    backgroundColor: '#ffffff',
-                    minHeight: '100vh',
-                    color: '#fff',
-                }}
-            >
-                {/* Контент будет здесь */}
+                {/* Таблица рейтинга */}
+                {usersList.map((u, index) => {
+                    const isCurrentUser = user && user.id === u.id; // предполагаем, что в базе vkId = user.id
+                    return (
+                        <Card
+                            key={u.id}
+                            mode="shadow"
+                            style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                padding: '12px 16px',
+                                marginBottom: 8,
+                                borderRadius: 12,
+                                backgroundColor: isCurrentUser ? '#f0edff' : '#ffffff',
+                            }}
+                        >
+                            <Text weight="3" style={{ fontSize: 16, color: '#311f68', width: 30 }}>
+                                {index + 1}.
+                            </Text>
+                            <Text weight="3" style={{ fontSize: 16, color: '#311f68', flex: 1 }}>
+                                {u.last_name} {u.first_name}
+                            </Text>
+                            <Text weight="3" style={{ fontSize: 16, color: '#4000ff' }}>
+                                {u.totalEarned}
+                            </Text>
+                        </Card>
+                    );
+                })}
             </Div>
         </Panel>
     );
