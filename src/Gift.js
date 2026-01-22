@@ -1,7 +1,58 @@
-import { Panel, Div, Text, Button } from '@vkontakte/vkui';
+import { useState, useEffect } from 'react';
+import bridge from '@vkontakte/vk-bridge';
+import { Panel, Div, Text, Button, Card } from '@vkontakte/vkui';
 import { Icon28ChevronBack, Icon28CoinsOutline } from '@vkontakte/icons';
 
+const rewards = [
+        5,5,5, 10,10,10,
+        15,15,15,
+        20,20,20,
+        25,25,25,
+        30,30,30,
+        40,40,40,
+        50,50,50,
+        75,75,75,
+        100,100,100
+    ];
+
 export default function Gift({ id, goBack, balance, goToBalance}) {
+    const [userId, setUserId] = useState(null);
+    const [giftDay, setGiftDay] = useState(1);
+    const [canClaim, setCanClaim] = useState(false);
+
+    useEffect(() => {
+        bridge.send('VKWebAppGetUserInfo').then(user => {
+            setUserId(user.id);
+        });
+    }, []);
+
+    useEffect(() => {
+        if (!userId) return;
+
+        fetch(`http://localhost:3001/api/user/${userId}`)
+            .then(res => res.json())
+            .then(data => {
+                setGiftDay(data.gift_day);
+
+                const today = new Date().toISOString().slice(0, 10);
+                setCanClaim(data.last_gift_date !== today);
+            });
+    }, [userId]);
+
+    const claimGift = async () => {
+        const res = await fetch(
+            `http://localhost:3001/api/user/${userId}/claimGift`,
+            { method: 'POST' }
+        );
+
+        if (!res.ok) return;
+
+        const data = await res.json();
+
+        setGiftDay(prev => prev + 1);
+        setCanClaim(false);
+    };
+    
     return (
         <Panel id={id}>
             <Div style={{ height: 32, backgroundColor: '#ffffff' }} />
@@ -67,27 +118,90 @@ export default function Gift({ id, goBack, balance, goToBalance}) {
                 </div>
             </Div>
 
-            <Div style={{ 
-                textAlign: 'center',
-                backgroundColor: '#ffffff',
-                padding: '32px 0 0 0', 
-            }}>
-                <Text weight="medium" style={{ 
-                    fontSize: 18,
-                    color: '#311f68' 
-                }}>
-                    Заготовочное окно для ежедневной награды
-                </Text>
-            </Div>
-
-            <Div 
+            <Div style={{ padding: 16, backgroundColor: '#ffffff', }}>
+            <Text
+                weight="2"
                 style={{
-                    backgroundColor: '#ffffff',
-                    minHeight: '100vh',
-                    color: '#fff',
+                marginBottom: 12,
+                color: '#311f68',
+                textAlign: 'center',
                 }}
             >
-                {/* Контент будет здесь */}
+                {canClaim ? '🎁 Заберите приз!' : '⏳ Приходите завтра'}
+            </Text>
+
+            <Div
+                style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(3, 1fr)',
+                    gap: 12,
+                    backgroundColor: '#ffffff',
+                }}
+            >
+                {rewards.map((reward, index) => {
+                    const day = index + 1;
+                    const isCurrent = day === giftDay;
+                    const isLocked = day > giftDay;
+                    const isDone = day < giftDay;
+
+                    return (
+                        <Card
+                            key={day}
+                            mode="shadow"
+                            style={{
+                                borderRadius: 12,
+                                padding: '14px 10px',
+                                textAlign: 'center',
+                                backgroundColor: isCurrent ? '#f0edff' : '#ffffff',
+                                opacity: isDone ? 0.5 : 1,
+                                filter: isLocked ? 'blur(2px)' : 'none',
+                                transition: 'all 0.2s ease',
+                            }}
+                        >
+                            <Div style={{ padding: 0 }}>
+                                <Icon28CoinsOutline
+                                    width={28}
+                                    height={28}
+                                    color={isCurrent ? '#4000ff' : '#311f68'}
+                                />
+
+                                <Text
+                                    weight="3"
+                                    style={{
+                                        marginTop: 6,
+                                        fontSize: 14,
+                                        color: '#311f68',
+                                    }}
+                                >
+                                    День {day}
+                                </Text>
+
+                                <Text
+                                    weight="3"
+                                    style={{
+                                        marginTop: 2,
+                                        fontSize: 18,
+                                        color: '#4000ff',
+                                    }}
+                                >
+                                    +{reward}
+                                </Text>
+                            </Div>
+                        </Card>
+                    );
+                })}
+            </Div>
+
+            {canClaim && (
+                <Button
+                size="l"
+                stretched
+                style={{ marginTop: 20 }}
+                onClick={claimGift}
+                >
+                Забрать награду
+                </Button>
+            )}
             </Div>
         </Panel>
     );

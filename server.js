@@ -21,7 +21,9 @@ db.run(`
   CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY,
     balance INTEGER DEFAULT 0,
-    totalEarned INTEGER DEFAULT 0
+    totalEarned INTEGER DEFAULT 0,
+    gift_day INTEGER DEFAULT 1,
+    last_gift_date TEXT
   )
 `);
 
@@ -60,6 +62,55 @@ app.post('/api/user/:id/addBalance', (req, res) => {
       if (err) return res.status(500).json({ error: err.message });
       res.json({ id: userId, balance: newBalance, totalEarned: newTotal });
     });
+  });
+});
+
+app.post('/api/user/:id/claimGift', (req, res) => {
+  const userId = req.params.id;
+
+  const today = new Date().toISOString().slice(0, 10);
+
+  db.get('SELECT * FROM users WHERE id = ?', [userId], (err, user) => {
+    if (err) return res.status(500).json({ error: err.message });
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    if (user.last_gift_date === today) {
+      return res.status(400).json({ error: 'Gift already claimed today' });
+    }
+
+    if (user.gift_day > 30) {
+      return res.status(400).json({ error: 'All gifts claimed' });
+    }
+
+    const rewardTable = [
+      5,5,5, 10,10,10,
+      15,15,15,
+      20,20,20,
+      25,25,25,
+      30,30,30,
+      40,40,40,
+      50,50,50,
+      75,75,75,
+      100,100,100
+    ];
+
+    const reward = rewardTable[user.gift_day - 1];
+
+    db.run(
+      `UPDATE users
+       SET balance = balance + ?,
+           totalEarned = totalEarned + ?,
+           gift_day = gift_day + 1,
+           last_gift_date = ?
+       WHERE id = ?`,
+      [reward, reward, today, userId],
+      () => {
+        res.json({
+          reward,
+          gift_day: user.gift_day,
+        });
+      }
+    );
   });
 });
 
