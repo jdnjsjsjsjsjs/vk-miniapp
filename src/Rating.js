@@ -122,6 +122,16 @@ export default function Balance({ id, goBack, balance, goToBalance }) {
                     );
                 })}
             </Div>
+
+            <Div 
+                style={{
+                    backgroundColor: '#ffffff',
+                    minHeight: '100vh',
+                    color: '#fff',
+                }}
+            >
+                {/* Контент будет здесь */}
+            </Div>
         </Panel>
     );
 }

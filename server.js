@@ -143,4 +143,38 @@ app.get('/api/users', (req, res) => {
   });
 });
 
+// СОЗДАНИЕ ТЕСТОВЫХ ЮЗЕРОВ
+// Добавляем тестовых пользователей
+app.get('/api/createTestUsers', (req, res) => {
+  const testUsers = [
+    { id: 101, first_name: 'Иван', last_name: 'Иванов', totalEarned: 3 },
+    { id: 102, first_name: 'Пётр', last_name: 'Петров', totalEarned: 7 },
+    { id: 103, first_name: 'Сергей', last_name: 'Сергеев', totalEarned: 10 },
+    { id: 104, first_name: 'Анна', last_name: 'Ананьева', totalEarned: 15 },
+    { id: 105, first_name: 'Мария', last_name: 'Миронова', totalEarned: 20 },
+  ];
+
+  let completed = 0;
+
+  testUsers.forEach(u => {
+    db.get('SELECT * FROM users WHERE id = ?', [u.id], (err, row) => {
+      if (err) return res.status(500).json({ error: err.message });
+
+      if (!row) {
+        db.run(
+          'INSERT INTO users (id, balance, totalEarned, first_name, last_name) VALUES (?, ?, ?, ?, ?)',
+          [u.id, 0, u.totalEarned, u.first_name, u.last_name],
+          () => {
+            completed++;
+            if (completed === testUsers.length) res.json({ message: 'Test users added!' });
+          }
+        );
+      } else {
+        completed++;
+        if (completed === testUsers.length) res.json({ message: 'Test users added!' });
+      }
+    });
+  });
+});
+
 app.listen(PORT, () => console.log(`Сервер запущен на http://localhost:${PORT}`));
