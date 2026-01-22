@@ -231,6 +231,17 @@ export default function Gift({ id, goBack, balance, goToBalance}) {
                                 >
                                     +{reward}
                                 </Text>
+
+                                {isCurrent && canClaim && (
+                                    <Button
+                                        size="l"
+                                        mode="primary"
+                                        style={{ marginTop: 8, width: '100%' }}
+                                        onClick={claimGift}
+                                    >
+                                        Забрать
+                                    </Button>
+                                )}
                             </Div>
                         </Card>
                     );
