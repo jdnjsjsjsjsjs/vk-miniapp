@@ -33,6 +33,8 @@ export default function App() {
   const [lastScrollY, setLastScrollY] = useState(0);
   const [balance, setBalance] = useState(0);
   const [totalEarned, setTotalEarned] = useState(0);
+  const [canClaimGift, setCanClaimGift] = useState(false);
+  const [giftTimeLeft, setGiftTimeLeft] = useState('00:00:00');
 
   useEffect(() => {
     const onScroll = () => {
@@ -67,25 +69,55 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    async function fetchUserAndBalance() {
-      try {
-        // Получаем данные пользователя через VK Bridge
-        const userInfo = await bridge.send('VKWebAppGetUserInfo');
-        setUser(userInfo);
+    if (!user) return;
 
-        // Получаем баланс с нашего сервера
-        const res = await fetch(`http://localhost:3001/api/user/${userInfo.id}`);
-        const data = await res.json();
+    async function fetchAll() {
+      const res = await fetch(`http://localhost:3001/api/user/${user.id}`);
+      const data = await res.json();
 
-        setBalance(data.balance);
-        setTotalEarned(data.totalEarned);
-      } catch (error) {
-        console.error('Ошибка при получении данных пользователя и баланса', error);
+      setBalance(data.balance);
+      setTotalEarned(data.totalEarned);
+
+      const today = new Date().toISOString().slice(0, 10);
+      const canClaim = data.last_gift_date !== today;
+
+      setCanClaimGift(canClaim);
+
+      if (!canClaim) {
+        setGiftTimeLeft(calculateTimeLeft());
+      } else {
+        setGiftTimeLeft('00:00:00');
       }
     }
 
-    fetchUserAndBalance();
-  }, []);
+    fetchAll();
+  }, [user]);
+
+  useEffect(() => {
+    if (canClaimGift) return;
+
+    const interval = setInterval(() => {
+      setGiftTimeLeft(calculateTimeLeft());
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [canClaimGift]);
+
+  function calculateTimeLeft() {
+    const now = new Date();
+    const tomorrow = new Date();
+    tomorrow.setHours(24, 0, 0, 0);
+
+    const diff = tomorrow - now;
+
+    if (diff <= 0) return '00:00:00';
+
+    const hours = String(Math.floor(diff / 1000 / 60 / 60)).padStart(2, '0');
+    const minutes = String(Math.floor(diff / 1000 / 60) % 60).padStart(2, '0');
+    const seconds = String(Math.floor(diff / 1000) % 60).padStart(2, '0');
+
+    return `${hours}:${minutes}:${seconds}`;
+  }
 
   const goBack = () => setActivePanel('main');
   const goToBalance = () => setActivePanel('balance');
@@ -256,8 +288,16 @@ export default function App() {
             <Text weight="medium" style={{ fontSize: 14, color: '#311f68' }}>
               Награда за вход
             </Text>
-            <Text weight="medium" style={{ fontSize: 18, color: '#4000ff' }}>
-              +100
+
+            <Text
+              weight="medium"
+              style={{
+                fontSize: 18,
+                color: canClaimGift ? '#00a650' : '#4000ff',
+                marginTop: 4,
+              }}
+            >
+              {canClaimGift ? 'Забрать!' : giftTimeLeft}
             </Text>
           </Card>
         </Div>

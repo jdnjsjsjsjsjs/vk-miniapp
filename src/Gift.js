@@ -18,6 +18,7 @@ const rewards = [
 export default function Gift({ id, goBack, balance, goToBalance}) {
     const [userId, setUserId] = useState(null);
     const [giftDay, setGiftDay] = useState(1);
+    const [timeLeft, setTimeLeft] = useState('00:00:00');
     const [canClaim, setCanClaim] = useState(false);
 
     useEffect(() => {
@@ -51,7 +52,40 @@ export default function Gift({ id, goBack, balance, goToBalance}) {
 
         setGiftDay(prev => prev + 1);
         setCanClaim(false);
+        setTimeLeft(calculateTimeLeft());
     };
+
+    function calculateTimeLeft() {
+        const now = new Date();
+        const tomorrow = new Date();
+
+        tomorrow.setHours(24, 0, 0, 0); // следующая полночь
+
+        const diff = tomorrow - now;
+
+        if (diff <= 0) return '00:00:00';
+
+        const hours = String(Math.floor(diff / 1000 / 60 / 60)).padStart(2, '0');
+        const minutes = String(Math.floor(diff / 1000 / 60) % 60).padStart(2, '0');
+        const seconds = String(Math.floor(diff / 1000) % 60).padStart(2, '0');
+
+        return `${hours}:${minutes}:${seconds}`;
+    }
+
+    useEffect(() => {
+        if (canClaim) {
+            setTimeLeft('00:00:00');
+            return;
+        }
+
+        setTimeLeft(calculateTimeLeft());
+
+        const interval = setInterval(() => {
+            setTimeLeft(calculateTimeLeft());
+        }, 1000);
+
+        return () => clearInterval(interval);
+    }, [canClaim]);
     
     return (
         <Panel id={id}>
@@ -128,6 +162,17 @@ export default function Gift({ id, goBack, balance, goToBalance}) {
                 }}
             >
                 {canClaim ? '🎁 Заберите приз!' : '⏳ Приходите завтра'}
+            </Text>
+
+            <Text
+                style={{
+                    textAlign: 'center',
+                    fontSize: 16,
+                    color: '#6d6d6d',
+                    marginBottom: 12,
+                }}
+            >
+                {timeLeft}
             </Text>
 
             <Div
