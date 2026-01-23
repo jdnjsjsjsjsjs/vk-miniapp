@@ -264,64 +264,110 @@ export default function App() {
         <Div style={{ 
           padding: '16px 16px 16px 16px',
           backgroundColor: '#ffffff',
-          display: 'flex',
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
           gap: '12px',
          }}>
-          <Card
-            mode="shadow"
+          <div
             style={{
-              flex: 1,
-              borderRadius: 12,
-              padding: '12px 16px',
               display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: '#ffffff',
-              cursor: 'pointer',
-            }}
-            onClick={goToBalance}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <Icon28CoinsOutline width={28} height={28} color='#311f68' />
-              <div>
-                <Text weight="3" style={{ fontSize: 14, color: '#311f68' }}>
-                  Баланс
-                </Text>
-                <Text weight="3" style={{ fontSize: 18, color: '#4000ff' }}>
-                  {balance}
-                </Text>
-              </div>
-            </div>
-          </Card>
-
-          <Card
-            mode="shadow"
-            style={{
-              flex: 1,
-              borderRadius: 12,
-              padding: '12px 16px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: '#ffffff',
               flexDirection: 'column',
+              gap: '12px',
+            }}
+          >
+            {/* Баланс */}
+            <Card
+              mode="shadow"
+              style={{
+                borderRadius: 12,
+                padding: '12px 16px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: '#ffffff',
+                cursor: 'pointer',
+              }}
+              onClick={goToBalance}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <Icon28CoinsOutline width={28} height={28} color="#311f68" />
+                <div>
+                  <Text weight="3" style={{ fontSize: 14, color: '#311f68' }}>
+                    Баланс
+                  </Text>
+                  <Text weight="3" style={{ fontSize: 18, color: '#4000ff' }}>
+                    {balance}
+                  </Text>
+                </div>
+              </div>
+            </Card>
+
+            {/* Награда за вход */}
+            <Card
+              mode="shadow"
+              style={{
+                borderRadius: 12,
+                padding: '12px 16px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: '#ffffff',
+                flexDirection: 'column',
+                cursor: 'pointer',
+              }}
+              onClick={goToGift}
+            >
+              <Text weight="medium" style={{ fontSize: 14, color: '#311f68' }}>
+                Награда за вход
+              </Text>
+
+              <Text
+                weight="medium"
+                style={{
+                  fontSize: 18,
+                  color: canClaimGift ? '#00a650' : '#4000ff',
+                  marginTop: 4,
+                }}
+              >
+                {canClaimGift ? 'Забрать!' : giftTimeLeft}
+              </Text>
+            </Card>
+          </div>
+          
+          <Card
+            mode="shadow"
+            style={{
+              borderRadius: 12,
+              padding: '16px',
+              backgroundColor: '#ffffff',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
               cursor: 'pointer',
             }}
-            onClick={goToGift}
+            onClick={goToProfile}
           >
-            <Text weight="medium" style={{ fontSize: 14, color: '#311f68' }}>
-              Награда за вход
+            <Text
+              weight="3"
+              style={{
+                fontSize: 18,
+                color: '#311f68',
+                textAlign: 'center',
+              }}
+            >
+              Мои достижения
             </Text>
 
             <Text
-              weight="medium"
               style={{
-                fontSize: 18,
-                color: canClaimGift ? '#00a650' : '#4000ff',
-                marginTop: 4,
+                marginTop: 6,
+                fontSize: 14,
+                color: '#6d6d6d',
+                textAlign: 'center',
               }}
             >
-              {canClaimGift ? 'Забрать!' : giftTimeLeft}
+              Статистика и прогресс
             </Text>
           </Card>
         </Div>
@@ -617,7 +663,7 @@ export default function App() {
       <Shop id="shop" goBack={goBack} balance={balance} goToBalance={goToBalance} />
 
       {/* Панель профиля */}
-      <Profile id="profile" goBack={goBack} user={user} balance={balance} goToBalance={goToBalance} />
+      <Profile id="profile" goBack={goBack} user={user} balance={balance} totalEarned={totalEarned} goToBalance={goToBalance} />
     </View>
   )
 }

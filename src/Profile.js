@@ -1,7 +1,39 @@
-import { Panel, Div, Text, Button } from '@vkontakte/vkui';
-import { Icon28ChevronBack, Icon28CoinsOutline } from '@vkontakte/icons';
+import { Panel, Div, Text, Button, Card } from '@vkontakte/vkui';
+import { Icon28ChevronBack, 
+  Icon28CoinsOutline,
+  Icon28GiftOutline,
+  Icon28CupOutline,
+  Icon28CrownOutline,
+  Icon28LockOutline } from '@vkontakte/icons';
 
-export default function Profile({ id, goBack, user, balance, goToBalance }) {
+export default function Profile({ id, goBack, user, balance, totalEarned, goToBalance }) {
+  const achievements = [
+    {
+      id: 1,
+      title: 'Первый вход',
+      icon: <Icon28GiftOutline />,
+      unlocked: true,
+    },
+    {
+      id: 2,
+      title: '10 очков',
+      icon: <Icon28CoinsOutline />,
+      unlocked: totalEarned >= 10,
+    },
+    {
+      id: 3,
+      title: '100 очков',
+      icon: <Icon28CupOutline />,
+      unlocked: totalEarned >= 100,
+    },
+    {
+      id: 4,
+      title: '1000 очков',
+      icon: <Icon28CrownOutline />,
+      unlocked: totalEarned >= 1000,
+    },
+  ];
+
   return (
     <Panel id={id}>
     <Div style={{ height: 32, backgroundColor: '#ffffff' }} />
@@ -93,7 +125,90 @@ export default function Profile({ id, goBack, user, balance, goToBalance }) {
                 color: '#fff',
             }}
         >
-            {/* Контент будет здесь */}
+            <Text
+              weight="3"
+              style={{
+                marginBottom: 12,
+                fontSize: 16,
+                color: '#311f68',
+                textAlign: 'center',
+                paddingTop: '25px',
+                paddingBottom: '12px',
+              }}
+            >
+              Достижения
+            </Text>
+
+            <Div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(4, 1fr)',
+                gap: '20px',
+                padding: 0,
+              }}
+            >
+              {achievements.map((ach) => (
+                <Card
+                  key={ach.id}
+                  mode="shadow"
+                  style={{
+                    aspectRatio: '1 / 1',
+                    borderRadius: 12,
+                    backgroundColor: '#ffffff',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    position: 'relative',
+                  }}
+                >
+                  <Div
+                    style={{
+                      padding: 0,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      filter: ach.unlocked ? 'none' : 'blur(1px)',
+                      opacity: ach.unlocked ? 1 : 0.5,
+                      transition: '0.2s ease',
+                    }}
+                  >
+                    <div style={{ color: '#311f68' }}>
+                      {ach.icon}
+                    </div>
+
+                    <Text
+                      style={{
+                        marginTop: 6,
+                        fontSize: 18,
+                        color: '#311f68',
+                        textAlign: 'center',
+                        lineHeight: '20px',
+                      }}
+                    >
+                      {ach.title}
+                    </Text>
+                  </Div>
+
+                  {!ach.unlocked && (
+                    <div
+                      style={{
+                        position: 'absolute',
+                        inset: 0,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        backgroundColor: 'rgba(255,255,255,0.6)',
+                        borderRadius: 12,
+                        zIndex: 2,
+                      }}
+                    >
+                      <Icon28LockOutline width={50} height={50} color="#311f68" />
+                    </div>
+                  )}
+                </Card>
+              ))}
+            </Div>
         </Div>
       </Div>
     </Panel>
