@@ -25,7 +25,32 @@ db.run(`
     balance INTEGER DEFAULT 0,
     totalEarned INTEGER DEFAULT 0,
     gift_day INTEGER DEFAULT 1,
-    last_gift_date TEXT
+    last_gift_date TEXT,
+    role TEXT DEFAULT 'user'
+  )
+`);
+
+db.run(`
+  CREATE TABLE IF NOT EXISTS tasks (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    question TEXT NOT NULL,
+    reward INTEGER NOT NULL,
+    expires_at TEXT,
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP
+  )
+`);
+
+db.run(`
+  CREATE TABLE IF NOT EXISTS task_answers (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    task_id INTEGER NOT NULL,
+    user_id INTEGER NOT NULL,
+    answer TEXT NOT NULL,
+    status TEXT DEFAULT 'pending',
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+
+    UNIQUE(task_id, user_id)
   )
 `);
 
@@ -42,7 +67,7 @@ app.get('/api/user/:id', (req, res) => {
         [userId, '', '', 0, 0],
         function(err) {
           if (err) return res.status(500).json({ error: err.message });
-          res.json({ id: userId, first_name: '', last_name: '', balance: 0, totalEarned: 0 });
+          res.json({ id: userId, first_name: '', last_name: '', balance: 0, totalEarned: 0, role: 'user' });
         }
       );
     } else {
@@ -140,6 +165,171 @@ app.get('/api/users', (req, res) => {
   db.all('SELECT id, first_name, last_name, totalEarned FROM users ORDER BY totalEarned DESC', (err, rows) => {
     if (err) return res.status(500).json({ error: err.message });
     res.json(rows);
+  });
+});
+
+// Получить список заданий для роли пользователя
+app.get('/api/tasks/:userId', (req, res) => {
+  const userId = req.params.userId;
+
+  db.all(`
+    SELECT 
+      t.id,
+      t.title,
+      t.reward,
+      t.expires_at,
+      a.status
+    FROM tasks t
+    LEFT JOIN task_answers a 
+      ON a.task_id = t.id AND a.user_id = ?
+    WHERE t.expires_at IS NULL 
+       OR t.expires_at > datetime('now')
+    ORDER BY t.created_at DESC
+  `, [userId], (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(rows);
+  });
+});
+
+// Отправить ответ на задание
+app.post('/api/tasks/:taskId/answer', (req, res) => {
+  const taskId = req.params.taskId;
+  const { userId, answer } = req.body;
+
+  db.run(
+    `
+    INSERT INTO task_answers (task_id, user_id, answer, status)
+    VALUES (?, ?, ?, 'pending')
+    ON CONFLICT(task_id, user_id)
+    DO UPDATE SET
+      answer = excluded.answer,
+      status = 'pending',
+      created_at = CURRENT_TIMESTAMP
+    `,
+    [taskId, userId, answer],
+    function (err) {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ success: true });
+    }
+  );
+});
+
+// Проверка роли пользователя
+app.get('/api/admin/tasks', (req, res) => {
+  const { userId } = req.query;
+
+  db.get('SELECT role FROM users WHERE id = ?', [userId], (err, user) => {
+    if (!user || user.role !== 'admin') {
+      return res.status(403).json({ error: 'Forbidden' });
+    }
+
+    db.all('SELECT * FROM tasks ORDER BY created_at DESC', (err, rows) => {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json(rows);
+    });
+  });
+});
+
+// Для админа - создать задание
+app.post('/api/admin/tasks', (req, res) => {
+  const { userId, title, question, reward, expires_at } = req.body;
+
+  db.get('SELECT role FROM users WHERE id = ?', [userId], (err, user) => {
+    if (!user || user.role !== 'admin') {
+      return res.status(403).json({ error: 'Forbidden' });
+    }
+
+    db.run(
+      `INSERT INTO tasks (title, question, reward, expires_at)
+       VALUES (?, ?, ?, ?)`,
+      [title, question, reward, expires_at || null],
+      function (err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ id: this.lastID });
+      }
+    );
+  });
+});
+
+//Для админа - получить ответы на задание
+app.get('/api/admin/tasks/:taskId/answers', (req, res) => {
+  const { userId } = req.query;
+  const taskId = req.params.taskId;
+
+  db.get('SELECT role FROM users WHERE id = ?', [userId], (err, user) => {
+    if (!user || user.role !== 'admin') {
+      return res.status(403).json({ error: 'Forbidden' });
+    }
+
+    db.all(`
+      SELECT 
+        a.id,
+        a.answer,
+        a.status,
+        a.user_id,
+        u.first_name,
+        u.last_name
+      FROM task_answers a
+      JOIN users u ON u.id = a.user_id
+      WHERE a.task_id = ?
+      ORDER BY a.created_at DESC
+    `, [taskId], (err, rows) => {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json(rows);
+    });
+  });
+});
+
+//Для админа - принять/отклонить ответ
+app.post('/api/admin/answers/:answerId', (req, res) => {
+  const { userId, action } = req.body; // action = 'accept' | 'reject'
+  const answerId = req.params.answerId;
+
+  db.get('SELECT role FROM users WHERE id = ?', [userId], (err, admin) => {
+    if (!admin || admin.role !== 'admin') {
+      return res.status(403).json({ error: 'Forbidden' });
+    }
+
+    db.get(`
+      SELECT a.*, t.reward
+      FROM task_answers a
+      JOIN tasks t ON t.id = a.task_id
+      WHERE a.id = ?
+    `, [answerId], (err, answer) => {
+      if (!answer) return res.status(404).json({ error: 'Answer not found' });
+
+      if (answer.status === 'accepted') {
+        return res.json({ success: true });
+      }
+
+      const newStatus = action === 'accept' ? 'accepted' : 'rejected';
+
+      db.run(
+        'UPDATE task_answers SET status = ? WHERE id = ?',
+        [newStatus, answerId],
+        () => {
+          if (newStatus === 'accepted') {
+            db.run(`
+              UPDATE users
+              SET balance = balance + ?,
+                  totalEarned = totalEarned + ?
+              WHERE id = ?
+            `, [answer.reward, answer.reward, answer.user_id]);
+          }
+
+          res.json({ success: true });
+        }
+      );
+    });
+  });
+});
+
+// Получить одно задание для модального окна
+app.get('/api/tasks/task/:id', (req, res) => {
+  db.get('SELECT * FROM tasks WHERE id = ?', [req.params.id], (err, row) => {
+    if (err) return res.status(500).json({ error: err.message });
+    if (!row) return res.status(404).json({ error: 'Task not found' });
+    res.json(row);
   });
 });
 
