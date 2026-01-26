@@ -41,6 +41,51 @@ db.run(`
   )
 `);
 
+// ===== ДОБАВЛЯЕМ ТЕСТОВЫЕ ЗАДАНИЯ, НАДО УДАЛИТЬ ПОТОМ =====
+db.get(`SELECT COUNT(*) as count FROM tasks`, (err, row) => {
+  if (err) {
+    console.error('Ошибка проверки tasks:', err.message);
+    return;
+  }
+
+  if (row.count === 0) {
+    console.log('tasks пустая — добавляем тестовые задания');
+
+    const seedTasks = [
+      {
+        title: 'Простое задание',
+        question: 'Напиши любое слово',
+        reward: 5,
+      },
+      {
+        title: 'Среднее задание',
+        question: 'Почему небо голубое?',
+        reward: 10,
+      },
+      {
+        title: 'Сложное задание',
+        question: 'Опиши, как работает VK Mini Apps',
+        reward: 20,
+      },
+    ];
+
+    const stmt = db.prepare(`
+      INSERT INTO tasks (title, question, reward)
+      VALUES (?, ?, ?)
+    `);
+
+    seedTasks.forEach(task => {
+      stmt.run(task.title, task.question, task.reward);
+    });
+
+    stmt.finalize(() => {
+      console.log('Тестовые задания добавлены');
+    });
+  } else {
+    console.log('tasks уже содержит данные — сид пропущен');
+  }
+});
+
 db.run(`
   CREATE TABLE IF NOT EXISTS task_answers (
     id INTEGER PRIMARY KEY AUTOINCREMENT,

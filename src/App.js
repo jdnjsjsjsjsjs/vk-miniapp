@@ -654,7 +654,7 @@ export default function App() {
       <Gift id="gift" goBack={goBack} balance={balance} goToBalance={goToBalance} />
 
       {/* Панель Список заданий */}
-      <Tasks id="tasks" goBack={goBack} balance={balance} goToBalance={goToBalance} />
+      <Tasks id="tasks" goBack={goBack} balance={balance} goToBalance={goToBalance} user={user} />
 
       {/* Панель Рейтинг */}
       <Rating id="rating" goBack={goBack} balance={balance} goToBalance={goToBalance} />
