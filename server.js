@@ -188,6 +188,7 @@ app.get('/api/tasks/:userId', (req, res) => {
     SELECT 
       t.id,
       t.title,
+      t.question,
       t.reward,
       t.expires_at,
       a.status

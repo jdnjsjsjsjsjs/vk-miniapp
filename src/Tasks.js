@@ -26,9 +26,7 @@ export default function Tasks({ id, goBack, balance, goToBalance, user }) {
             <ModalRoot activeModal={activeTask ? 'task' : null}>
                 <ModalCard
                     id="task"
-                    onClose={() => {setActiveTask(null); setAnswer('');}}
-                    header={activeTask?.title}
-                    subheader={activeTask?.question}
+                    onClose={() => { setActiveTask(null); setAnswer(''); }}
                     actions={
                         <Button
                             size="l"
@@ -41,33 +39,38 @@ export default function Tasks({ id, goBack, balance, goToBalance, user }) {
                                 setIsSubmitting(true);
 
                                 await fetch(`http://localhost:3001/api/tasks/${activeTask.id}/answer`, {
-                                    method: 'POST',
-                                    headers: { 'Content-Type': 'application/json' },
-                                    body: JSON.stringify({
-                                        userId: user.id,
-                                        answer
-                                    })
-                                });
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    userId: user.id,
+                                    answer
+                                })
+                            });
 
-                                setIsSubmitting(false);
-                                setActiveTask(null);
+                            setIsSubmitting(false);
+                            setActiveTask(null);
 
-                                // перезагружаем задания
-                                fetch(`http://localhost:3001/api/tasks/${user.id}`)
-                                    .then(res => res.json())
-                                    .then(setTasks);
-                            }}
-                        >
-                            Отправить
+                            // перезагружаем задания
+                            fetch(`http://localhost:3001/api/tasks/${user.id}`)
+                            .then(res => res.json())
+                            .then(setTasks);
+                        }}
+                    >
+                        Отправить
                         </Button>
                     }
-                >
-                    <Textarea
-                        placeholder="Введите ответ"
-                        value={answer}
-                        onChange={e => setAnswer(e.target.value)}
-                    />
-                </ModalCard>
+                    >
+                    {/* Динамический контент */}
+                    <Div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                        <Text weight="2">{activeTask?.title}</Text>
+                        <Text style={{ color: '#666', paddingBottom: '16px' }}>{activeTask?.question}</Text>
+                        <Textarea
+                            placeholder="Введите ответ"
+                            value={answer}
+                            onChange={e => setAnswer(e.target.value)}
+                        />
+                    </Div>
+                    </ModalCard>
             </ModalRoot>
 
             <Panel id={id}>
