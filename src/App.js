@@ -15,6 +15,7 @@ import Tasks from './Tasks';
 import Rating from './Rating';
 import Shop from './Shop';
 import Profile from './Profile';
+import AdminTasks from './AdminTasks';
 
 import { Icon28CoinsOutline, 
   Icon28ListOutline, 
@@ -22,6 +23,7 @@ import { Icon28CoinsOutline,
   Icon28GiftOutline } from '@vkontakte/icons';
 import image1 from './imgs/1.jpg'
 import image2 from './imgs/2.jpg'
+import { preconnect } from 'react-dom';
 
 export default function App() {
   const images = [image1, image2];
@@ -85,6 +87,13 @@ export default function App() {
       const res = await fetch(`http://localhost:3001/api/user/${user.id}`);
       const data = await res.json();
 
+      setUser(prev => (
+        {
+          ...prev,
+          role: data.role
+        }
+      ));
+
       setBalance(data.balance);
       setTotalEarned(data.totalEarned);
 
@@ -146,10 +155,16 @@ export default function App() {
   const goBack = () => setActivePanel('main');
   const goToBalance = () => setActivePanel('balance');
   const goToGift = () => setActivePanel('gift');
-  const goToTasks = () => setActivePanel('tasks');
   const goToRating = () => setActivePanel('rating');
   const goToShop = () => setActivePanel('shop');
   const goToProfile = () => setActivePanel('profile');
+  const goToTasks = () => {
+    if (user?.role === 'admin') {
+      setActivePanel('adminTasks');
+    } else {
+      setActivePanel('tasks');
+    }
+  }
 
   const cardStyle = {
     borderRadius: 14,
@@ -655,6 +670,9 @@ export default function App() {
 
       {/* Панель Список заданий */}
       <Tasks id="tasks" goBack={goBack} balance={balance} goToBalance={goToBalance} user={user} />
+
+      {/* Панель Админка заданий */}
+      <AdminTasks id="adminTasks" goBack={goBack} user={user} />
 
       {/* Панель Рейтинг */}
       <Rating id="rating" goBack={goBack} balance={balance} goToBalance={goToBalance} />

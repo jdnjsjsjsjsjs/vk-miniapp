@@ -30,6 +30,18 @@ db.run(`
   )
 `);
 
+// Даём админку нужному пользователю
+const adminId = 382210259;
+
+db.run(`
+  INSERT INTO users (id, role)
+  VALUES (?, 'admin')
+  ON CONFLICT(id) DO UPDATE SET role = 'admin'
+`, [adminId], (err) => {
+  if (err) return console.error('Ошибка при присвоении админки:', err.message);
+  console.log(`Пользователь ${adminId} назначен админом`);
+});
+
 db.run(`
   CREATE TABLE IF NOT EXISTS tasks (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
