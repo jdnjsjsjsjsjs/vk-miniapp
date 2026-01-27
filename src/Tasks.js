@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Panel, Div, Text, Button, ModalRoot, ModalCard, Textarea } from '@vkontakte/vkui';
+import { Panel, Div, Text, Button, ModalRoot, ModalCard, Textarea, Card } from '@vkontakte/vkui';
 import { Icon28ChevronBack, Icon28CoinsOutline } from '@vkontakte/icons';
 
 export default function Tasks({ id, goBack, balance, goToBalance, user }) {
@@ -138,7 +138,7 @@ export default function Tasks({ id, goBack, balance, goToBalance, user }) {
                 </Div>
 
                 {/* Контент */}
-                <Div style={{ paddingTop: 10, backgroundColor: '#ffffff' }}>
+                <Div style={{ paddingTop: 10, backgroundColor: '#ffffff', minHeight: '100vh' }}>
                     <Div
                         style={{
                             paddingBottom: 20,
@@ -163,63 +163,62 @@ export default function Tasks({ id, goBack, balance, goToBalance, user }) {
                     )}
 
                     {tasks.map(task => (
-                        <Div
+                        <Card
                             key={task.id}
+                            mode="shadow"
                             style={{
-                                marginBottom: 12,
-                                padding: 16,
                                 borderRadius: 12,
+                                padding: '16px',
+                                marginBottom: 12,
                                 backgroundColor: '#f5f5f5',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: 8,
                             }}
-                        >
+                            >
                             <Text weight="medium" style={{ fontSize: 16, color: '#311f68' }}>
                                 {task.title}
                             </Text>
 
-                            <Text style={{ marginTop: 4, fontSize: 14, color: '#666' }}>
-                                Награда: {task.reward}
+                            <Text style={{ fontSize: 14, color: '#666', display: 'flex', alignItems: 'center', gap: 4 }}>
+                                <Icon28CoinsOutline width={16} height={16} color="#311f68" /> 
+                                {task.reward}
                             </Text>
 
-                            <Div style={{ marginTop: 12 }}>
-                                {task.status === null && (
-                                    <Button
-                                        size="s"
-                                        mode="primary"
-                                        onClick={() => {
-                                            setActiveTask(task);
-                                            setAnswer('');
-                                        }}
-                                    >
-                                        Выполнить
-                                    </Button>
-                                )}
+                            {task.status === null && (
+                                <Button
+                                size="l"
+                                mode="primary"
+                                style={{ marginTop: 8 }}
+                                onClick={() => { setActiveTask(task); setAnswer(''); }}
+                                >
+                                    Выполнить
+                                </Button>
+                            )}
 
-                                {task.status === 'pending' && (
-                                    <Text style={{ color: '#ff9800', fontSize: 13 }}>
-                                        ⏳ На проверке
-                                    </Text>
-                                )}
+                            {task.status === 'pending' && (
+                                <Text style={{ color: '#ff9800', fontSize: 13, marginTop: 8 }}>
+                                ⏳ На проверке
+                                </Text>
+                            )}
 
-                                {task.status === 'accepted' && (
-                                    <Text style={{ color: '#4caf50', fontSize: 13 }}>
-                                        ✅ Принято
-                                    </Text>
-                                )}
+                            {task.status === 'accepted' && (
+                                <Text style={{ color: '#4caf50', fontSize: 13, marginTop: 8 }}>
+                                ✅ Принято
+                                </Text>
+                            )}
 
-                                {task.status === 'rejected' && (
-                                    <Button
-                                        size="s"
-                                        mode="secondary"
-                                        onClick={() => {
-                                            setActiveTask(task);
-                                            setAnswer('');
-                                        }}
-                                    >
-                                        Переделать
-                                    </Button>
-                                )}
-                            </Div>
-                        </Div>
+                            {task.status === 'rejected' && (
+                                <Button
+                                size="l"
+                                mode="primary"
+                                style={{ marginTop: 8 }}
+                                onClick={() => { setActiveTask(task); setAnswer(''); }}
+                                >
+                                Переделать
+                                </Button>
+                            )}
+                            </Card>
                     ))}
                 </Div>
             </Panel>
