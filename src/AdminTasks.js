@@ -13,7 +13,7 @@ export default function AdminTasks({ id, goBack, user }) {
   useEffect(() => {
     if (!user?.id) return;
 
-    fetch(`http://localhost:3001/api/admin/tasks/${user.id}`)
+    fetch(`http://localhost:3001/api/admin/tasks?userId=${user.id}`)
       .then(res => res.json())
       .then(setTasks)
       .catch(err => console.error('Ошибка загрузки админ-заданий', err));
@@ -31,16 +31,31 @@ export default function AdminTasks({ id, goBack, user }) {
               size="l"
               mode="primary"
               disabled={!title || !question || !reward}
-              onClick={() => {
-                // пока без логики
-                console.log({
-                  title,
-                  question,
-                  reward,
-                  expiresAt
-                });
+              onClick={async () => {
+                try {
+                  await fetch('http://localhost:3001/api/admin/tasks', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                      userId: user.id,
+                      title,
+                      question,
+                      reward: Number(reward),
+                      expires_at: expiresAt || null
+                    })
+                  });
 
-                setActiveModal(null);
+                  // перезагружаем список заданий
+                  const res = await fetch(
+                    `http://localhost:3001/api/admin/tasks?userId=${user.id}`
+                  );
+                  const data = await res.json();
+                  setTasks(data);
+
+                  setActiveModal(null);
+                } catch (e) {
+                  console.error('Ошибка создания задания', e);
+                }
               }}
             >
               Создать
