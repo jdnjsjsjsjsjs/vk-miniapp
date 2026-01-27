@@ -23,7 +23,6 @@ import { Icon28CoinsOutline,
   Icon28GiftOutline } from '@vkontakte/icons';
 import image1 from './imgs/1.jpg'
 import image2 from './imgs/2.jpg'
-import { preconnect } from 'react-dom';
 
 export default function App() {
   const images = [image1, image2];
