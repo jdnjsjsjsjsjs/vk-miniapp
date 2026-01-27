@@ -12,6 +12,7 @@ export default function AdminTasks({ id, goBack, user }) {
   const [activeTask, setActiveTask] = useState(null);
   const [answers, setAnswers] = useState([]);
   const [activeAnswer, setActiveAnswer] = useState(null);
+  const [confirmAction, setConfirmAction] = useState(null);
 
   useEffect(() => {
     if (!user?.id) return;
@@ -150,8 +151,21 @@ export default function AdminTasks({ id, goBack, user }) {
                 <Text weight="medium">
                   {a.first_name} {a.last_name}
                 </Text>
-                <Text style={{ fontSize: 13, color: '#666' }}>
-                  Статус: {a.status}
+                <Text
+                  style={{
+                    fontSize: 13,
+                    fontWeight: 500,
+                    color:
+                      a.status === 'accepted'
+                        ? '#4caf50'
+                        : a.status === 'rejected'
+                        ? '#f44336'
+                        : '#ff9800',
+                  }}
+                >
+                  {a.status === 'pending' && '⏳ На проверке'}
+                  {a.status === 'accepted' && '✅ Принято'}
+                  {a.status === 'rejected' && '❌ Отклонено'}
                 </Text>
               </Div>
             ))
@@ -171,13 +185,19 @@ export default function AdminTasks({ id, goBack, user }) {
               <Div style={{ display: 'flex', gap: 8 }}>
                 <Button
                   mode="primary"
-                  onClick={() => handleAnswer('accept')}
+                  onClick={() => {
+                    setConfirmAction('accept');
+                    setActiveModal('confirm');
+                  }}
                 >
                   Принять
                 </Button>
                 <Button
                   mode="destructive"
-                  onClick={() => handleAnswer('reject')}
+                  onClick={() => {
+                    setConfirmAction('reject');
+                    setActiveModal('confirm');
+                  }}
                 >
                   Отклонить
                 </Button>
@@ -186,6 +206,46 @@ export default function AdminTasks({ id, goBack, user }) {
           }
         >
           <Text>{activeAnswer?.answer}</Text>
+        </ModalCard>
+
+        <ModalCard
+          id="confirm"
+          onClose={() => setActiveModal('answer')}
+          actions={
+            <Div style={{ display: 'flex', gap: 8 }}>
+              <Button
+                mode={confirmAction === 'accept' ? 'primary' : 'destructive'}
+                onClick={() => {
+                  handleAnswer(confirmAction);
+                  setConfirmAction(null);
+                }}
+              >
+                Подтвердить
+              </Button>
+              <Button
+                mode="secondary"
+                onClick={() => setActiveModal('answer')}
+              >
+                Отмена
+              </Button>
+            </Div>
+          }
+        >
+          {/* Динамический контент вместо header/subheader */}
+          <Text weight="2" style={{ marginBottom: 8 }}>
+            {confirmAction === 'accept'
+              ? 'Подтвердить принятие'
+              : confirmAction === 'reject'
+              ? 'Подтвердить отклонение'
+              : ''}
+          </Text>
+          <Text style={{ color: '#666' }}>
+            {confirmAction === 'accept'
+              ? 'Пользователю будут начислены баллы'
+              : confirmAction === 'reject'
+              ? 'Ответ пользователя будет отклонён'
+              : ''}
+          </Text>
         </ModalCard>
       </ModalRoot>
       <Panel id={id}>
