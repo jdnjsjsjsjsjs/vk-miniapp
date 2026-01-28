@@ -37,6 +37,7 @@ export default function App() {
   const [canClaimGift, setCanClaimGift] = useState(false);
   const [giftTimeLeft, setGiftTimeLeft] = useState('00:00:00');
   const [usersList, setUsersList] = useState([]);
+  const [lastTasks, setLastTasks] = useState([]);
 
   useEffect(() => {
     const onScroll = () => {
@@ -134,6 +135,28 @@ export default function App() {
 
     fetchUsers();
   }, []);
+
+  useEffect(() => {
+    if (!user?.id) return;
+
+    async function fetchLastTasks() {
+      try {
+        const res = await fetch(`http://localhost:3001/api/tasks/${user.id}`);
+        const data = await res.json();
+
+        // сортируем по дате создания (НОВЫЕ СВЕРХУ)
+        const sorted = [...data].sort(
+          (a, b) => new Date(b.created_at) - new Date(a.created_at)
+        );
+
+        setLastTasks(sorted.slice(0, 3));
+      } catch (e) {
+        console.error('Ошибка загрузки заданий для превью', e);
+      }
+    }
+
+    fetchLastTasks();
+  }, [user]);
 
   function calculateTimeLeft() {
     const now = new Date();
@@ -420,19 +443,52 @@ export default function App() {
               Список заданий
             </Text>
 
-            {/* Картинка */}
-            <div style={{ marginTop: 12 }}>
-              <img
-                src={image2} // пока используем одну из уже импортированных картинок
-                alt="Tasks preview"
-                style={{
-                  width: '100%',
-                  height: '200px',
-                  borderRadius: 12,
-                  objectFit: 'cover',
-                  display: 'block',
-                }}
-              />
+            {/* Последние задания */}
+            <div style={{ marginTop: 12, display: 'flex', flexDirection: 'column', gap: 6 }}>
+              {lastTasks.length === 0 ? (
+                <Text style={{ fontSize: 13, color: '#999', textAlign: 'center' }}>
+                  Заданий пока нет
+                </Text>
+              ) : (
+                lastTasks.map(task => (
+                  <div
+                    key={task.id}
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      padding: '6px 10px',
+                      borderRadius: 8,
+                      backgroundColor: '#f7f7f7',
+                      color: '#311f68',
+                      fontSize: 13,
+                    }}
+                  >
+                    <span
+                      style={{
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                        maxWidth: '70%',
+                      }}
+                    >
+                      {task.title}
+                    </span>
+
+                    <span style={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      gap: 4,
+                      fontSize: 15,
+                      fontWeight: 400,
+                      color: '#311f68' 
+                    }}>
+                      <Icon28CoinsOutline width={15} height={15} />
+                      {task.reward}
+                    </span>
+                  </div>
+                ))
+              )}
             </div>
           </Card>
         </Div>
