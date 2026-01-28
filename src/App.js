@@ -671,7 +671,7 @@ export default function App() {
       <Tasks id="tasks" goBack={goBack} balance={balance} goToBalance={goToBalance} user={user} />
 
       {/* Панель Админка заданий */}
-      <AdminTasks id="adminTasks" goBack={goBack} user={user} />
+      <AdminTasks id="adminTasks" goBack={goBack} user={user} goToBalance={goToBalance} balance={balance} />
 
       {/* Панель Рейтинг */}
       <Rating id="rating" goBack={goBack} balance={balance} goToBalance={goToBalance} />

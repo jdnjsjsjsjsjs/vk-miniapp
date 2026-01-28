@@ -1,8 +1,9 @@
 // AdminTasks.js
 import { useState, useEffect } from 'react';
 import { Panel, Div, Text, Button, ModalRoot, ModalCard, Input, Textarea } from '@vkontakte/vkui';
+import { Icon28CoinsOutline, Icon28ChevronBack } from '@vkontakte/icons'
 
-export default function AdminTasks({ id, goBack, user }) {
+export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
   const [tasks, setTasks] = useState([]);
   const [activeModal, setActiveModal] = useState(null);
   const [title, setTitle] = useState('');
@@ -148,7 +149,7 @@ export default function AdminTasks({ id, goBack, user }) {
                   setActiveModal('answer');
                 }}
               >
-                <Text weight="medium">
+                <Text style={{ color: '#311f68' }}>
                   {a.first_name} {a.last_name}
                 </Text>
                 <Text
@@ -250,10 +251,70 @@ export default function AdminTasks({ id, goBack, user }) {
       </ModalRoot>
       <Panel id={id}>
         <Div style={{ height: 32, backgroundColor: '#ffffff' }} />
-        <Div style={{ paddingTop: 56, padding: 16 }}>
-          <Text weight="2" style={{ fontSize: 20 }}>Админка заданий</Text>
+        {/* Кастомный хедер */}
+        <Div
+            style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                right: 0,
+                height: 56,
+                backgroundColor: '#ffffff',
+                display: 'flex',
+                alignItems: 'center',
+                padding: '0 16px',
+                zIndex: 1000,
+                boxShadow: '0 15px 15px rgba(0,0,0,0.08)',
+                borderBottom: '1px solid #bdbdbd',
+            }}
+        >
+            {/* Кнопка назад */}
             <Button
-              size="m"
+                mode="tertiary"
+                size="l"
+                before={<Icon28ChevronBack />}
+                onClick={goBack}
+                style={{
+                    paddingLeft: 0,
+                    paddingRight: 8,
+                    marginRight: 4,
+                    color: '#311f68',
+                }}
+            >
+                Назад
+            </Button>
+
+            {/* Баланс-капсула */}
+            <div
+                onClick={() => {}}
+                style={{
+                    marginLeft: 'auto',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 6,
+                    padding: '6px 12px',
+                    backgroundColor: '#f2f2f2',
+                    borderRadius: 999,
+                    cursor: 'pointer',
+                }}
+            >
+                <Icon28CoinsOutline width={20} height={20} color="#311f68" />
+                <Text
+                    weight="3"
+                    style={{
+                        fontSize: 14,
+                        color: '#4000ff',
+                        lineHeight: '18px',
+                    }}
+                >
+                    {balance}
+                </Text>
+            </div>
+        </Div>
+        <Div style={{ paddingTop: 56, padding: 16, backgroundColor: '#ffffff', minHeight: '100vh' }}>
+          <Text weight="2" style={{ fontSize: 20, color: '#311f68' }}>Админка заданий</Text>
+            <Button
+              size="l"
               mode="primary"
               style={{ marginTop: 12 }}
               onClick={() => {
@@ -276,10 +337,11 @@ export default function AdminTasks({ id, goBack, user }) {
                   key={task.id}
                   style={{
                     marginTop: 12,
-                    padding: 12,
+                    padding: 16,
                     backgroundColor: '#f5f5f5',
                     borderRadius: 12,
-                    cursor: 'pointer'
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.06)',
+                    cursor: 'pointer',
                   }}
                   onClick={async () => {
                     setActiveTask(task);
@@ -292,9 +354,10 @@ export default function AdminTasks({ id, goBack, user }) {
                     setAnswers(data);
                   }}
                 >
-                  <Text weight="medium">{task.title}</Text>
-                  <Text style={{ fontSize: 13, color: '#666' }}>
-                    Награда: {task.reward}
+                  <Text weight="medium" style={{ fontSize: 16, color: '#311f68' }}>{task.title}</Text>
+                  <Text weight="medium" style={{ fontSize: 12, color: '#311f68' }}>{task.question}</Text>
+                  <Text style={{ fontSize: 14, color: '#666', marginTop: 4, display: 'flex', alignItems: 'center', gap: 4 }}>
+                    <Icon28CoinsOutline width={16} height={16} color="#666" /> {task.reward}
                   </Text>
                 </Div>
               ))
