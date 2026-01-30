@@ -476,4 +476,81 @@ app.post('/api/shop/buy/:itemId', (req, res) => {
   });
 });
 
+// Админ — получить все товары магазина
+app.get('/api/admin/shop', (req, res) => {
+  const { userId } = req.query;
+
+  db.get('SELECT role FROM users WHERE id = ?', [userId], (err, user) => {
+    if (!user || user.role !== 'admin') {
+      return res.status(403).json({ error: 'Forbidden' });
+    }
+
+    db.all('SELECT * FROM shop_items ORDER BY id DESC', (err, rows) => {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json(rows);
+    });
+  });
+});
+
+// Админ — добавить товар
+app.post('/api/admin/shop', (req, res) => {
+  const { userId, title, description, price, image } = req.body;
+
+  db.get('SELECT role FROM users WHERE id = ?', [userId], (err, user) => {
+    if (!user || user.role !== 'admin') {
+      return res.status(403).json({ error: 'Forbidden' });
+    }
+
+    db.run(
+      `INSERT INTO shop_items (title, description, price, image)
+       VALUES (?, ?, ?, ?)`,
+      [title, description, price, image],
+      function (err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ id: this.lastID });
+      }
+    );
+  });
+});
+
+// Админ — редактировать товар
+app.put('/api/admin/shop/:id', (req, res) => {
+  const { userId, title, description, price, image } = req.body;
+  const itemId = req.params.id;
+
+  db.get('SELECT role FROM users WHERE id = ?', [userId], (err, user) => {
+    if (!user || user.role !== 'admin') {
+      return res.status(403).json({ error: 'Forbidden' });
+    }
+
+    db.run(
+      `UPDATE shop_items
+       SET title = ?, description = ?, price = ?, image = ?
+       WHERE id = ?`,
+      [title, description, price, image, itemId],
+      err => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ success: true });
+      }
+    );
+  });
+});
+
+// Админ — удалить товар
+app.delete('/api/admin/shop/:id', (req, res) => {
+  const { userId } = req.body;
+  const itemId = req.params.id;
+
+  db.get('SELECT role FROM users WHERE id = ?', [userId], (err, user) => {
+    if (!user || user.role !== 'admin') {
+      return res.status(403).json({ error: 'Forbidden' });
+    }
+
+    db.run('DELETE FROM shop_items WHERE id = ?', [itemId], err => {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ success: true });
+    });
+  });
+});
+
 app.listen(PORT, () => console.log(`Сервер запущен на http://localhost:${PORT}`));
