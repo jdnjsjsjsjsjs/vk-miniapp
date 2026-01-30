@@ -733,7 +733,7 @@ export default function App() {
       <Rating id="rating" goBack={goBack} balance={balance} goToBalance={goToBalance} />
 
       {/* Панель Магазина */}
-      <Shop id="shop" goBack={goBack} balance={balance} goToBalance={goToBalance} />
+      <Shop id="shop" goBack={goBack} balance={balance} goToBalance={goToBalance} user={user} />
 
       {/* Панель профиля */}
       <Profile id="profile" goBack={goBack} user={user} balance={balance} totalEarned={totalEarned} goToBalance={goToBalance} />

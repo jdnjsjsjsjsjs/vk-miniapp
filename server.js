@@ -66,6 +66,47 @@ db.run(`
   )
 `);
 
+// Товары магазина
+db.run(`
+  CREATE TABLE IF NOT EXISTS shop_items (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    description TEXT,
+    price INTEGER NOT NULL,
+    image TEXT
+  )
+`);
+
+// ЗАПОЛНЯЕМ ТЕСТОВЫЕ ТОВАРЫ
+db.get('SELECT COUNT(*) as count FROM shop_items', (err, row) => {
+  if (row.count === 0) {
+    const items = [
+      ['VIP-статус', 'Даёт особый статус в проекте', 100, 'https://via.placeholder.com/150'],
+      ['Золотая рамка', 'Красивая рамка профиля', 50, 'https://via.placeholder.com/150'],
+      ['Уникальный бейдж', 'Бейдж возле имени', 75, 'https://via.placeholder.com/150'],
+      ['Секретный доступ', 'Доступ к скрытому контенту', 200, 'https://via.placeholder.com/150'],
+    ];
+
+    items.forEach(i => {
+      db.run(
+        'INSERT INTO shop_items (title, description, price, image) VALUES (?, ?, ?, ?)',
+        i
+      );
+    });
+
+    console.log('Тестовые товары магазина добавлены');
+  }
+});
+
+// Купленные товары пользователя
+db.run(`
+  CREATE TABLE IF NOT EXISTS user_items (
+    user_id INTEGER NOT NULL,
+    item_id INTEGER NOT NULL,
+    PRIMARY KEY (user_id, item_id)
+  )
+`);
+
 // Получить данные пользователя
 app.get('/api/user/:id', (req, res) => {
   const userId = req.params.id;
@@ -373,6 +414,64 @@ app.get('/api/createTestUsers', (req, res) => {
         completed++;
         if (completed === testUsers.length) res.json({ message: 'Test users added!' });
       }
+    });
+  });
+});
+
+// Получить товары магазина + купленные предметы пользователя
+app.get('/api/shop', (req, res) => {
+  const { userId } = req.query;
+
+  db.all('SELECT * FROM shop_items', (err, items) => {
+    if (err) return res.status(500).json({ error: err.message });
+
+    if (!userId) {
+      return res.json({ items, ownedItems: [] });
+    }
+
+    db.all(
+      'SELECT item_id FROM user_items WHERE user_id = ?',
+      [userId],
+      (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+
+        const ownedItems = rows.map(r => r.item_id);
+        res.json({ items, ownedItems });
+      }
+    );
+  });
+});
+
+// Купить товар
+app.post('/api/shop/buy/:itemId', (req, res) => {
+  const { userId } = req.body;
+  const itemId = req.params.itemId;
+
+  db.get('SELECT * FROM shop_items WHERE id = ?', [itemId], (err, item) => {
+    if (!item) return res.status(404).json({ error: 'Item not found' });
+
+    db.get('SELECT * FROM users WHERE id = ?', [userId], (err, user) => {
+      if (!user) return res.status(404).json({ error: 'User not found' });
+
+      if (user.balance < item.price) {
+        return res.status(400).json({ error: 'Недостаточно средств' });
+      }
+
+      db.run(
+        'INSERT INTO user_items (user_id, item_id) VALUES (?, ?)',
+        [userId, itemId],
+        err => {
+          if (err) {
+            return res.status(400).json({ error: 'Товар уже куплен' });
+          }
+
+          db.run(
+            'UPDATE users SET balance = balance - ? WHERE id = ?',
+            [item.price, userId],
+            () => res.json({ success: true })
+          );
+        }
+      );
     });
   });
 });
