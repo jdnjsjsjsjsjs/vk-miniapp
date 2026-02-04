@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import bridge from '@vkontakte/vk-bridge';
 import { Panel, Div, Text, Button, Card } from '@vkontakte/vkui';
-import { Icon28ChevronBack, Icon28CoinsOutline } from '@vkontakte/icons';
+import { Icon28ChevronBack } from '@vkontakte/icons';
+
+import coinsIcon from './imgs/coins.png'
 
 const rewards = [
         5,5,5, 10,10,10,
@@ -136,7 +138,7 @@ export default function Gift({ id, goBack, balance, goToBalance}) {
                         cursor: 'pointer',
                     }}
                 >
-                    <Icon28CoinsOutline width={20} height={20} color="#311f68" />
+                    <img src={coinsIcon} alt="coins" style={{ height: 25, width: 25 }} />
                     <Text
                         weight="3"
                         style={{
@@ -202,11 +204,7 @@ export default function Gift({ id, goBack, balance, goToBalance}) {
                             }}
                         >
                             <Div style={{ padding: 0 }}>
-                                <Icon28CoinsOutline
-                                    width={28}
-                                    height={28}
-                                    color={isCurrent ? '#4000ff' : '#311f68'}
-                                />
+                                <img src={coinsIcon} alt="coins" style={{ height: 50, width: 50 }} />
 
                                 <Text
                                     weight="3"

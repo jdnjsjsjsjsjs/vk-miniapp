@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'; 
 import { Panel, Div, Text, Button, ModalCard, ModalRoot, Slider, Input } from '@vkontakte/vkui';
-import { Icon28ChevronBack, Icon28CoinsOutline } from '@vkontakte/icons';
+import { Icon28ChevronBack } from '@vkontakte/icons';
+
+import coinsIcon from './imgs/coins.png'
 
 const inputStyle = {
     width: '100%',
@@ -362,7 +364,7 @@ export default function Shop({ id, goBack, balance, goToBalance, user }) {
                             cursor: 'pointer',
                         }}
                     >
-                        <Icon28CoinsOutline width={20} height={20} color="#311f68" />
+                        <img src={coinsIcon} alt="coins" style={{ height: 25, width: 25 }} />
                         <Text
                             weight="3"
                             style={{
@@ -498,7 +500,7 @@ export default function Shop({ id, goBack, balance, goToBalance, user }) {
                                                 });
                                         }}
                                     >
-                                        {cannotBuy ? 'Не хватает 💰' : 'Купить'}
+                                        {cannotBuy ? 'Не хватает монет' : 'Купить'}
                                     </Button>
                                 )}
                             </Div>

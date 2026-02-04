@@ -1,5 +1,7 @@
 import { Panel, Div, Text, Button } from '@vkontakte/vkui';
-import { Icon28ChevronBack, Icon28CoinsOutline } from '@vkontakte/icons';
+import { Icon28ChevronBack } from '@vkontakte/icons';
+
+import coinsIcon from './imgs/coins.png'
 
 export default function Balance({ id, goBack, balance, goToTasks }) {
   return (
@@ -59,7 +61,7 @@ export default function Balance({ id, goBack, balance, goToTasks }) {
             textAlign: 'center',
           }}
         >
-          <Icon28CoinsOutline width={40} height={40} color="#311f68" />
+          <img src={coinsIcon} alt="coins" style={{ height: 80, width: 80 }} />
 
           <Text
             weight="3"

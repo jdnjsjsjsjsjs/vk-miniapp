@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Panel, Div, Text, Button, ModalRoot, ModalCard, Textarea, Card } from '@vkontakte/vkui';
-import { Icon28ChevronBack, Icon28CoinsOutline } from '@vkontakte/icons';
+import { Icon28ChevronBack } from '@vkontakte/icons';
+
+import coinsIcon from './imgs/coins.png'
 
 export default function Tasks({ id, goBack, balance, goToBalance, user }) {
     const [tasks, setTasks] = useState([]);
@@ -123,7 +125,7 @@ export default function Tasks({ id, goBack, balance, goToBalance, user }) {
                             cursor: 'pointer',
                         }}
                     >
-                        <Icon28CoinsOutline width={20} height={20} color="#311f68" />
+                        <img src={coinsIcon} alt="coins" style={{ height: 25, width: 25 }} />
                         <Text
                             weight="3"
                             style={{
@@ -181,7 +183,7 @@ export default function Tasks({ id, goBack, balance, goToBalance, user }) {
                             </Text>
 
                             <Text style={{ fontSize: 14, color: '#666', display: 'flex', alignItems: 'center', gap: 4 }}>
-                                <Icon28CoinsOutline width={16} height={16} color="#311f68" /> 
+                                <img src={coinsIcon} alt="coins" style={{ height: 25, width: 25 }} />
                                 {task.reward}
                             </Text>
 

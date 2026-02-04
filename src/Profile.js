@@ -1,10 +1,11 @@
 import { Panel, Div, Text, Button, Card } from '@vkontakte/vkui';
-import { Icon28ChevronBack, 
-  Icon28CoinsOutline,
+import { Icon28ChevronBack,
   Icon28GiftOutline,
   Icon28CupOutline,
   Icon28CrownOutline,
   Icon28LockOutline } from '@vkontakte/icons';
+
+import coinsIcon from './imgs/coins.png'
 
 export default function Profile({ id, goBack, user, balance, totalEarned, goToBalance }) {
   const achievements = [
@@ -17,7 +18,7 @@ export default function Profile({ id, goBack, user, balance, totalEarned, goToBa
     {
       id: 2,
       title: '10 очков',
-      icon: <Icon28CoinsOutline />,
+      icon: <img src={coinsIcon} alt="coins" style={{ height: 60, width: 60 }} />,
       unlocked: totalEarned >= 10,
     },
     {
@@ -85,7 +86,7 @@ export default function Profile({ id, goBack, user, balance, totalEarned, goToBa
           cursor: 'pointer',
         }}
       >
-        <Icon28CoinsOutline width={20} height={20} color="#311f68" />
+        <img src={coinsIcon} alt="coins" style={{ height: 25, width: 25 }} />
         <Text
           weight="3"
           style={{

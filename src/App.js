@@ -17,12 +17,12 @@ import Shop from './Shop';
 import Profile from './Profile';
 import AdminTasks from './AdminTasks';
 
-import { Icon28CoinsOutline, 
-  Icon28ListOutline, 
+import { Icon28ListOutline, 
   Icon28CupOutline,
   Icon28GiftOutline } from '@vkontakte/icons';
 import image1 from './imgs/1.jpg'
 import image2 from './imgs/2.jpg'
+import coinsIcon from './imgs/coins.png'
 
 export default function App() {
   const images = [image1, image2];
@@ -266,7 +266,7 @@ export default function App() {
               cursor: 'pointer',
             }}
           >
-            <Icon28CoinsOutline width={20} height={20} color="#311f68" />
+            <img src={coinsIcon} alt="coins" style={{ height: 25, width: 25 }} />
             <Text
               weight="3"
               style={{
@@ -333,7 +333,11 @@ export default function App() {
               onClick={goToBalance}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                <Icon28CoinsOutline width={28} height={28} color="#311f68" />
+                <img
+                  src={coinsIcon}
+                  alt="coins"
+                  style={{ width: 45, height: 45, objectFit: 'contain' }}
+                />
                 <div>
                   <Text weight="3" style={{ fontSize: 14, color: '#311f68' }}>
                     Баланс
@@ -489,7 +493,11 @@ export default function App() {
                       fontWeight: 400,
                       color: '#311f68' 
                     }}>
-                      <Icon28CoinsOutline width={15} height={15} />
+                      <img
+                        src={coinsIcon}
+                        alt="coins"
+                        style={{ width: 25, height: 25, objectFit: 'contain' }}
+                      />
                       {task.reward}
                     </span>
                   </div>

@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Panel, Div, Text, Button, Card } from '@vkontakte/vkui';
-import { Icon28ChevronBack, Icon28CoinsOutline } from '@vkontakte/icons';
+import { Icon28ChevronBack } from '@vkontakte/icons';
 import bridge from '@vkontakte/vk-bridge';
+
+import coinsIcon from './imgs/coins.png'
 
 export default function Balance({ id, goBack, balance, goToBalance }) {
     const [user, setUser] = useState(null);
@@ -73,7 +75,7 @@ export default function Balance({ id, goBack, balance, goToBalance }) {
                         cursor: 'pointer',
                     }}
                 >
-                    <Icon28CoinsOutline width={20} height={20} color="#311f68" />
+                    <img src={coinsIcon} alt="coins" style={{ height: 25, width: 25 }} />
                     <Text
                         weight="3"
                         style={{
