@@ -10,7 +10,7 @@ bridge.send('VKWebAppInit')
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <ConfigProvider>
+    <ConfigProvider colorScheme="light">
         <AdaptivityProvider>
             <AppRoot>
                 <App />

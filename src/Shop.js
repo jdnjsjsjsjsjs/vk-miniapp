@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'; 
-import { Panel, Div, Text, Button, ModalCard, ModalRoot, Slider, Input, Separator } from '@vkontakte/vkui';
+import { Panel, Div, Text, Button, ModalCard, ModalRoot, Slider, Input } from '@vkontakte/vkui';
 import { Icon28ChevronBack, Icon28CoinsOutline } from '@vkontakte/icons';
 
 const inputStyle = {
@@ -147,7 +147,13 @@ export default function Shop({ id, goBack, balance, goToBalance, user }) {
                     <Text style={{ marginBottom: 12 }}>
                         {activeItem?.description}
                     </Text>
-                    <Text weight="2">
+                    <Text weight="3"
+                        style={{
+                            fontSize: 18,
+                            color: '#4000ff',
+                            marginTop: 8,
+                        }}    
+                    >
                         Цена: {activeItem?.price}
                     </Text>
 
@@ -302,7 +308,7 @@ export default function Shop({ id, goBack, balance, goToBalance, user }) {
                     <Button
                         size="s"
                         mode="secondary"
-                        style={{ marginLeft: 12 }}
+                        style={{ margin: 12, backgroundColor: '#fff', color: '#000' }}
                         onClick={() => setActiveModal('add')}
                     >
                         ➕ Добавить
@@ -370,8 +376,8 @@ export default function Shop({ id, goBack, balance, goToBalance, user }) {
                     </div>
                 </Div>
 
-                <Div style={{ backgroundColor: '#fff' }}>
-                    <Text weight="medium" style={{ marginBottom: 8 }}>
+                <Div style={{ backgroundColor: '#fff', borderRadius: 12, padding: 16, margin: '16px' }}>
+                    <Text weight="medium" style={{ marginBottom: 8, color: '#311f68' }}>
                         Фильтр по цене
                     </Text>
 
@@ -403,8 +409,6 @@ export default function Shop({ id, goBack, balance, goToBalance, user }) {
                             placeholder="До"
                         />
                     </Div>
-
-                    <Separator style={{ marginTop: 12 }} />
                 </Div>
 
                 <Div
@@ -423,12 +427,13 @@ export default function Shop({ id, goBack, balance, goToBalance, user }) {
                             <Div
                                 key={item.id}
                                 style={{
-                                    backgroundColor: isOwned ? '#e8f5e9' : '#f5f5f5',
+                                    backgroundColor: isOwned ? '#e8f5e9' : '#ffffff',
                                     borderRadius: 12,
                                     padding: 8,
                                     transition: 'transform 0.15s ease, box-shadow 0.15s ease',
                                     opacity: isOwned ? 0.7 : 1,
                                     cursor: isOwned ? 'default' : 'pointer',
+                                    border: '1px solid #e0e0e0',
                                 }}
                                 onMouseEnter={e => {
                                     if (isOwned) return;
@@ -460,8 +465,8 @@ export default function Shop({ id, goBack, balance, goToBalance, user }) {
                                     {item.title}
                                 </Text>
 
-                                <Text style={{ fontSize: 13, marginBottom: 8 }}>
-                                    {item.price} 💰
+                                <Text weight='3' style={{ fontSize: 16, color: '#4000ff', marginBottom: 6 }}>
+                                    {item.price}
                                 </Text>
 
                                 {isOwned ? (
@@ -470,7 +475,7 @@ export default function Shop({ id, goBack, balance, goToBalance, user }) {
                                     </Text>
                                 ) : (
                                     <Button
-                                        size="s"
+                                        size="m"
                                         mode="primary"
                                         stretched
                                         disabled={cannotBuy}
