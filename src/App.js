@@ -23,6 +23,7 @@ import { Icon28ListOutline,
 import image1 from './imgs/1.jpg'
 import image2 from './imgs/2.jpg'
 import coinsIcon from './imgs/coins.png'
+import giftImg from './imgs/gift.png'
 
 export default function App() {
   const images = [image1, image2];
@@ -354,30 +355,52 @@ export default function App() {
               mode="shadow"
               style={{
                 borderRadius: 12,
-                padding: '12px 16px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
+                padding: '14px 16px',
                 backgroundColor: '#ffffff',
-                flexDirection: 'column',
                 cursor: 'pointer',
+                position: 'relative',
+                overflow: 'hidden',
               }}
               onClick={goToGift}
             >
-              <Text weight="medium" style={{ fontSize: 14, color: '#311f68' }}>
-                Награда за вход
-              </Text>
-
-              <Text
-                weight="medium"
+              <div
                 style={{
-                  fontSize: 18,
-                  color: canClaimGift ? '#00a650' : '#4000ff',
-                  marginTop: 4,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'flex-start',
+                  zIndex: 2,
                 }}
               >
-                {canClaimGift ? 'Забрать!' : giftTimeLeft}
-              </Text>
+                <Text weight="medium" style={{ fontSize: 14, color: '#311f68' }}>
+                  Награда за вход
+                </Text>
+
+                <Text
+                  weight="medium"
+                  style={{
+                    fontSize: 18,
+                    color: canClaimGift ? '#00a650' : '#4000ff',
+                    marginTop: 4,
+                  }}
+                >
+                  {canClaimGift ? 'Забрать!' : giftTimeLeft}
+                </Text>
+              </div>
+
+              <img
+                src={giftImg}
+                alt="gift"
+                style={{
+                  position: 'absolute',
+                  right: -35,
+                  bottom: -35,
+                  width: 120,
+                  height: 120,
+                  objectFit: 'contain',
+                  opacity: 0.95,
+                  pointerEvents: 'none',
+                }}
+              />
             </Card>
           </div>
           
