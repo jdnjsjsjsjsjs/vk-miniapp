@@ -122,17 +122,17 @@ export default function App() {
     return () => clearInterval(interval);
   }, [canClaimGift]);
 
-  useEffect(() => {
-    async function fetchUsers() {
-      try {
-        const res = await fetch('http://localhost:3001/api/users'); 
-        const data = await res.json();
-        setUsersList(data);
-      } catch (error) {
-        console.error('Ошибка получения списка пользователей', error);
-      }
+  const fetchUsers = async () => {
+    try {
+      const res = await fetch('http://localhost:3001/api/users');
+      const data = await res.json();
+      setUsersList(data);
+    } catch (error) {
+      console.error('Ошибка получения списка пользователей', error);
     }
+  };
 
+  useEffect(() => {
     fetchUsers();
   }, []);
 
@@ -187,6 +187,12 @@ export default function App() {
       setActivePanel('tasks');
     }
   }
+
+  useEffect(() => {
+    if (user) {
+      fetchUsers();
+    }
+  }, [user, balance, totalEarned]);
 
   const cardStyle = {
     borderRadius: 14,
