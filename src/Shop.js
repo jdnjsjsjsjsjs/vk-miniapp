@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'; 
-import { Panel, Div, Text, Button, ModalCard, ModalRoot } from '@vkontakte/vkui';
+import { Panel, Div, Text, Button, ModalCard, ModalRoot, Slider, Input, Separator } from '@vkontakte/vkui';
 import { Icon28ChevronBack, Icon28CoinsOutline } from '@vkontakte/icons';
 
 const inputStyle = {
@@ -17,6 +17,9 @@ export default function Shop({ id, goBack, balance, goToBalance, user }) {
     const [activeItem, setActiveItem] = useState(null);
     const [activeModal, setActiveModal] = useState(null);
     const [editItem, setEditItem] = useState(null);
+    const [filteredItems, setFilteredItems] = useState([]);
+    const [priceBounds, setPriceBounds] = useState([0, 0]);
+    const [priceRange, setPriceRange] = useState([0, 0]);
 
     const [newItem, setNewItem] = useState({
         title: '',
@@ -35,15 +38,33 @@ export default function Shop({ id, goBack, balance, goToBalance, user }) {
         fetch(url)
             .then(res => res.json())
             .then(data => {
-                if (isAdmin) {
-                    setItems(data);
-                    setOwnedItems([]);
-                } else {
-                    setItems(data.items);
-                    setOwnedItems(data.ownedItems);
+                const loadedItems = isAdmin ? data : data.items;
+                const owned = isAdmin ? [] : data.ownedItems;
+
+                setItems(loadedItems);
+                setOwnedItems(owned);
+
+                if (loadedItems.length) {
+                    const prices = loadedItems.map(i => i.price);
+                    const min = Math.min(...prices);
+                    const max = Math.max(...prices);
+
+                    setPriceBounds([min, max]);
+                    setPriceRange([min, max]);
+                    setFilteredItems(loadedItems);
                 }
             });
     }, [user.id, isAdmin]);
+
+    useEffect(() => {
+        const [min, max] = priceRange;
+
+        const filtered = items.filter(
+            item => item.price >= min && item.price <= max
+        );
+
+        setFilteredItems(filtered);
+    }, [priceRange, items]);
 
     const saveNewItem = () => {
         if (!newItem.title || !newItem.price) {
@@ -349,16 +370,54 @@ export default function Shop({ id, goBack, balance, goToBalance, user }) {
                     </div>
                 </Div>
 
+                <Div style={{ backgroundColor: '#fff' }}>
+                    <Text weight="medium" style={{ marginBottom: 8 }}>
+                        Фильтр по цене
+                    </Text>
+
+                    <Slider
+                        min={priceBounds[0]}
+                        max={priceBounds[1]}
+                        value={priceRange}
+                        onChange={setPriceRange}
+                        step={1}
+                        multiple
+                    />
+
+                    <Div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+                        <Input
+                            type="number"
+                            value={priceRange[0]}
+                            onChange={e =>
+                                setPriceRange([Number(e.target.value), priceRange[1]])
+                            }
+                            placeholder="От"
+                        />
+
+                        <Input
+                            type="number"
+                            value={priceRange[1]}
+                            onChange={e =>
+                                setPriceRange([priceRange[0], Number(e.target.value)])
+                            }
+                            placeholder="До"
+                        />
+                    </Div>
+
+                    <Separator style={{ marginTop: 12 }} />
+                </Div>
+
                 <Div
                     style={{
                         display: 'grid',
-                        gridTemplateColumns: 'repeat(4, 1fr)',
+                        gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))',
                         gap: 12,
                         padding: 16,
                     }}
                 >
-                    {items.map(item => {
+                    {filteredItems.map(item => {
                         const isOwned = ownedItems.includes(item.id);
+                        const cannotBuy = balance < item.price;
 
                         return (
                             <Div
@@ -367,9 +426,25 @@ export default function Shop({ id, goBack, balance, goToBalance, user }) {
                                     backgroundColor: isOwned ? '#e8f5e9' : '#f5f5f5',
                                     borderRadius: 12,
                                     padding: 8,
-                                    cursor: 'pointer',
+                                    transition: 'transform 0.15s ease, box-shadow 0.15s ease',
+                                    opacity: isOwned ? 0.7 : 1,
+                                    cursor: isOwned ? 'default' : 'pointer',
                                 }}
-                                onClick={() => {setActiveItem(item); setActiveModal('item')}}
+                                onMouseEnter={e => {
+                                    if (isOwned) return;
+                                    e.currentTarget.style.transform = 'translateY(-2px)';
+                                    e.currentTarget.style.boxShadow = '0 6px 16px rgba(0,0,0,0.12)';
+                                }}
+                                onMouseLeave={e => {
+                                    if (isOwned) return;
+                                    e.currentTarget.style.transform = 'none';
+                                    e.currentTarget.style.boxShadow = 'none';
+                                }}
+                                onClick={() => {
+                                    if (isOwned) return;
+                                    setActiveItem(item);
+                                    setActiveModal('item');
+                                }}
                             >
                                 <img
                                     src={item.image}
@@ -398,12 +473,11 @@ export default function Shop({ id, goBack, balance, goToBalance, user }) {
                                         size="s"
                                         mode="primary"
                                         stretched
+                                        disabled={cannotBuy}
                                         onClick={(e) => {
                                             e.stopPropagation();
-                                            if (balance < item.price) {
-                                                alert('Недостаточно средств');
-                                                return;
-                                            }
+                                            if (cannotBuy) return;
+
                                             fetch(`http://localhost:3001/api/shop/buy/${item.id}`, {
                                                 method: 'POST',
                                                 headers: { 'Content-Type': 'application/json' },
@@ -412,14 +486,14 @@ export default function Shop({ id, goBack, balance, goToBalance, user }) {
                                                 .then(res => res.json())
                                                 .then(data => {
                                                     if (data.success) {
-                                                    setOwnedItems(prev => [...prev, item.id]);
-                                                } else {
-                                                alert(data.error);
-                                                }
-                                            });
+                                                        setOwnedItems(prev => [...prev, item.id]);
+                                                    } else {
+                                                        alert(data.error);
+                                                    }
+                                                });
                                         }}
                                     >
-                                        Купить
+                                        {cannotBuy ? 'Не хватает 💰' : 'Купить'}
                                     </Button>
                                 )}
                             </Div>
