@@ -338,6 +338,7 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
                 <Div
                   key={task.id}
                   style={{
+                    position: 'relative',
                     marginTop: 12,
                     padding: 16,
                     backgroundColor: '#f5f5f5',
@@ -356,6 +357,28 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
                     setAnswers(data);
                   }}
                 >
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: 10,
+                      right: 10,
+                      minWidth: 22,
+                      height: 22,
+                      padding: '0 6px',
+                      backgroundColor: '#f44336',
+                      color: '#fff',
+                      borderRadius: 999,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: 12,
+                      fontWeight: 600,
+                      boxShadow: '0 2px 6px rgba(0,0,0,0.2)',
+                    }}
+                  >
+                    {task.pendingCount}
+                  </div>
+
                   <Text weight="medium" style={{ fontSize: 16, color: '#311f68' }}>{task.title}</Text>
                   <Text weight="medium" style={{ fontSize: 12, color: '#311f68' }}>{task.question}</Text>
                   <Text style={{ fontSize: 14, color: '#666', marginTop: 4, display: 'flex', alignItems: 'center', gap: 4 }}>

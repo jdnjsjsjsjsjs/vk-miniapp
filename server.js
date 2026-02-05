@@ -277,7 +277,18 @@ app.get('/api/admin/tasks', (req, res) => {
       return res.status(403).json({ error: 'Forbidden' });
     }
 
-    db.all('SELECT * FROM tasks ORDER BY created_at DESC', (err, rows) => {
+    db.all(`
+      SELECT
+        t.*,
+        COUNT(
+          CASE WHEN a.status = 'pending' THEN 1 END
+        ) AS pendingCount
+      FROM tasks t
+      LEFT JOIN task_answers a
+        ON a.task_id = t.id
+      GROUP BY t.id
+      ORDER BY t.created_at DESC
+    `, (err, rows) => {
       if (err) return res.status(500).json({ error: err.message });
       res.json(rows);
     });
