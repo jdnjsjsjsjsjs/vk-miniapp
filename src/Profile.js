@@ -1,18 +1,18 @@
 import { Panel, Div, Text, Button, Card } from '@vkontakte/vkui';
-import { Icon28ChevronBack,
-  Icon28GiftOutline,
-  Icon28CupOutline,
-  Icon28CrownOutline,
-  Icon28LockOutline } from '@vkontakte/icons';
+import { Icon28ChevronBack } from '@vkontakte/icons';
 
 import coinsIcon from './imgs/coins.png'
+import box1icon from './imgs/box1.png'
+import cupsIcon from './imgs/cups.png'
+import awardsIcon from './imgs/awards.png'
+import lockIcon from './imgs/lock.png'
 
 export default function Profile({ id, goBack, user, balance, totalEarned, goToBalance }) {
   const achievements = [
     {
       id: 1,
       title: 'Первый вход',
-      icon: <Icon28GiftOutline />,
+      icon: <img src={box1icon} alt="box1" style={{ height: 60, width: 60 }} />,
       unlocked: true,
     },
     {
@@ -24,13 +24,13 @@ export default function Profile({ id, goBack, user, balance, totalEarned, goToBa
     {
       id: 3,
       title: '100 очков',
-      icon: <Icon28CupOutline />,
+      icon: <img src={cupsIcon} alt="cups" style={{ height: 60, width: 60 }} />,
       unlocked: totalEarned >= 100,
     },
     {
       id: 4,
       title: '1000 очков',
-      icon: <Icon28CrownOutline />,
+      icon: <img src={awardsIcon} alt="awards" style={{ height: 60, width: 60 }} />,
       unlocked: totalEarned >= 1000,
     },
   ];
@@ -204,7 +204,7 @@ export default function Profile({ id, goBack, user, balance, totalEarned, goToBa
                         zIndex: 2,
                       }}
                     >
-                      <Icon28LockOutline width={50} height={50} color="#311f68" />
+                      <img src={lockIcon} alt="lock" style={{ height: 120, width: 120 }} />
                     </div>
                   )}
                 </Card>
