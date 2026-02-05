@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Panel, Div, Text, Button, ModalRoot, ModalCard, Textarea, Card } from '@vkontakte/vkui';
-import { Icon28ChevronBack, Icon28FavoriteOutline, Icon28Favorite } from '@vkontakte/icons';
+import { Icon28ChevronBack, Icon28Favorite } from '@vkontakte/icons';
 
 import coinsIcon from './imgs/coins.png';
 
@@ -145,7 +145,7 @@ export default function Favorites({ id, goBack, balance, goToBalance, user }) {
 
                 {/* ---------- Контент ---------- */}
                 <Div style={{ paddingTop: 20, minHeight: '100vh', backgroundColor: '#fff' }}>
-                    <Text weight="2" style={{ fontSize: 20, color: '#311f68', marginLeft: 18 }}>
+                    <Text weight="2" style={{ fontSize: 20, color: '#311f68', marginLeft: 18, marginBottom: 20 }}>
                         Избранное
                     </Text>
 
