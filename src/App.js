@@ -24,6 +24,7 @@ import image2 from './imgs/2.jpg'
 import coinsIcon from './imgs/coins.png'
 import giftImg from './imgs/gift.png'
 import tasksIcon from './imgs/tasks.png'
+import awardsIcon from './imgs/awards.png'
 
 export default function App() {
   const images = [image1, image2];
@@ -417,6 +418,20 @@ export default function App() {
             }}
             onClick={goToProfile}
           >
+            <img
+              src={awardsIcon}
+              alt="awards"
+              style={{
+                position: 'absolute',
+                top: -50,
+                left: -65,
+                width: 200,
+                height: 200,
+                objectFit: 'contain',
+                pointerEvents: 'none',
+              }}
+            />
+
             <Text
               weight="3"
               style={{
