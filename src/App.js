@@ -17,7 +17,6 @@ import Shop from './Shop';
 import Profile from './Profile';
 import AdminTasks from './AdminTasks';
 
-import { Icon28GiftOutline } from '@vkontakte/icons';
 import image1 from './imgs/1.jpg'
 import image2 from './imgs/2.jpg'
 import coinsIcon from './imgs/coins.png'
@@ -25,6 +24,9 @@ import giftImg from './imgs/gift.png'
 import tasksIcon from './imgs/tasks.png'
 import awardsIcon from './imgs/awards.png'
 import cupsIcon from './imgs/cups.png'
+import box1icon from './imgs/box1.png'
+import box2icon from './imgs/box2.png'
+import box3icon from './imgs/box3.png'
 
 export default function App() {
   const images = [image1, image2];
@@ -195,17 +197,6 @@ export default function App() {
       fetchUsers();
     }
   }, [user, balance, totalEarned]);
-
-  const cardStyle = {
-    borderRadius: 14,
-    padding: '16px',
-    backgroundColor: '#ffffff',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    gap: 8,
-    cursor: 'pointer',
-  };
 
   const cardText = {
     fontSize: 14,
@@ -687,34 +678,95 @@ export default function App() {
           <Div
             style={{
               display: 'grid',
-              gridTemplateColumns: '1fr 1fr',
+              gridTemplateColumns: '1fr 1fr 1fr',
               gap: '12px',
               marginTop: 12,
               padding: 0,
             }}
           >
-            {/* Шапки */}
-            <Card mode="shadow" style={cardStyle} onClick={goToShop}>
-              <Icon28GiftOutline color="#311f68" />
+
+            <Card mode="shadow" 
+              style={{ borderRadius: 14,
+                padding: '16px',
+                backgroundColor: '#ffffff',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: 8,
+                cursor: 'pointer', 
+                overflow: 'hidden' }} 
+              onClick={goToShop}
+            >
+              <img
+                src={box1icon}
+                alt="box1"
+                style={{
+                  position: 'absolute',
+                  right: -35,
+                  bottom: -50,
+                  width: 120,
+                  height: 120,
+                  objectFit: 'contain',
+                  pointerEvents: 'none',
+                }}
+              />
               <Text style={cardText}>От 100 баллов</Text>
             </Card>
 
-            {/* Толстовки */}
-            <Card mode="shadow" style={cardStyle} onClick={goToShop}>
-              <Icon28GiftOutline color="#311f68" />
+            <Card mode="shadow" 
+              style={{ borderRadius: 14,
+                padding: '16px',
+                backgroundColor: '#ffffff',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: 8,
+                cursor: 'pointer', 
+                overflow: 'hidden' }} 
+              onClick={goToShop}
+            >
+              <img
+                src={box2icon}
+                alt="box2"
+                style={{
+                  position: 'absolute',
+                  right: -35,
+                  bottom: -45,
+                  width: 120,
+                  height: 120,
+                  objectFit: 'contain',
+                  pointerEvents: 'none',
+                }}
+              />
               <Text style={cardText}>От 500 баллов</Text>
             </Card>
 
-            {/* Аксессуары */}
-            <Card mode="shadow" style={cardStyle} onClick={goToShop}>
-              <Icon28GiftOutline color="#311f68" />
+            <Card mode="shadow" 
+              style={{ borderRadius: 14,
+                padding: '16px',
+                backgroundColor: '#ffffff',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: 8,
+                cursor: 'pointer', 
+                overflow: 'hidden' }} 
+              onClick={goToShop}
+            >
+              <img
+                src={box3icon}
+                alt="box3"
+                style={{
+                  position: 'absolute',
+                  right: -35,
+                  bottom: -50,
+                  width: 120,
+                  height: 120,
+                  objectFit: 'contain',
+                  pointerEvents: 'none',
+                }}
+              />
               <Text style={cardText}>От 1000 баллов</Text>
-            </Card>
-
-            {/* Пожертвования */}
-            <Card mode="shadow" style={cardStyle} onClick={goToShop}>
-              <Icon28GiftOutline color="#311f68" />
-              <Text style={cardText}>Пожертвования</Text>
             </Card>
           </Div>
         </Div>
