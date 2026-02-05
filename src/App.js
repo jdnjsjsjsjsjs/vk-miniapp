@@ -17,14 +17,14 @@ import Shop from './Shop';
 import Profile from './Profile';
 import AdminTasks from './AdminTasks';
 
-import { Icon28CupOutline,
-  Icon28GiftOutline } from '@vkontakte/icons';
+import { Icon28GiftOutline } from '@vkontakte/icons';
 import image1 from './imgs/1.jpg'
 import image2 from './imgs/2.jpg'
 import coinsIcon from './imgs/coins.png'
 import giftImg from './imgs/gift.png'
 import tasksIcon from './imgs/tasks.png'
 import awardsIcon from './imgs/awards.png'
+import cupsIcon from './imgs/cups.png'
 
 export default function App() {
   const images = [image1, image2];
@@ -571,80 +571,96 @@ export default function App() {
               backgroundColor: '#ffffff',
               padding: '16px',
               cursor: 'pointer',
+              position: 'relative',
+              overflow: 'hidden',
             }}
             onClick={goToRating}
           >
-            {/* Иконка */}
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <Icon28CupOutline width={28} height={28} color="#311f68" />
-            </div>
+            <img
+                src={cupsIcon}
+                alt="cups"
+                style={{
+                  position: 'absolute',
+                  top: '18%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  width: 80,
+                  height: 80,
+                  objectFit: 'contain',
+                  opacity: 0.8,
+                  zIndex: 1,
+                  pointerEvents: 'none',
+                }}
+              />
 
-            {/* Заголовок */}
-            <Text
-              weight="3"
-              style={{
-                marginTop: 8,
-                textAlign: 'center',
-                fontSize: 16,
-                color: '#311f68',
-                paddingBottom: '16px',
-              }}
-            >
-              Рейтинг
-            </Text>
+            <div style={{ position: 'relative', zIndex: 2 }}>
+              {/* Заголовок */}
+              <Text
+                weight="3"
+                style={{
+                  marginTop: 30,
+                  textAlign: 'center',
+                  fontSize: 18,
+                  color: '#311f68',
+                  paddingBottom: '16px',
+                }}
+              >
+                Рейтинг
+              </Text>
 
-            {/* Таблица рейтинга */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-              {usersList
-                .sort((a, b) => b.totalEarned - a.totalEarned)
-                .slice(0, 3) // топ-3
-                .map((u, index) => (
-                  <div
-                    key={u.id}
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      padding: '6px 12px',
-                      borderRadius: 8,
-                      backgroundColor: user && user.id === u.id ? '#f0edff' : '#f7f7f7',
-                      fontWeight: user && user.id === u.id ? '600' : '400',
-                      color: '#311f68',
-                    }}
-                  >
-                    <span>{index + 1}.</span>
-                    <span>{u.first_name} {u.last_name}</span>
-                    <span>{u.totalEarned}</span>
-                  </div>
-                ))}
-
-              {/* Текущий пользователь */}
-              {user && (() => {
-                const allSorted = [...usersList].sort((a, b) => b.totalEarned - a.totalEarned);
-                const currentIndex = allSorted.findIndex(u => u.id === user.id);
-                if (currentIndex >= 3) { // если не в топ-3, показываем отдельной строкой
-                  const currentUser = allSorted[currentIndex];
-                  return (
+              {/* Таблица рейтинга */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                {usersList
+                  .sort((a, b) => b.totalEarned - a.totalEarned)
+                  .slice(0, 3) // топ-3
+                  .map((u, index) => (
                     <div
-                      key={currentUser.id}
+                      key={u.id}
                       style={{
                         display: 'flex',
                         justifyContent: 'space-between',
                         padding: '6px 12px',
                         borderRadius: 8,
-                        backgroundColor: '#f0edff',
-                        fontWeight: 600,
-                        marginTop: 6,
+                        backgroundColor: user && user.id === u.id ? '#f0edff' : '#f7f7f7',
+                        fontWeight: user && user.id === u.id ? '600' : '400',
                         color: '#311f68',
                       }}
                     >
-                      <span>{currentIndex + 1}.</span>
-                      <span>{currentUser.first_name} {currentUser.last_name}</span>
-                      <span>{currentUser.totalEarned}</span>
+                      <span>{index + 1}.</span>
+                      <span>{u.first_name} {u.last_name}</span>
+                      <span>{u.totalEarned}</span>
                     </div>
-                  );
-                }
-                return null;
-              })()}
+                  ))}
+
+                {/* Текущий пользователь */}
+                {user && (() => {
+                  const allSorted = [...usersList].sort((a, b) => b.totalEarned - a.totalEarned);
+                  const currentIndex = allSorted.findIndex(u => u.id === user.id);
+                  if (currentIndex >= 3) { // если не в топ-3, показываем отдельной строкой
+                    const currentUser = allSorted[currentIndex];
+                    return (
+                      <div
+                        key={currentUser.id}
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          padding: '6px 12px',
+                          borderRadius: 8,
+                          backgroundColor: '#f0edff',
+                          fontWeight: 600,
+                          marginTop: 6,
+                          color: '#311f68',
+                        }}
+                      >
+                        <span>{currentIndex + 1}.</span>
+                        <span>{currentUser.first_name} {currentUser.last_name}</span>
+                        <span>{currentUser.totalEarned}</span>
+                      </div>
+                    );
+                  }
+                  return null;
+                })()}
+              </div>
             </div>
           </Card>
         </Div>

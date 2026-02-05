@@ -26,7 +26,7 @@ export default function Balance({ id, goBack, balance, goToBalance }) {
 
     return (
         <Panel id={id}>
-            <Div style={{ height: 32, backgroundColor: '#ffffff' }} />
+            <Div style={{ height: 1, backgroundColor: '#ffffff' }} />
                         
             {/* Кастомный хедер */}
             <Div
