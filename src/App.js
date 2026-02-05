@@ -16,6 +16,7 @@ import Rating from './Rating';
 import Shop from './Shop';
 import Profile from './Profile';
 import AdminTasks from './AdminTasks';
+import Favorites from './Favorites';
 
 import image1 from './imgs/1.jpg'
 import image2 from './imgs/2.jpg'
@@ -184,6 +185,7 @@ export default function App() {
   const goToRating = () => setActivePanel('rating');
   const goToShop = () => setActivePanel('shop');
   const goToProfile = () => setActivePanel('profile');
+  const goToFavorites = () => setActivePanel('favorites');
   const goToTasks = () => {
     if (user?.role === 'admin') {
       setActivePanel('adminTasks');
@@ -451,6 +453,9 @@ export default function App() {
           style={{
             padding: '0 16px 16px 16px',
             backgroundColor: '#ffffff',
+            display: 'grid',
+            gridTemplateColumns: '4fr 1fr',
+            gap: '12px',
           }}
         >
           <Card
@@ -460,7 +465,6 @@ export default function App() {
               backgroundColor: '#ffffff',
               padding: '16px',
               cursor: 'pointer',
-              marginRight: 200,
               position: 'relative',
               overflow: 'hidden',
             }}
@@ -545,6 +549,44 @@ export default function App() {
                   ))
                 )}
               </div>
+            </div>
+          </Card>
+
+          <Card
+            mode="shadow"
+            style={{
+              borderRadius: 12,
+              backgroundColor: '#ffffff',
+              padding: '16px',
+              cursor: 'pointer',
+              position: 'relative',
+              overflow: 'hidden',
+
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              textAlign: 'center',
+            }}
+            onClick={goToFavorites}
+          >
+            <img
+              src={tasksIcon}
+              alt="tasks"
+              style={{
+                position: 'absolute',
+                top: -40,
+                right: -50,
+                width: 150,
+                height: 150,
+                objectFit: 'contain',
+                pointerEvents: 'none',
+                zIndex: 1,
+              }}
+            />
+            <div style={{ position: 'relative', zIndex: 2 }}>
+              <Text weight="3" style={{ fontSize: 18, color: '#311f68' }}>
+                Избранные задания
+              </Text>
             </div>
           </Card>
         </Div>
@@ -870,6 +912,9 @@ export default function App() {
 
       {/* Панель профиля */}
       <Profile id="profile" goBack={goBack} user={user} balance={balance} totalEarned={totalEarned} goToBalance={goToBalance} />
+
+      {/* Панель избранных заданий */}
+      <Favorites id="favorites" goBack={goBack} balance={balance} goToBalance={goToBalance} user={user} />
     </View>
   )
 }
