@@ -22,6 +22,25 @@ export default function Tasks({ id, goBack, balance, goToBalance, user }) {
                 console.error('Ошибка загрузки заданий', err);
             });
     }, [user]);
+
+    function getTimeLeft(expiresAt) {
+        if (!expiresAt) return 'Бессрочно';
+
+        const now = new Date();
+        const end = new Date(expiresAt);
+
+        const diffMs = end - now;
+
+        if (diffMs <= 0) return 'Истекло';
+
+        const minutes = Math.floor(diffMs / 1000 / 60);
+        const hours = Math.floor(minutes / 60);
+        const days = Math.floor(hours / 24);
+
+        if (days > 0) return `${days} дн.`;
+        if (hours > 0) return `${hours} ч.`;
+        return `${minutes} мин.`;
+    }
     
     return (
         <>
@@ -169,6 +188,7 @@ export default function Tasks({ id, goBack, balance, goToBalance, user }) {
                             key={task.id}
                             mode="shadow"
                             style={{
+                                position: 'relative',
                                 borderRadius: 12,
                                 padding: '16px',
                                 marginBottom: 12,
@@ -177,7 +197,24 @@ export default function Tasks({ id, goBack, balance, goToBalance, user }) {
                                 flexDirection: 'column',
                                 gap: 8,
                             }}
+                        >
+                            <div
+                                style={{
+                                    position: 'absolute',
+                                    top: 12,
+                                    right: 12,
+                                    padding: '4px 10px',
+                                    borderRadius: 999,
+                                    backgroundColor: task.expires_at ? '#ede7ff' : '#e0e0e0',
+                                    color: '#311f68',
+                                    fontSize: 12,
+                                    fontWeight: 600,
+                                    whiteSpace: 'nowrap',
+                                }}
                             >
+                                {getTimeLeft(task.expires_at)}
+                            </div>
+
                             <Text weight="medium" style={{ fontSize: 16, color: '#311f68' }}>
                                 {task.title}
                             </Text>
