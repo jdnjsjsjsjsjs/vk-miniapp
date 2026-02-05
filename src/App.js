@@ -17,13 +17,13 @@ import Shop from './Shop';
 import Profile from './Profile';
 import AdminTasks from './AdminTasks';
 
-import { Icon28ListOutline, 
-  Icon28CupOutline,
+import { Icon28CupOutline,
   Icon28GiftOutline } from '@vkontakte/icons';
 import image1 from './imgs/1.jpg'
 import image2 from './imgs/2.jpg'
 import coinsIcon from './imgs/coins.png'
 import giftImg from './imgs/gift.png'
+import tasksIcon from './imgs/tasks.png'
 
 export default function App() {
   const images = [image1, image2];
@@ -397,7 +397,6 @@ export default function App() {
                   width: 120,
                   height: 120,
                   objectFit: 'contain',
-                  opacity: 0.95,
                   pointerEvents: 'none',
                 }}
               />
@@ -455,77 +454,91 @@ export default function App() {
               backgroundColor: '#ffffff',
               padding: '16px',
               cursor: 'pointer',
+              marginRight: 200,
+              position: 'relative',
+              overflow: 'hidden',
             }}
             onClick={goToTasks}
           >
-            {/* Иконка */}
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
-              <Icon28ListOutline width={28} height={28} color="#311f68" />
-            </div>
-
-            {/* Заголовок */}
-            <Text
-              weight="3"
+            <img
+              src={tasksIcon}
+              alt="tasks"
               style={{
-                marginTop: 8,
-                textAlign: 'center',
-                fontSize: 16,
-                color: '#311f68',
+                position: 'absolute',
+                top: -18,
+                right: -18,
+                width: 150,
+                height: 150,
+                objectFit: 'contain',
+                pointerEvents: 'none',
+                zIndex: 1,
               }}
-            >
-              Список заданий
-            </Text>
+            />
 
-            {/* Последние задания */}
-            <div style={{ marginTop: 12, display: 'flex', flexDirection: 'column', gap: 6 }}>
-              {lastTasks.length === 0 ? (
-                <Text style={{ fontSize: 13, color: '#999', textAlign: 'center' }}>
-                  Заданий пока нет
-                </Text>
-              ) : (
-                lastTasks.map(task => (
-                  <div
-                    key={task.id}
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      padding: '6px 10px',
-                      borderRadius: 8,
-                      backgroundColor: '#f7f7f7',
-                      color: '#311f68',
-                      fontSize: 13,
-                    }}
-                  >
-                    <span
+            <div style={{ position: 'relative', zIndex: 2 }}>
+              {/* Заголовок */}
+              <Text
+                weight="3"
+                style={{
+                  textAlign: 'center',
+                  fontSize: 16,
+                  color: '#311f68',
+                }}
+              >
+                Список заданий
+              </Text>
+
+              {/* Последние задания */}
+              <div style={{ marginTop: 12, display: 'flex', flexDirection: 'column', gap: 6 }}>
+                {lastTasks.length === 0 ? (
+                  <Text style={{ fontSize: 13, color: '#999', textAlign: 'center' }}>
+                    Заданий пока нет
+                  </Text>
+                ) : (
+                  lastTasks.map(task => (
+                    <div
+                      key={task.id}
                       style={{
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap',
-                        maxWidth: '70%',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        padding: '6px 10px',
+                        borderRadius: 8,
+                        backgroundColor: '#f7f7f7',
+                        color: '#311f68',
+                        fontSize: 13,
                       }}
                     >
-                      {task.title}
-                    </span>
+                      <span
+                        style={{
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap',
+                          maxWidth: '70%',
+                        }}
+                      >
+                        {task.title}
+                      </span>
 
-                    <span style={{ 
-                      display: 'flex', 
-                      alignItems: 'center', 
-                      gap: 4,
-                      fontSize: 15,
-                      fontWeight: 400,
-                      color: '#311f68' 
-                    }}>
-                      <img
-                        src={coinsIcon}
-                        alt="coins"
-                        style={{ width: 25, height: 25, objectFit: 'contain' }}
-                      />
-                      {task.reward}
-                    </span>
-                  </div>
-                ))
-              )}
+                      <span style={{ 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        gap: 4,
+                        fontSize: 15,
+                        fontWeight: 400,
+                        color: '#311f68' 
+                      }}>
+                        <img
+                          src={coinsIcon}
+                          alt="coins"
+                          style={{ width: 25, height: 25, objectFit: 'contain' }}
+                        />
+                        {task.reward}
+                      </span>
+                    </div>
+                  ))
+                )}
+              </div>
             </div>
           </Card>
         </Div>
