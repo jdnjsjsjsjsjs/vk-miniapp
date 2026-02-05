@@ -49,6 +49,25 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
     setAnswers(data);
   }
 
+  function getTimeLeft(expiresAt) {
+    if (!expiresAt) return 'Бессрочно';
+
+    const now = new Date();
+    const end = new Date(expiresAt);
+
+    const diffMs = end - now;
+
+    if (diffMs <= 0) return 'Истекло';
+
+    const minutes = Math.floor(diffMs / 1000 / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+
+    if (days > 0) return `${days} дн.`;
+    if (hours > 0) return `${hours} ч.`;
+    return `${minutes} мин.`;
+  }
+
   return (
     <>
       <ModalRoot activeModal={activeModal}>
@@ -357,6 +376,31 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
                     setAnswers(data);
                   }}
                 >
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: 10,
+                      right: 50,
+                      padding: '4px 10px',
+                      borderRadius: 999,
+                      backgroundColor:
+                        getTimeLeft(task.expires_at) === 'Истекло'
+                          ? '#fdecea'
+                          : task.expires_at
+                          ? '#ede7ff'
+                          : '#e0e0e0',
+                      color:
+                        getTimeLeft(task.expires_at) === 'Истекло'
+                          ? '#d32f2f'
+                          : '#311f68',
+                      fontSize: 12,
+                      fontWeight: 600,
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    {getTimeLeft(task.expires_at)}
+                  </div>
+
                   <div
                     style={{
                       position: 'absolute',
