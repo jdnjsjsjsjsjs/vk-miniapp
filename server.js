@@ -688,4 +688,44 @@ app.post('/api/admin/delete-temp-image', (req, res) => {
   });
 });
 
+// Для админа - редактировать задание
+app.put('/api/admin/tasks/:id', (req, res) => {
+  const { userId, title, question, reward, expires_at } = req.body;
+  const taskId = req.params.id;
+
+  db.get('SELECT role FROM users WHERE id = ?', [userId], (err, user) => {
+    if (!user || user.role !== 'admin') {
+      return res.status(403).json({ error: 'Forbidden' });
+    }
+
+    db.run(
+      `UPDATE tasks
+       SET title = ?, question = ?, reward = ?, expires_at = ?
+       WHERE id = ?`,
+      [title, question, reward, expires_at || null, taskId],
+      function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ success: true });
+      }
+    );
+  });
+});
+
+// Для админа - удалить задание
+app.delete('/api/admin/tasks/:id', (req, res) => {
+  const { userId } = req.body; // userId приходит в body
+  const taskId = req.params.id;
+
+  db.get('SELECT role FROM users WHERE id = ?', [userId], (err, user) => {
+    if (!user || user.role !== 'admin') {
+      return res.status(403).json({ error: 'Forbidden' });
+    }
+
+    db.run('DELETE FROM tasks WHERE id = ?', [taskId], function(err) {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ success: true });
+    });
+  });
+});
+
 app.listen(PORT, () => console.log(`Сервер запущен на http://localhost:${PORT}`));

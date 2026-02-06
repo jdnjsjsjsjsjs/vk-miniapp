@@ -16,6 +16,8 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
   const [answers, setAnswers] = useState([]);
   const [activeAnswer, setActiveAnswer] = useState(null);
   const [confirmAction, setConfirmAction] = useState(null);
+  const [editTask, setEditTask] = useState(null);
+const [deleteTaskTarget, setDeleteTaskTarget] = useState(null);
 
   useEffect(() => {
     if (!user?.id) return;
@@ -67,6 +69,49 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
     if (hours > 0) return `${hours} ч.`;
     return `${minutes} мин.`;
   }
+
+  // Функции для сохранения редактирования и удаления
+  const saveEditTask = async () => {
+    try {
+      await fetch(`http://localhost:3001/api/admin/tasks/${editTask.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: user.id,
+          title: editTask.title,
+          question: editTask.question,
+          reward: Number(editTask.reward),
+          expires_at: editTask.expires_at || null
+        }),
+      });
+
+      // обновляем локально
+      setTasks(prev =>
+        prev.map(t => (t.id === editTask.id ? editTask : t))
+      );
+
+      setEditTask(null);
+      setActiveModal(null);
+    } catch (e) {
+      console.error('Ошибка редактирования задания', e);
+    }
+  };
+
+  const deleteTask = async () => {
+    try {
+      await fetch(`http://localhost:3001/api/admin/tasks/${deleteTaskTarget.id}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: user.id }),
+      });
+
+      setTasks(prev => prev.filter(t => t.id !== deleteTaskTarget.id));
+      setDeleteTaskTarget(null);
+      setActiveModal(null);
+    } catch (e) {
+      console.error('Ошибка удаления задания', e);
+    }
+  };
 
   return (
     <>
@@ -269,6 +314,65 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
               : ''}
           </Text>
         </ModalCard>
+
+        {/* Модалка редактирования */}
+        <ModalCard
+          id="editTask"
+          header="Редактировать задание"
+          onClose={() => { setEditTask(null); setActiveModal(null); }}
+        >
+          <Input
+            placeholder="Название"
+            value={editTask?.title || ''}
+            onChange={e => setEditTask({ ...editTask, title: e.target.value })}
+            style={{ marginBottom: 12 }}
+          />
+          <Textarea
+            placeholder="Вопрос / условие"
+            value={editTask?.question || ''}
+            onChange={e => setEditTask({ ...editTask, question: e.target.value })}
+            style={{ marginBottom: 12 }}
+          />
+          <Input
+            type="number"
+            placeholder="Награда"
+            value={editTask?.reward || ''}
+            onChange={e => setEditTask({ ...editTask, reward: e.target.value })}
+            style={{ marginBottom: 12 }}
+          />
+          <Input
+            type="datetime-local"
+            value={editTask?.expires_at || ''}
+            onChange={e => setEditTask({ ...editTask, expires_at: e.target.value })}
+          />
+          <Div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+            <Button mode="primary" stretched onClick={saveEditTask}>
+              Сохранить
+            </Button>
+            <Button mode="secondary" stretched onClick={() => setActiveModal(null)}>
+              Отмена
+            </Button>
+          </Div>
+        </ModalCard>
+
+        {/* Модалка удаления */}
+        <ModalCard
+          id="deleteTask"
+          header="Удалить задание?"
+          onClose={() => setActiveModal(null)}
+        >
+          <Text style={{ marginBottom: 12 }}>
+            Задание <b>{deleteTaskTarget?.title}</b> будет удалено навсегда.
+          </Text>
+          <Div style={{ display: 'flex', gap: 8 }}>
+            <Button mode="destructive" stretched onClick={deleteTask}>
+              Удалить
+            </Button>
+            <Button mode="secondary" stretched onClick={() => setActiveModal(null)}>
+              Отмена
+            </Button>
+          </Div>
+        </ModalCard>
       </ModalRoot>
       <Panel id={id}>
         <Div style={{ height: 32, backgroundColor: '#ffffff' }} />
@@ -428,6 +532,32 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
                   <Text style={{ fontSize: 14, color: '#666', marginTop: 4, display: 'flex', alignItems: 'center', gap: 4 }}>
                     <img src={coinsIcon} alt="coins" style={{ height: 25, width: 25 }} /> {task.reward}
                   </Text>
+
+                  <Button
+                    mode="tertiary"
+                    size="s"
+                    style={{  }}
+                    onClick={(e) => {
+                      e.stopPropagation(); // чтобы не открывалась модалка просмотра ответов
+                      setEditTask(task);
+                      setActiveModal('editTask');
+                    }}
+                  >
+                    ✏️ Редактировать
+                  </Button>
+
+                  <Button
+                    mode="tertiary"
+                    size="s"
+                    style={{  }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setDeleteTaskTarget(task);
+                      setActiveModal('deleteTask');
+                    }}
+                  >
+                    🗑️ Удалить
+                  </Button>
                 </Div>
               ))
             )}
