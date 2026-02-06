@@ -32,3 +32,6 @@ Thumbs.db
 
 # DataBases
 *.db
+
+# Карточки товара
+uploads/shop/*

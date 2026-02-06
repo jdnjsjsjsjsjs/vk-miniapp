@@ -79,13 +79,13 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
         setFilteredItems(filtered);
     }, [priceRange, items]);
 
-    const saveNewItem = () => {
+    const saveNewItem = async () => {
         if (!newItem.title || !newItem.price) {
             alert('Заполни название и цену');
             return;
         }
 
-        fetch('http://localhost:3001/api/admin/shop', {
+        const res = await fetch('http://localhost:3001/api/admin/shop', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -95,18 +95,30 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
                 price: Number(newItem.price),
                 image: tempImage,
             }),
-        })
-            .then(res => res.json())
-            .then(data => {
-                setItems(prev => [{ id: data.id, ...newItem }, ...prev]);
-                setNewItem({ title: '', description: '', price: '', image: '' });
-                setTempImage(null);
-                setActiveModal(null);
-            });
+        });
+
+        const data = await res.json();
+
+        setItems(prev => [
+            { id: data.id, ...newItem, image: tempImage },
+            ...prev,
+        ]);
+
+        setNewItem({ title: '', description: '', price: '', image: '' });
+        setTempImage(null);
+        setActiveModal(null);
     };
 
-    const saveEditItem = () => {
-        fetch(`http://localhost:3001/api/admin/shop/${editItem.id}`, {
+    const saveEditItem = async () => {
+        if (!editItem.title || !editItem.price) {
+            alert('Заполни название и цену');
+            return;
+        }
+
+        const oldImage = editItem.image;
+        const newImage = tempImage;
+        
+        await fetch(`http://localhost:3001/api/admin/shop/${editItem.id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -114,22 +126,27 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
                 title: editItem.title,
                 description: editItem.description,
                 price: Number(editItem.price),
-                image: tempImage,
+                image: newImage,
             }),
-        })
-            .then(res => res.json())
-            .then(() => {
-                setItems(prev =>
-                    prev.map(i => (i.id === editItem.id ? editItem : i))
-                );
-                setEditItem(null);
-                setTempImage(null);
-                setActiveModal(null);
+        });
+        if (oldImage !== newImage) {
+            await fetch('http://localhost:3001/api/admin/delete-temp-image', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId: user.id, imagePath: oldImage }),
             });
+        }
+        setItems(prev =>
+            prev.map(i =>
+                i.id === editItem.id ? { ...editItem, image: newImage } : i
+            )
+        );
+        setEditItem(null);
+        setTempImage(null);
+        setActiveModal(null);
     };
 
     const deleteItem = async () => {
-        // удаляем файл с сервера
         if (activeItem?.image) {
             await fetch('http://localhost:3001/api/admin/delete-temp-image', {
                 method: 'POST',
@@ -138,7 +155,6 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
             });
         }
 
-        // удаляем товар из базы
         await fetch(`http://localhost:3001/api/admin/shop/${activeItem.id}`, {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' },
