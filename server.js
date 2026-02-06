@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const multer = require('multer');
 const sharp = require('sharp');
 const path = require('path');
+const fs = require('fs');
 
 const app = express();
 const PORT = 3001;
@@ -661,5 +662,30 @@ app.post(
     }
   }
 );
+
+// Удаление картинки
+app.post('/api/admin/delete-temp-image', (req, res) => {
+  const { imagePath, userId } = req.body;
+
+  db.get('SELECT role FROM users WHERE id = ?', [userId], (err, user) => {
+    if (!user || user.role !== 'admin') {
+      return res.status(403).json({ error: 'Forbidden' });
+    }
+
+    if (!imagePath) {
+      return res.json({ success: true });
+    }
+
+    const fullPath = path.join(__dirname, imagePath);
+
+    fs.unlink(fullPath, err => {
+      if (err) {
+        console.warn('Не удалось удалить файл:', fullPath);
+        return res.json({ success: false });
+      }
+      res.json({ success: true });
+    });
+  });
+});
 
 app.listen(PORT, () => console.log(`Сервер запущен на http://localhost:${PORT}`));

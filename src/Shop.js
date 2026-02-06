@@ -23,6 +23,7 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
     const [priceBounds, setPriceBounds] = useState([0, 0]);
     const [priceRange, setPriceRange] = useState([0, 0]);
     const [uploading, setUploading] = useState(false);
+    const [tempImage, setTempImage] = useState(null);
 
     const [newItem, setNewItem] = useState({
         title: '',
@@ -92,13 +93,14 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
                 title: newItem.title,
                 description: newItem.description,
                 price: Number(newItem.price),
-                image: newItem.image,
+                image: tempImage,
             }),
         })
             .then(res => res.json())
             .then(data => {
                 setItems(prev => [{ id: data.id, ...newItem }, ...prev]);
                 setNewItem({ title: '', description: '', price: '', image: '' });
+                setTempImage(null);
                 setActiveModal(null);
             });
     };
@@ -112,7 +114,7 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
                 title: editItem.title,
                 description: editItem.description,
                 price: Number(editItem.price),
-                image: editItem.image,
+                image: tempImage,
             }),
         })
             .then(res => res.json())
@@ -121,22 +123,46 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
                     prev.map(i => (i.id === editItem.id ? editItem : i))
                 );
                 setEditItem(null);
+                setTempImage(null);
                 setActiveModal(null);
             });
     };
 
-    const deleteItem = () => {
-        fetch(`http://localhost:3001/api/admin/shop/${activeItem.id}`, {
+    const deleteItem = async () => {
+        // удаляем файл с сервера
+        if (activeItem?.image) {
+            await fetch('http://localhost:3001/api/admin/delete-temp-image', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId: user.id, imagePath: activeItem.image }),
+            });
+        }
+
+        // удаляем товар из базы
+        await fetch(`http://localhost:3001/api/admin/shop/${activeItem.id}`, {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ userId: user.id }),
-        })
-            .then(res => res.json())
-            .then(() => {
-                setItems(prev => prev.filter(i => i.id !== activeItem.id));
-                setActiveItem(null);
-                setActiveModal(null);
-            });
+        });
+
+        setItems(prev => prev.filter(i => i.id !== activeItem.id));
+        setActiveItem(null);
+        setActiveModal(null);
+    };
+
+    const deleteTempImage = async () => {
+        if (!tempImage) return;
+
+        await fetch('http://localhost:3001/api/admin/delete-temp-image', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                userId: user.id,
+                imagePath: tempImage,
+            }),
+        });
+
+        setTempImage(null);
     };
 
     const uploadImage = async (file, onSuccess) => {
@@ -210,6 +236,7 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
                                 mode="secondary"
                                 onClick={() => {
                                     setEditItem(activeItem);
+                                    setTempImage(activeItem.image);
                                     setActiveModal('edit');
                                 }}
                             >
@@ -230,7 +257,10 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
                 <ModalCard
                     id="add"
                     header="Добавить товар"
-                    onClose={() => setActiveModal(null)}
+                    onClose={() => {
+                        deleteTempImage();
+                        setActiveModal(null);
+                    }}
                 >
                     <input
                         placeholder="Название"
@@ -262,7 +292,7 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
                             if (!file) return;
 
                             uploadImage(file, imagePath => {
-                                setNewItem(prev => ({ ...prev, image: imagePath }));
+                                setTempImage(imagePath);
                             });
                         }}
                         style={{ marginBottom: 12 }}
@@ -272,11 +302,18 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
                         <Text style={{ marginBottom: 8 }}>Загрузка изображения…</Text>
                     )}
 
-                    {newItem.image && (
+                    {tempImage && (
                         <img
-                            src={`http://localhost:3001${newItem.image}`}
+                            src={`http://localhost:3001${tempImage}`}
                             alt=""
-                            style={{ width: '100%', borderRadius: 8, marginBottom: 12 }}
+                            style={{
+                                width: 120,
+                                height: 120,
+                                objectFit: 'cover',
+                                borderRadius: 8,
+                                marginBottom: 12,
+                                border: '1px solid #ddd',
+                            }}
                         />
                     )}
 
@@ -303,8 +340,18 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
                 <ModalCard
                     id="edit"
                     header="Редактировать товар"
-                    onClose={() => {
+                    onClose={async () => {
+                        // Если tempImage отличается от текущей картинки товара — удаляем её
+                        if (tempImage && tempImage !== editItem?.image) {
+                            await fetch('http://localhost:3001/api/admin/delete-temp-image', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ userId: user.id, imagePath: tempImage }),
+                            });
+                        }
+
                         setEditItem(null);
+                        setTempImage(null);
                         setActiveModal(null);
                     }}
                 >
@@ -333,26 +380,29 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
                     <input
                         type="file"
                         accept="image/png, image/jpeg"
-                        onChange={e => {
+                        onChange={async e => {
                             const file = e.target.files[0];
                             if (!file) return;
-
-                            uploadImage(file, imagePath => {
-                                setNewItem(prev => ({ ...prev, image: imagePath }));
-                            });
+                            if (tempImage && tempImage !== editItem?.image) {
+                                await fetch('http://localhost:3001/api/admin/delete-temp-image', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ userId: user.id, imagePath: tempImage }),
+                                });
+                            }
+                            uploadImage(file, imagePath => setTempImage(imagePath));
                         }}
-                        style={{ marginBottom: 12 }}
                     />
 
                     {uploading && (
                         <Text style={{ marginBottom: 8 }}>Загрузка изображения…</Text>
                     )}
 
-                    {newItem.image && (
+                    {tempImage && (
                         <img
-                            src={`http://localhost:3001${newItem.image}`}
+                            src={`http://localhost:3001${tempImage}`}
                             alt=""
-                            style={{ width: '100%', borderRadius: 8, marginBottom: 12 }}
+                            style={{ width: 120, height: 120, objectFit: 'cover', borderRadius: 8, marginBottom: 12, border: '1px solid #ddd' }}
                         />
                     )}
 
@@ -537,12 +587,12 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
                                 }}
                             >
                                 <img
-                                    src={item.image}
+                                    src={`http://localhost:3001${item.image}`} // <-- добавляем базовый адрес
                                     alt=""
                                     style={{
-                                    width: '100%',
-                                    borderRadius: 8,
-                                    marginBottom: 8,
+                                        width: '100%',
+                                        borderRadius: 8,
+                                        marginBottom: 8,
                                     }}
                                 />
 
