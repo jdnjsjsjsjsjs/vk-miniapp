@@ -43,6 +43,7 @@ export default function App() {
   const [giftTimeLeft, setGiftTimeLeft] = useState('00:00:00');
   const [usersList, setUsersList] = useState([]);
   const [lastTasks, setLastTasks] = useState([]);
+  const [shopFilter, setShopFilter] = useState(null);
 
   useEffect(() => {
     const onScroll = () => {
@@ -179,11 +180,17 @@ export default function App() {
     return `${hours}:${minutes}:${seconds}`;
   }
 
-  const goBack = () => setActivePanel('main');
+  const goBack = () => {
+    setShopFilter(null);
+    setActivePanel('main');
+  };
   const goToBalance = () => setActivePanel('balance');
   const goToGift = () => setActivePanel('gift');
   const goToRating = () => setActivePanel('rating');
-  const goToShop = () => setActivePanel('shop');
+  const goToShopWithFilter = (filter) => {
+    setShopFilter(filter);
+    setActivePanel('shop');
+  };
   const goToProfile = () => setActivePanel('profile');
   const goToFavorites = () => setActivePanel('favorites');
   const goToTasks = () => {
@@ -737,7 +744,7 @@ export default function App() {
                 gap: 8,
                 cursor: 'pointer', 
                 overflow: 'hidden' }} 
-              onClick={goToShop}
+              onClick={() => goToShopWithFilter({ min: 0, max: 100 })}
             >
               <img
                 src={box1icon}
@@ -752,7 +759,7 @@ export default function App() {
                   pointerEvents: 'none',
                 }}
               />
-              <Text style={cardText}>От 100 баллов</Text>
+              <Text style={cardText}>До 100 баллов</Text>
             </Card>
 
             <Card mode="shadow" 
@@ -765,7 +772,7 @@ export default function App() {
                 gap: 8,
                 cursor: 'pointer', 
                 overflow: 'hidden' }} 
-              onClick={goToShop}
+              onClick={() => goToShopWithFilter({ min: 100, max: 500 })}
             >
               <img
                 src={box2icon}
@@ -780,7 +787,7 @@ export default function App() {
                   pointerEvents: 'none',
                 }}
               />
-              <Text style={cardText}>От 500 баллов</Text>
+              <Text style={cardText}>От 100 до 500 баллов</Text>
             </Card>
 
             <Card mode="shadow" 
@@ -793,7 +800,7 @@ export default function App() {
                 gap: 8,
                 cursor: 'pointer', 
                 overflow: 'hidden' }} 
-              onClick={goToShop}
+              onClick={() => goToShopWithFilter({ min: 500, max: 1000 })}
             >
               <img
                 src={box3icon}
@@ -808,7 +815,7 @@ export default function App() {
                   pointerEvents: 'none',
                 }}
               />
-              <Text style={cardText}>От 1000 баллов</Text>
+              <Text style={cardText}>От 500 баллов</Text>
             </Card>
           </Div>
         </Div>
@@ -908,7 +915,7 @@ export default function App() {
       <Rating id="rating" goBack={goBack} balance={balance} goToBalance={goToBalance} />
 
       {/* Панель Магазина */}
-      <Shop id="shop" goBack={goBack} balance={balance} goToBalance={goToBalance} user={user} />
+      <Shop id="shop" goBack={goBack} balance={balance} goToBalance={goToBalance} user={user} initialFilter={shopFilter} />
 
       {/* Панель профиля */}
       <Profile id="profile" goBack={goBack} user={user} balance={balance} totalEarned={totalEarned} goToBalance={goToBalance} />

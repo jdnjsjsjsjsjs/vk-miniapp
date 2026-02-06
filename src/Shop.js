@@ -13,7 +13,7 @@ const inputStyle = {
     fontSize: 14,
 };
 
-export default function Shop({ id, goBack, balance, goToBalance, user }) {
+export default function Shop({ id, goBack, balance, goToBalance, user, initialFilter }) {
     const [items, setItems] = useState([]);
     const [ownedItems, setOwnedItems] = useState([]);
     const [activeItem, setActiveItem] = useState(null);
@@ -53,10 +53,19 @@ export default function Shop({ id, goBack, balance, goToBalance, user }) {
 
                     setPriceBounds([min, max]);
                     setPriceRange([min, max]);
-                    setFilteredItems(loadedItems);
+
+                    if (initialFilter) {
+                        const filterMin = Math.max(initialFilter.min ?? min, min);
+                        const filterMax =
+                            initialFilter.max === Infinity
+                            ? max
+                            : Math.min(initialFilter.max, max);
+
+                        setPriceRange([filterMin, filterMax]);
+                    }
                 }
             });
-    }, [user.id, isAdmin]);
+    }, [user.id, isAdmin, initialFilter]);
 
     useEffect(() => {
         const [min, max] = priceRange;
