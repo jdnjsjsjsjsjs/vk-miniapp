@@ -5,8 +5,8 @@ import { Icon28ChevronBack } from '@vkontakte/icons';
 import coinsIcon from './imgs/coins.png'
 
 const inputStyle = {
-    width: '100%',
     padding: 10,
+    paddingRight: 12,
     marginBottom: 12,
     borderRadius: 8,
     border: '1px solid #ccc',
