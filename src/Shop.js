@@ -22,6 +22,7 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
     const [filteredItems, setFilteredItems] = useState([]);
     const [priceBounds, setPriceBounds] = useState([0, 0]);
     const [priceRange, setPriceRange] = useState([0, 0]);
+    const [uploading, setUploading] = useState(false);
 
     const [newItem, setNewItem] = useState({
         title: '',
@@ -138,6 +139,37 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
             });
     };
 
+    const uploadImage = async (file, onSuccess) => {
+        const formData = new FormData();
+        formData.append('image', file);
+        formData.append('userId', user.id);
+
+        setUploading(true);
+
+        try {
+            const res = await fetch(
+                'http://localhost:3001/api/admin/upload/shop-image',
+                {
+                    method: 'POST',
+                    body: formData,
+                }
+            );
+
+            const data = await res.json();
+
+            if (data.imagePath) {
+                onSuccess(data.imagePath);
+            } else {
+                alert('Ошибка загрузки изображения');
+            }
+        } catch (e) {
+            console.error(e);
+            alert('Ошибка загрузки');
+        } finally {
+            setUploading(false);
+        }
+    };
+
     return (
         <>
             <ModalRoot activeModal={activeModal}>
@@ -151,9 +183,13 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
                     header={activeItem?.title}
                 >
                     <img
-                        src={activeItem?.image}
+                        src={`http://localhost:3001${activeItem?.image}`}
                         alt=""
-                        style={{ width: '100%', borderRadius: 12, marginBottom: 12 }}
+                        style={{
+                            width: '100%',
+                            borderRadius: 8,
+                            marginBottom: 8,
+                        }}
                     />
                     <Text style={{ marginBottom: 12 }}>
                         {activeItem?.description}
@@ -219,11 +255,30 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
                     />
 
                     <input
-                        placeholder="URL картинки"
-                        value={newItem.image}
-                        onChange={e => setNewItem({ ...newItem, image: e.target.value })}
-                        style={inputStyle}
+                        type="file"
+                        accept="image/png, image/jpeg"
+                        onChange={e => {
+                            const file = e.target.files[0];
+                            if (!file) return;
+
+                            uploadImage(file, imagePath => {
+                                setNewItem(prev => ({ ...prev, image: imagePath }));
+                            });
+                        }}
+                        style={{ marginBottom: 12 }}
                     />
+
+                    {uploading && (
+                        <Text style={{ marginBottom: 8 }}>Загрузка изображения…</Text>
+                    )}
+
+                    {newItem.image && (
+                        <img
+                            src={`http://localhost:3001${newItem.image}`}
+                            alt=""
+                            style={{ width: '100%', borderRadius: 8, marginBottom: 12 }}
+                        />
+                    )}
 
                     {/* КНОПКИ */}
                     <Div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
@@ -276,11 +331,30 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
                     />
 
                     <input
-                        placeholder="URL картинки"
-                        value={editItem?.image || ''}
-                        onChange={e => setEditItem({ ...editItem, image: e.target.value })}
-                        style={inputStyle}
+                        type="file"
+                        accept="image/png, image/jpeg"
+                        onChange={e => {
+                            const file = e.target.files[0];
+                            if (!file) return;
+
+                            uploadImage(file, imagePath => {
+                                setNewItem(prev => ({ ...prev, image: imagePath }));
+                            });
+                        }}
+                        style={{ marginBottom: 12 }}
                     />
+
+                    {uploading && (
+                        <Text style={{ marginBottom: 8 }}>Загрузка изображения…</Text>
+                    )}
+
+                    {newItem.image && (
+                        <img
+                            src={`http://localhost:3001${newItem.image}`}
+                            alt=""
+                            style={{ width: '100%', borderRadius: 8, marginBottom: 12 }}
+                        />
+                    )}
 
                     <Div style={{ display: 'flex', gap: 8 }}>
                         <Button mode="primary" stretched onClick={saveEditItem}>

@@ -2,6 +2,9 @@ const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const multer = require('multer');
+const sharp = require('sharp');
+const path = require('path');
 
 const app = express();
 const PORT = 3001;
@@ -9,11 +12,24 @@ const PORT = 3001;
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
+app.use('/uploads', express.static('uploads'));
 
 // Подключение базы данных (создаст файл users.db, если его нет)
 const db = new sqlite3.Database('./users.db', (err) => {
   if (err) return console.error(err.message);
   console.log('Подключено к базе SQLite.');
+});
+
+const upload = multer({
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB
+  },
+  fileFilter(req, file, cb) {
+    if (!file.mimetype.match(/image\/(jpeg|png)/)) {
+      cb(new Error('Только jpg и png'));
+    }
+    cb(null, true);
+  },
 });
 
 // Создаем таблицу пользователей, если её нет
@@ -84,27 +100,6 @@ db.run(`
     PRIMARY KEY (user_id, task_id)
   )
 `);
-
-// ЗАПОЛНЯЕМ ТЕСТОВЫЕ ТОВАРЫ
-db.get('SELECT COUNT(*) as count FROM shop_items', (err, row) => {
-  if (row.count === 0) {
-    const items = [
-      ['VIP-статус', 'Даёт особый статус в проекте', 100, 'https://via.placeholder.com/150'],
-      ['Золотая рамка', 'Красивая рамка профиля', 50, 'https://via.placeholder.com/150'],
-      ['Уникальный бейдж', 'Бейдж возле имени', 75, 'https://via.placeholder.com/150'],
-      ['Секретный доступ', 'Доступ к скрытому контенту', 200, 'https://via.placeholder.com/150'],
-    ];
-
-    items.forEach(i => {
-      db.run(
-        'INSERT INTO shop_items (title, description, price, image) VALUES (?, ?, ?, ?)',
-        i
-      );
-    });
-
-    console.log('Тестовые товары магазина добавлены');
-  }
-});
 
 // Купленные товары пользователя
 db.run(`
@@ -629,5 +624,42 @@ app.post('/api/favorites/toggle', (req, res) => {
     }
   );
 });
+
+// Загрузка картинки
+app.post(
+  '/api/admin/upload/shop-image',
+  upload.single('image'),
+  async (req, res) => {
+    try {
+      const { userId } = req.body;
+
+      // проверка админа
+      db.get('SELECT role FROM users WHERE id = ?', [userId], async (err, user) => {
+        if (!user || user.role !== 'admin') {
+          return res.status(403).json({ error: 'Forbidden' });
+        }
+
+        const fileName = `shop_${Date.now()}.jpg`;
+        const outputPath = path.join(__dirname, 'uploads', 'shop', fileName);
+
+        // обрезка + квадрат
+        await sharp(req.file.buffer)
+          .resize(512, 512, {
+            fit: 'cover',
+            position: 'centre',
+          })
+          .jpeg({ quality: 90 })
+          .toFile(outputPath);
+
+        res.json({
+          imagePath: `/uploads/shop/${fileName}`,
+        });
+      });
+    } catch (e) {
+      console.error(e);
+      res.status(500).json({ error: 'Ошибка загрузки изображения' });
+    }
+  }
+);
 
 app.listen(PORT, () => console.log(`Сервер запущен на http://localhost:${PORT}`));
