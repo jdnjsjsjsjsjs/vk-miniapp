@@ -116,7 +116,7 @@ export default function Favorites({ id, goBack, balance, goToBalance, user }) {
                         size="l"
                         before={<Icon28ChevronBack />}
                         onClick={goBack}
-                        style={{ paddingLeft: 0, color: '#311f68' }}
+                        style={{ paddingLeft: 0, color: '#fff' }}
                     >
                         Назад
                     </Button>

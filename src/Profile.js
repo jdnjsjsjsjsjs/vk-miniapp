@@ -65,7 +65,7 @@ export default function Profile({ id, goBack, user, balance, totalEarned, goToBa
           paddingLeft: 0,
           paddingRight: 8,
           marginRight: 4,
-          color: '#311f68',
+          color: '#fff',
         }}
       >
         Назад

@@ -122,7 +122,7 @@ export default function Tasks({ id, goBack, balance, goToBalance, user }) {
                             paddingLeft: 0,
                             paddingRight: 8,
                             marginRight: 4,
-                            color: '#311f68',
+                            color: '#fff',
                         }}
                     >
                         Назад
