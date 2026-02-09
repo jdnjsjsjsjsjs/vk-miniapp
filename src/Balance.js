@@ -17,13 +17,11 @@ export default function Balance({ id, goBack, balance, goToTasks }) {
           left: 0,
           right: 0,
           height: 56,
-          backgroundColor: '#ffffff',
+          backgroundColor: '#ceaeff',
           display: 'flex',
           alignItems: 'center',
           padding: '0 16px',
           zIndex: 1000,
-          boxShadow: '0 15px 15px rgba(0,0,0,0.08)',
-          borderBottom: '1px solid #bdbdbd',
         }}
       >
         {/* Кнопка назад */}

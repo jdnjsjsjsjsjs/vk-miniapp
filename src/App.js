@@ -21,6 +21,7 @@ import Favorites from './Favorites';
 import image1 from './imgs/1.jpg'
 import image2 from './imgs/2.jpg'
 import coinsIcon from './imgs/coins.png'
+import coinIcon from './imgs/coin.png'
 import giftImg from './imgs/gift.png'
 import tasksIcon from './imgs/tasks.png'
 import awardsIcon from './imgs/awards.png'
@@ -216,7 +217,7 @@ export default function App() {
     <View activePanel={activePanel}>
       <Panel id="main">
 
-        <Div style={{ height: 32, backgroundColor: '#ffffff' }} />
+        <Div style={{ height: 32, backgroundColor: '#ceaeff' }} />
 
         {/* Кастомный хедер */}
         <Div
@@ -226,15 +227,13 @@ export default function App() {
             left: 0,
             right: 0,
             height: 56,
-            backgroundColor: '#ffffff',
+            backgroundColor: '#ceaeff',
             display: 'flex',
             alignItems: 'center',
             padding: '0 16px',
             zIndex: 1000,
-            boxShadow: '0 15px 15px rgba(0,0,0,0.08)',
             transform: showHeader ? 'translateY(0)' : 'translateY(-100%)',
             transition: 'transform 0.25s ease',
-            borderBottom: '1px solid #bdbdbd',
           }}
         >
           {/* Аватар */}
@@ -262,13 +261,13 @@ export default function App() {
               display: 'flex',
               alignItems: 'center',
               gap: 6,
-              padding: '6px 12px',
+              padding: '2px 15px',
               backgroundColor: '#f2f2f2',
               borderRadius: 999,
               cursor: 'pointer',
             }}
           >
-            <img src={coinsIcon} alt="coins" style={{ height: 25, width: 25 }} />
+            <img src={coinIcon} alt="coins" style={{ height: 25, width: 25 }} />
             <Text
               weight="3"
               style={{
@@ -546,7 +545,7 @@ export default function App() {
                         color: '#311f68' 
                       }}>
                         <img
-                          src={coinsIcon}
+                          src={coinIcon}
                           alt="coins"
                           style={{ width: 25, height: 25, objectFit: 'contain' }}
                         />

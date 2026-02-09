@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Panel, Div, Text, Button, ModalRoot, ModalCard, Textarea, Card } from '@vkontakte/vkui';
 import { Icon28ChevronBack, Icon28FavoriteOutline, Icon28Favorite } from '@vkontakte/icons';
 
-import coinsIcon from './imgs/coins.png'
+import coinIcon from './imgs/coin.png'
 
 export default function Tasks({ id, goBack, balance, goToBalance, user }) {
     const [tasks, setTasks] = useState([]);
@@ -105,13 +105,11 @@ export default function Tasks({ id, goBack, balance, goToBalance, user }) {
                     left: 0,
                     right: 0,
                     height: 56,
-                    backgroundColor: '#ffffff',
+                    backgroundColor: '#ceaeff',
                     display: 'flex',
                     alignItems: 'center',
                     padding: '0 16px',
                     zIndex: 1000,
-                    boxShadow: '0 15px 15px rgba(0,0,0,0.08)',
-                    borderBottom: '1px solid #bdbdbd',
                     }}
                 >
                     {/* Кнопка назад */}
@@ -138,13 +136,13 @@ export default function Tasks({ id, goBack, balance, goToBalance, user }) {
                             display: 'flex',
                             alignItems: 'center',
                             gap: 6,
-                            padding: '6px 12px',
+                            padding: '2px 15px',
                             backgroundColor: '#f2f2f2',
                             borderRadius: 999,
                             cursor: 'pointer',
                         }}
                     >
-                        <img src={coinsIcon} alt="coins" style={{ height: 25, width: 25 }} />
+                        <img src={coinIcon} alt="coins" style={{ height: 25, width: 25 }} />
                         <Text
                             weight="3"
                             style={{
@@ -203,7 +201,7 @@ export default function Tasks({ id, goBack, balance, goToBalance, user }) {
                             </Text>
 
                             <Text style={{ fontSize: 14, color: '#666', display: 'flex', alignItems: 'center', gap: 4 }}>
-                                <img src={coinsIcon} alt="coins" style={{ height: 25, width: 25 }} />
+                                <img src={coinIcon} alt="coins" style={{ height: 25, width: 25 }} />
                                 {task.reward}
                             </Text>
 

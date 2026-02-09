@@ -2,6 +2,7 @@ import { Panel, Div, Text, Button, Card } from '@vkontakte/vkui';
 import { Icon28ChevronBack } from '@vkontakte/icons';
 
 import coinsIcon from './imgs/coins.png'
+import coinIcon from './imgs/coin.png'
 import box1icon from './imgs/box1.png'
 import cupsIcon from './imgs/cups.png'
 import awardsIcon from './imgs/awards.png'
@@ -47,13 +48,11 @@ export default function Profile({ id, goBack, user, balance, totalEarned, goToBa
             left: 0,
             right: 0,
             height: 56,
-            backgroundColor: '#ffffff',
+            backgroundColor: '#ceaeff',
             display: 'flex',
             alignItems: 'center',
             padding: '0 16px',
             zIndex: 1000,
-            boxShadow: '0 15px 15px rgba(0,0,0,0.08)',
-            borderBottom: '1px solid #bdbdbd',
         }}
     >
       {/* Кнопка назад */}
@@ -80,13 +79,13 @@ export default function Profile({ id, goBack, user, balance, totalEarned, goToBa
           display: 'flex',
           alignItems: 'center',
           gap: 6,
-          padding: '6px 12px',
+          padding: '2px 15px',
           backgroundColor: '#f2f2f2',
           borderRadius: 999,
           cursor: 'pointer',
         }}
       >
-        <img src={coinsIcon} alt="coins" style={{ height: 25, width: 25 }} />
+        <img src={coinIcon} alt="coins" style={{ height: 25, width: 25 }} />
         <Text
           weight="3"
           style={{

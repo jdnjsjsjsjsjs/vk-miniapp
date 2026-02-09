@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { Panel, Div, Text, Button, ModalRoot, ModalCard, Input, Textarea } from '@vkontakte/vkui';
 import { Icon28ChevronBack } from '@vkontakte/icons'
 
-import coinsIcon from './imgs/coins.png'
+import coinIcon from './imgs/coin.png'
 
 export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
   const [tasks, setTasks] = useState([]);
@@ -17,7 +17,7 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
   const [activeAnswer, setActiveAnswer] = useState(null);
   const [confirmAction, setConfirmAction] = useState(null);
   const [editTask, setEditTask] = useState(null);
-const [deleteTaskTarget, setDeleteTaskTarget] = useState(null);
+  const [deleteTaskTarget, setDeleteTaskTarget] = useState(null);
 
   useEffect(() => {
     if (!user?.id) return;
@@ -384,13 +384,11 @@ const [deleteTaskTarget, setDeleteTaskTarget] = useState(null);
                 left: 0,
                 right: 0,
                 height: 56,
-                backgroundColor: '#ffffff',
+                backgroundColor: '#ceaeff',
                 display: 'flex',
                 alignItems: 'center',
                 padding: '0 16px',
                 zIndex: 1000,
-                boxShadow: '0 15px 15px rgba(0,0,0,0.08)',
-                borderBottom: '1px solid #bdbdbd',
             }}
         >
             {/* Кнопка назад */}
@@ -417,13 +415,13 @@ const [deleteTaskTarget, setDeleteTaskTarget] = useState(null);
                     display: 'flex',
                     alignItems: 'center',
                     gap: 6,
-                    padding: '6px 12px',
+                    padding: '2px 15px',
                     backgroundColor: '#f2f2f2',
                     borderRadius: 999,
                     cursor: 'pointer',
                 }}
             >
-                <img src={coinsIcon} alt="coins" style={{ height: 25, width: 25 }} />
+                <img src={coinIcon} alt="coins" style={{ height: 25, width: 25 }} />
                 <Text
                     weight="3"
                     style={{
@@ -530,7 +528,7 @@ const [deleteTaskTarget, setDeleteTaskTarget] = useState(null);
                   <Text weight="medium" style={{ fontSize: 16, color: '#311f68' }}>{task.title}</Text>
                   <Text weight="medium" style={{ fontSize: 12, color: '#311f68' }}>{task.question}</Text>
                   <Text style={{ fontSize: 14, color: '#666', marginTop: 4, display: 'flex', alignItems: 'center', gap: 4 }}>
-                    <img src={coinsIcon} alt="coins" style={{ height: 25, width: 25 }} /> {task.reward}
+                    <img src={coinIcon} alt="coins" style={{ height: 25, width: 25 }} /> {task.reward}
                   </Text>
 
                   <Button
