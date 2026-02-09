@@ -18,8 +18,8 @@ import Profile from './Profile';
 import AdminTasks from './AdminTasks';
 import Favorites from './Favorites';
 
-import image1 from './imgs/1.jpg'
-import image2 from './imgs/2.jpg'
+import image1 from './imgs/1.png'
+import image2 from './imgs/2.png'
 import coinsIcon from './imgs/coins.png'
 import coinIcon from './imgs/coin.png'
 import giftImg from './imgs/gift.png'
@@ -286,7 +286,7 @@ export default function App() {
           <Gallery
             slideWidth="100%"
             bullets="light"
-            style={{ height: 400 }}
+            style={{ height: 310 }}
             timeout={4000}
             looped
           >
@@ -297,7 +297,7 @@ export default function App() {
                 alt={`Slide ${i + 1}`}
                 style={{
                   width: '100%',
-                  height: 400,
+                  height: 310,
                   objectFit: 'cover',
                 }}
               />
@@ -307,7 +307,7 @@ export default function App() {
 
         <Div style={{ 
           padding: '16px 16px 16px 16px',
-          backgroundColor: '#ffffff',
+          backgroundColor: '#ceaeff',
           display: 'grid',
           gridTemplateColumns: '1fr 1fr',
           gap: '12px',
@@ -324,29 +324,27 @@ export default function App() {
               mode="shadow"
               style={{
                 borderRadius: 12,
-                padding: '12px 16px',
+                padding: '8px 10px 20px 18px',
                 display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
                 backgroundColor: '#ffffff',
                 cursor: 'pointer',
               }}
               onClick={goToBalance}
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                <img
-                  src={coinsIcon}
-                  alt="coins"
-                  style={{ width: 45, height: 45, objectFit: 'contain' }}
-                />
+              <div style={{ display: 'flex', alignItems: 'center' }}>
                 <div>
-                  <Text weight="3" style={{ fontSize: 14, color: '#000' }}>
+                  <Text weight="1" style={{ fontSize: 12, color: '#000', paddingBottom: 3 }}>
                     Баланс
                   </Text>
-                  <Text weight="3" style={{ fontSize: 18, color: '#8c64d7' }}>
+                  <Text weight="1" style={{ fontSize: 30, color: '#8c64d7' }}>
                     {balance}
                   </Text>
                 </div>
+                <img
+                  src={coinsIcon}
+                  alt="coins"
+                  style={{ width: 80, height: 80, objectFit: 'contain', paddingLeft: '100px', position: 'absolute', right: 0, bottom: -4 }}
+                />
               </div>
             </Card>
 
@@ -355,11 +353,10 @@ export default function App() {
               mode="shadow"
               style={{
                 borderRadius: 12,
-                padding: '14px 16px',
+                padding: '8px 10px 14px 18px',
+                display: 'flex',
                 backgroundColor: '#ffffff',
                 cursor: 'pointer',
-                position: 'relative',
-                overflow: 'hidden',
               }}
               onClick={goToGift}
             >
@@ -371,34 +368,36 @@ export default function App() {
                   zIndex: 2,
                 }}
               >
-                <Text weight="medium" style={{ fontSize: 14, color: '#000' }}>
+                <Text weight="1" style={{ fontSize: 12, color: '#000', paddingBottom: 3 }}>
                   Ежедневный вход
                 </Text>
 
-                <Text
-                  weight="medium"
+                <div
+                  onClick={goToBalance}
                   style={{
-                    fontSize: 18,
-                    color: canClaimGift ? '#00a650' : '#8c64d7',
-                    marginTop: 4,
+                    display: 'flex',
+                    padding: '3px 20px 3px 20px',
+                    backgroundColor: canClaimGift ? '#fff' : '#f2f2f2',
+                    borderRadius: 999,
+                    cursor: 'pointer',
                   }}
                 >
-                  {canClaimGift ? 'Забрать!' : giftTimeLeft}
-                </Text>
+                  <Text
+                    weight="1"
+                    style={{
+                      fontSize: 12,
+                      color: canClaimGift ? '#fff' : '#8c64d7',
+                    }}
+                  >
+                    {canClaimGift ? 'получить' : giftTimeLeft}
+                  </Text>
+                </div>
               </div>
 
               <img
                 src={giftImg}
                 alt="gift"
-                style={{
-                  position: 'absolute',
-                  right: -35,
-                  bottom: -35,
-                  width: 120,
-                  height: 120,
-                  objectFit: 'contain',
-                  pointerEvents: 'none',
-                }}
+                style={{ width: 90, height: 90, objectFit: 'contain', paddingLeft: '100px', position: 'absolute', right: -3, bottom: -11 }}
               />
             </Card>
           </div>
@@ -407,12 +406,10 @@ export default function App() {
             mode="shadow"
             style={{
               borderRadius: 12,
-              padding: '16px',
+              padding: '12px',
               backgroundColor: '#ffffff',
               display: 'flex',
               flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'center',
               cursor: 'pointer',
             }}
             onClick={goToProfile}
@@ -422,21 +419,23 @@ export default function App() {
               alt="awards"
               style={{
                 position: 'absolute',
-                top: -50,
-                left: -65,
+                top: -20,
+                right: -30,
                 width: 200,
                 height: 200,
                 objectFit: 'contain',
                 pointerEvents: 'none',
+                transform: 'rotate(15deg)',
               }}
             />
 
             <Text
-              weight="3"
+              weight="1"
               style={{
-                fontSize: 18,
+                fontSize: 12,
                 color: '#000',
-                textAlign: 'center',
+                marginTop: 109,
+                marginLeft: 4,
               }}
             >
               Достижения
