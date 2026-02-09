@@ -210,7 +210,7 @@ export default function App() {
 
   const cardText = {
     fontSize: 14,
-    color: '#311f68',
+    color: '#000',
   };
 
   return (
@@ -261,7 +261,7 @@ export default function App() {
               display: 'flex',
               alignItems: 'center',
               gap: 6,
-              padding: '2px 15px',
+              padding: '2px 18px 2px 2px',
               backgroundColor: '#f2f2f2',
               borderRadius: 999,
               cursor: 'pointer',
@@ -272,7 +272,7 @@ export default function App() {
               weight="3"
               style={{
                 fontSize: 14,
-                color: '#4000ff',
+                color: '#8c64d7',
                 lineHeight: '18px',
               }}
             >
@@ -340,10 +340,10 @@ export default function App() {
                   style={{ width: 45, height: 45, objectFit: 'contain' }}
                 />
                 <div>
-                  <Text weight="3" style={{ fontSize: 14, color: '#311f68' }}>
+                  <Text weight="3" style={{ fontSize: 14, color: '#000' }}>
                     Баланс
                   </Text>
-                  <Text weight="3" style={{ fontSize: 18, color: '#4000ff' }}>
+                  <Text weight="3" style={{ fontSize: 18, color: '#8c64d7' }}>
                     {balance}
                   </Text>
                 </div>
@@ -371,15 +371,15 @@ export default function App() {
                   zIndex: 2,
                 }}
               >
-                <Text weight="medium" style={{ fontSize: 14, color: '#311f68' }}>
-                  Награда за вход
+                <Text weight="medium" style={{ fontSize: 14, color: '#000' }}>
+                  Ежедневный вход
                 </Text>
 
                 <Text
                   weight="medium"
                   style={{
                     fontSize: 18,
-                    color: canClaimGift ? '#00a650' : '#4000ff',
+                    color: canClaimGift ? '#00a650' : '#8c64d7',
                     marginTop: 4,
                   }}
                 >
@@ -435,22 +435,11 @@ export default function App() {
               weight="3"
               style={{
                 fontSize: 18,
-                color: '#311f68',
+                color: '#000',
                 textAlign: 'center',
               }}
             >
-              Мои достижения
-            </Text>
-
-            <Text
-              style={{
-                marginTop: 6,
-                fontSize: 14,
-                color: '#6d6d6d',
-                textAlign: 'center',
-              }}
-            >
-              Статистика и прогресс
+              Достижения
             </Text>
           </Card>
         </Div>
@@ -498,10 +487,10 @@ export default function App() {
                 style={{
                   textAlign: 'center',
                   fontSize: 16,
-                  color: '#311f68',
+                  color: '#000',
                 }}
               >
-                Список заданий
+                Задания
               </Text>
 
               {/* Последние задания */}
@@ -521,7 +510,7 @@ export default function App() {
                         padding: '6px 10px',
                         borderRadius: 8,
                         backgroundColor: '#f7f7f7',
-                        color: '#311f68',
+                        color: '#8c64d7',
                         fontSize: 13,
                       }}
                     >
@@ -542,7 +531,7 @@ export default function App() {
                         gap: 4,
                         fontSize: 15,
                         fontWeight: 400,
-                        color: '#311f68' 
+                        color: '#8c64d7' 
                       }}>
                         <img
                           src={coinIcon}
@@ -590,8 +579,8 @@ export default function App() {
               }}
             />
             <div style={{ position: 'relative', zIndex: 2 }}>
-              <Text weight="3" style={{ fontSize: 18, color: '#311f68' }}>
-                Избранные задания
+              <Text weight="3" style={{ fontSize: 18, color: '#000' }}>
+                Избранное
               </Text>
             </div>
           </Card>
@@ -640,7 +629,7 @@ export default function App() {
                   marginTop: 30,
                   textAlign: 'center',
                   fontSize: 18,
-                  color: '#311f68',
+                  color: '#000',
                   paddingBottom: '16px',
                 }}
               >
@@ -662,7 +651,7 @@ export default function App() {
                         borderRadius: 8,
                         backgroundColor: user && user.id === u.id ? '#f0edff' : '#f7f7f7',
                         fontWeight: user && user.id === u.id ? '600' : '400',
-                        color: '#311f68',
+                        color: '#8c64d7',
                       }}
                     >
                       <span>{index + 1}.</span>
@@ -688,7 +677,7 @@ export default function App() {
                           backgroundColor: '#f0edff',
                           fontWeight: 600,
                           marginTop: 6,
-                          color: '#311f68',
+                          color: '#8c64d7',
                         }}
                       >
                         <span>{currentIndex + 1}.</span>
@@ -706,8 +695,8 @@ export default function App() {
 
         <Div style={{ padding: '16px 16px 24px 16px', backgroundColor: '#ffffff' }}>
           {/* Заголовок */}
-          <Text weight="3" style={{ marginLeft: 10, fontSize: 20, color: '#311f68' }}>
-            Призы и подарки
+          <Text weight="3" style={{ marginLeft: 10, fontSize: 20, color: '#000' }}>
+            Призы и награды
           </Text>
 
           {/* Подзаголовок */}
@@ -716,10 +705,10 @@ export default function App() {
               marginLeft: 10,
               marginTop: 4,
               fontSize: 14,
-              color: '#6d6d6d',
+              color: '#000',
             }}
           >
-            Выбирай и забирай за баллы
+            выбирай и получай за баллы
           </Text>
 
           {/* Карточки */}
@@ -739,8 +728,6 @@ export default function App() {
                 backgroundColor: '#ffffff',
                 display: 'flex',
                 flexDirection: 'column',
-                alignItems: 'center',
-                gap: 8,
                 cursor: 'pointer', 
                 overflow: 'hidden' }} 
               onClick={() => goToShopWithFilter({ min: 0, max: 100 })}
@@ -758,7 +745,8 @@ export default function App() {
                   pointerEvents: 'none',
                 }}
               />
-              <Text style={cardText}>До 100 баллов</Text>
+              <Text style={cardText}>До 100</Text>
+              <Text style={cardText}>баллов</Text>
             </Card>
 
             <Card mode="shadow" 
@@ -767,8 +755,6 @@ export default function App() {
                 backgroundColor: '#ffffff',
                 display: 'flex',
                 flexDirection: 'column',
-                alignItems: 'center',
-                gap: 8,
                 cursor: 'pointer', 
                 overflow: 'hidden' }} 
               onClick={() => goToShopWithFilter({ min: 100, max: 500 })}
@@ -786,7 +772,8 @@ export default function App() {
                   pointerEvents: 'none',
                 }}
               />
-              <Text style={cardText}>От 100 до 500 баллов</Text>
+              <Text style={cardText}>От 100 до</Text>
+              <Text style={cardText}>500 баллов</Text>
             </Card>
 
             <Card mode="shadow" 
@@ -795,8 +782,6 @@ export default function App() {
                 backgroundColor: '#ffffff',
                 display: 'flex',
                 flexDirection: 'column',
-                alignItems: 'center',
-                gap: 8,
                 cursor: 'pointer', 
                 overflow: 'hidden' }} 
               onClick={() => goToShopWithFilter({ min: 500, max: 1000 })}
@@ -814,7 +799,8 @@ export default function App() {
                   pointerEvents: 'none',
                 }}
               />
-              <Text style={cardText}>От 500 баллов</Text>
+              <Text style={cardText}>От 500</Text>
+              <Text style={cardText}>баллов</Text>
             </Card>
           </Div>
         </Div>
@@ -833,13 +819,13 @@ export default function App() {
             style={{ marginTop: 12 }}
           >
             <Accordion.Summary>
-              <Text weight="medium" style={{ fontSize: 16, color: '#311f68' }}>
+              <Text weight="medium" style={{ fontSize: 16, color: '#000' }}>
                 Как получить баллы?
               </Text>
             </Accordion.Summary>
             <Accordion.Content>
               <Div>
-                <Text style={{ fontSize: 14, color: '#311f68' }}>
+                <Text style={{ fontSize: 14, color: '#000' }}>
                   Баллы начисляются за выполнение заданий и активность в приложении.
                 </Text>
               </Div>
@@ -856,13 +842,13 @@ export default function App() {
             onChange={() => setOpenedFaq(openedFaq === 2 ? null : 2)}
           >
             <Accordion.Summary>
-              <Text weight="medium" style={{ fontSize: 16, color: '#311f68' }}>
+              <Text weight="medium" style={{ fontSize: 16, color: '#000' }}>
                 Где посмотреть мои награды?
               </Text>
             </Accordion.Summary>
             <Accordion.Content>
               <Div>
-                <Text style={{ fontSize: 14, color: '#311f68' }}>
+                <Text style={{ fontSize: 14, color: '#000' }}>
                   Награды отображаются в разделе Призы и подарки.
                 </Text>
               </Div>
@@ -879,13 +865,13 @@ export default function App() {
             onChange={() => setOpenedFaq(openedFaq === 3 ? null : 3)}
           >
             <Accordion.Summary>
-              <Text weight="medium" style={{ fontSize: 16, color: '#311f68' }}>
+              <Text weight="medium" style={{ fontSize: 16, color: '#000' }}>
                 Как обменять баллы на подарки?
               </Text>
             </Accordion.Summary>
             <Accordion.Content>
               <Div>
-                <Text style={{ fontSize: 14, color: '#311f68' }}>
+                <Text style={{ fontSize: 14, color: '#000' }}>
                   Выберите подарок и следуйте инструкции по обмену баллов.
                 </Text>
               </Div>

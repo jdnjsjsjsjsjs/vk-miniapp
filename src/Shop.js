@@ -505,7 +505,7 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
                             display: 'flex',
                             alignItems: 'center',
                             gap: 6,
-                            padding: '2px 15px',
+                            padding: '2px 18px 2px 2px',
                             backgroundColor: '#f2f2f2',
                             borderRadius: 999,
                             cursor: 'pointer',

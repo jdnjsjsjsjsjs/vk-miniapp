@@ -215,7 +215,7 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
                   setActiveModal('answer');
                 }}
               >
-                <Text style={{ color: '#311f68' }}>
+                <Text style={{ color: '#8c64d7' }}>
                   {a.first_name} {a.last_name}
                 </Text>
                 <Text
@@ -401,7 +401,7 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
                     paddingLeft: 0,
                     paddingRight: 8,
                     marginRight: 4,
-                    color: '#311f68',
+                    color: '#ffffff',
                 }}
             >
                 Назад
@@ -415,7 +415,7 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
                     display: 'flex',
                     alignItems: 'center',
                     gap: 6,
-                    padding: '2px 15px',
+                    padding: '2px 18px 2px 2px',
                     backgroundColor: '#f2f2f2',
                     borderRadius: 999,
                     cursor: 'pointer',
@@ -426,7 +426,7 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
                     weight="3"
                     style={{
                         fontSize: 14,
-                        color: '#4000ff',
+                        color: '#8c64d7',
                         lineHeight: '18px',
                     }}
                 >
@@ -435,7 +435,7 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
             </div>
         </Div>
         <Div style={{ paddingTop: 56, padding: 16, backgroundColor: '#ffffff', minHeight: '100vh' }}>
-          <Text weight="2" style={{ fontSize: 20, color: '#311f68' }}>Админка заданий</Text>
+          <Text weight="2" style={{ fontSize: 20, color: '#8c64d7' }}>Админка заданий</Text>
             <Button
               size="l"
               mode="primary"
@@ -494,7 +494,7 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
                       color:
                         getTimeLeft(task.expires_at) === 'Истекло'
                           ? '#d32f2f'
-                          : '#311f68',
+                          : '#8c64d7',
                       fontSize: 12,
                       fontWeight: 600,
                       whiteSpace: 'nowrap',
@@ -525,8 +525,8 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
                     {task.pendingCount}
                   </div>
 
-                  <Text weight="medium" style={{ fontSize: 16, color: '#311f68' }}>{task.title}</Text>
-                  <Text weight="medium" style={{ fontSize: 12, color: '#311f68' }}>{task.question}</Text>
+                  <Text weight="medium" style={{ fontSize: 16, color: '#8c64d7' }}>{task.title}</Text>
+                  <Text weight="medium" style={{ fontSize: 12, color: '#8c64d7' }}>{task.question}</Text>
                   <Text style={{ fontSize: 14, color: '#666', marginTop: 4, display: 'flex', alignItems: 'center', gap: 4 }}>
                     <img src={coinIcon} alt="coins" style={{ height: 25, width: 25 }} /> {task.reward}
                   </Text>
