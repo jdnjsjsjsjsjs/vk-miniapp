@@ -139,10 +139,10 @@ export default function Gift({ id, goBack, balance, goToBalance}) {
                 >
                     <img src={coinIcon} alt="coins" style={{ height: 25, width: 25 }} />
                     <Text
-                        weight="3"
+                        weight="1"
                         style={{
                             fontSize: 14,
-                            color: '#4000ff',
+                            color: '#8c64d7',
                             lineHeight: '18px',
                         }}
                     >

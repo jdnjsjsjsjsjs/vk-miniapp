@@ -285,7 +285,7 @@ export default function App() {
           >
             <img src={coinIcon} alt="coins" style={{ height: 25, width: 25 }} />
             <Text
-              weight="3"
+              weight="1"
               style={{
                 fontSize: 14,
                 color: '#8c64d7',
