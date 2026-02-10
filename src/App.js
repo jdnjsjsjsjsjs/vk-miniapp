@@ -46,15 +46,26 @@ export default function App() {
   const [lastTasks, setLastTasks] = useState([]);
   const [shopFilter, setShopFilter] = useState(null);
 
+  const getPlaceStyles = (place) => {
+    switch (place) {
+      case 1:
+        return { backgroundColor: '#8c64d7', color: '#fff' };
+      case 2:
+        return { backgroundColor: '#ceaeff', color: '#000' };
+      case 3:
+        return { backgroundColor: '#eaddff', color: '#000' };
+      default:
+        return { backgroundColor: '#f2f2f2', color: '#000' };
+    }
+  };
+
   useEffect(() => {
     const onScroll = () => {
       const currentScrollY = window.scrollY;
 
       if (currentScrollY > lastScrollY && currentScrollY > 80) {
-        // скролл вниз
         setShowHeader(false);
       } else {
-        // скролл вверх
         setShowHeader(true);
       }
 
@@ -212,6 +223,17 @@ export default function App() {
     fontSize: 14,
     color: '#000',
   };
+
+  const isUserInTop3 = (() => {
+    if (!user || usersList.length === 0) return false;
+
+    const sorted = [...usersList].sort(
+      (a, b) => b.totalEarned - a.totalEarned
+    );
+
+    const index = sorted.findIndex(u => u.id === user.id);
+    return index >= 0 && index < 3;
+  })();
 
   return (
     <View activePanel={activePanel}>
@@ -457,7 +479,7 @@ export default function App() {
             mode="shadow"
             style={{
                 borderRadius: 12,
-                padding: '8px 10px 20px 18px',
+                padding: '8px 5px 0px 18px',
                 display: 'flex',
                 backgroundColor: '#ffffff',
                 cursor: 'pointer',
@@ -490,7 +512,7 @@ export default function App() {
               </Text>
 
               {/* Последние задания */}
-              <div style={{ marginTop: 12, display: 'flex', flexDirection: 'column', gap: 6, width: 210 }}>
+              <div style={{ marginTop: 10, display: 'flex', flexDirection: 'column', gap: 6, width: 210 }}>
                 {lastTasks.length === 0 ? (
                   <Text weight='1' style={{ fontSize: 14, color: '#000', textAlign: 'center', marginTop: 35 }}>
                     Заданий пока нет
@@ -587,8 +609,8 @@ export default function App() {
 
         <Div
           style={{
-            padding: '0 16px 16px 16px',
-            backgroundColor: '#ffffff',
+            padding: '16px 16px 16px 16px',
+            backgroundColor: '#ceaeff',
           }}
         >
           <Card
@@ -596,7 +618,7 @@ export default function App() {
             style={{
               borderRadius: 12,
               backgroundColor: '#ffffff',
-              padding: '16px',
+              padding: '8px 18px 18px 18px',
               cursor: 'pointer',
               position: 'relative',
               overflow: 'hidden',
@@ -608,62 +630,65 @@ export default function App() {
                 alt="cups"
                 style={{
                   position: 'absolute',
-                  top: '18%',
-                  left: '50%',
+                  top: isUserInTop3 ? 63 : 75,
+                  left: isUserInTop3 ? 85 : 100,
                   transform: 'translate(-50%, -50%)',
-                  width: 80,
-                  height: 80,
+                  width: isUserInTop3 ? 170 : 205,
+                  height: isUserInTop3 ? 170 : 205,
                   objectFit: 'contain',
-                  opacity: 0.8,
-                  zIndex: 1,
                   pointerEvents: 'none',
                 }}
               />
 
-            <div style={{ position: 'relative', zIndex: 2 }}>
+            <div style={{ position: 'relative', marginLeft: isUserInTop3 ? 160 : 187 }}>
               {/* Заголовок */}
               <Text
-                weight="3"
+                weight="1"
                 style={{
-                  marginTop: 30,
-                  textAlign: 'center',
-                  fontSize: 18,
+                  fontSize: 12,
                   color: '#000',
-                  paddingBottom: '16px',
                 }}
               >
                 Рейтинг
               </Text>
 
               {/* Таблица рейтинга */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 6 }}>
                 {usersList
                   .sort((a, b) => b.totalEarned - a.totalEarned)
-                  .slice(0, 3) // топ-3
-                  .map((u, index) => (
-                    <div
-                      key={u.id}
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        padding: '6px 12px',
-                        borderRadius: 8,
-                        backgroundColor: user && user.id === u.id ? '#f0edff' : '#f7f7f7',
-                        fontWeight: user && user.id === u.id ? '600' : '400',
-                        color: '#8c64d7',
-                      }}
-                    >
-                      <span>{index + 1}.</span>
-                      <span>{u.first_name} {u.last_name}</span>
-                      <span>{u.totalEarned}</span>
-                    </div>
-                  ))}
+                  .slice(0, 3)
+                  .map((u, index) => {
+                    const place = index + 1;
+                    const PlaceStyle = getPlaceStyles(place);
+
+                    return (
+                      <div
+                        key={u.id}
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          padding: '4px 12px',
+                          borderRadius: 999,
+                          backgroundColor: user && user.id === u.id ? '#f0edff' : '#f7f7f7',
+                          fontWeight: user && user.id === u.id ? '700' : '600',
+                          color: '#8c64d7',
+                          fontSize: 11,
+                          ...PlaceStyle,
+                          
+                        }}
+                      >
+                        <span>{index + 1}.</span>
+                        <span>{u.first_name} {u.last_name}</span>
+                        <span>{u.totalEarned}</span>
+                      </div>
+                    );
+                  })}
 
                 {/* Текущий пользователь */}
                 {user && (() => {
                   const allSorted = [...usersList].sort((a, b) => b.totalEarned - a.totalEarned);
                   const currentIndex = allSorted.findIndex(u => u.id === user.id);
-                  if (currentIndex >= 3) { // если не в топ-3, показываем отдельной строкой
+                  if (currentIndex >= 3) {
                     const currentUser = allSorted[currentIndex];
                     return (
                       <div
@@ -671,12 +696,11 @@ export default function App() {
                         style={{
                           display: 'flex',
                           justifyContent: 'space-between',
-                          padding: '6px 12px',
-                          borderRadius: 8,
-                          backgroundColor: '#f0edff',
+                          padding: '4px 12px',
+                          borderRadius: 999,
                           fontWeight: 600,
-                          marginTop: 6,
-                          color: '#8c64d7',
+                          fontSize: 11,
+                          ...getPlaceStyles(currentIndex + 1),
                         }}
                       >
                         <span>{currentIndex + 1}.</span>
