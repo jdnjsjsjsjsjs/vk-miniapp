@@ -19,7 +19,6 @@ import AdminTasks from './AdminTasks';
 import Favorites from './Favorites';
 
 import image1 from './imgs/1.png'
-import image2 from './imgs/2.png'
 import coinsIcon from './imgs/coins.png'
 import coinIcon from './imgs/coin.png'
 import giftImg from './imgs/gift.png'
@@ -31,7 +30,7 @@ import box2icon from './imgs/box2.png'
 import box3icon from './imgs/box3.png'
 
 export default function App() {
-  const images = [image1, image2];
+  const images = [image1];
   
   const [activePanel, setActivePanel] = useState('main');
   const [openedFaq, setOpenedFaq] = useState(null);
@@ -328,6 +327,11 @@ export default function App() {
           display: 'grid',
           gridTemplateColumns: '1fr 1fr',
           gap: '12px',
+          position: 'relative',
+          marginTop: '-40px',
+          zIndex: 10,
+          borderTopLeftRadius: 16,
+          borderTopRightRadius: 16,
          }}>
           <div
             style={{
@@ -579,7 +583,7 @@ export default function App() {
               style={{
                 position: 'absolute',
                 top: 0,
-                right: -20,
+                right: -15,
                 width: 150,
                 height: 150,
                 objectFit: 'contain',
