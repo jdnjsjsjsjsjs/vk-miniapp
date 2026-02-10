@@ -13,25 +13,25 @@ export default function Profile({ id, goBack, user, balance, totalEarned, goToBa
     {
       id: 1,
       title: 'Первый вход',
-      icon: <img src={box1icon} alt="box1" style={{ height: 60, width: 60 }} />,
+      icon: <img src={box1icon} alt="box1" style={{ height: 80, width: 80 }} />,
       unlocked: true,
     },
     {
       id: 2,
       title: '10 очков',
-      icon: <img src={coinsIcon} alt="coins" style={{ height: 60, width: 60 }} />,
+      icon: <img src={coinsIcon} alt="coins" style={{ height: 80, width: 80 }} />,
       unlocked: totalEarned >= 10,
     },
     {
       id: 3,
       title: '100 очков',
-      icon: <img src={cupsIcon} alt="cups" style={{ height: 60, width: 60 }} />,
+      icon: <img src={cupsIcon} alt="cups" style={{ height: 80, width: 80 }} />,
       unlocked: totalEarned >= 100,
     },
     {
       id: 4,
       title: '1000 очков',
-      icon: <img src={awardsIcon} alt="awards" style={{ height: 60, width: 60 }} />,
+      icon: <img src={awardsIcon} alt="awards" style={{ height: 80, width: 80 }} />,
       unlocked: totalEarned >= 1000,
     },
   ];
@@ -48,10 +48,10 @@ export default function Profile({ id, goBack, user, balance, totalEarned, goToBa
             left: 0,
             right: 0,
             height: 56,
-            backgroundColor: '#ceaeff',
+            backgroundColor: '#fff',
             display: 'flex',
             alignItems: 'center',
-            padding: '0 16px',
+            padding: '0 4px',
             zIndex: 1000,
         }}
     >
@@ -65,7 +65,7 @@ export default function Profile({ id, goBack, user, balance, totalEarned, goToBa
           paddingLeft: 0,
           paddingRight: 8,
           marginRight: 4,
-          color: '#fff',
+          color: '#ceaeff',
         }}
       >
         Назад
@@ -87,10 +87,10 @@ export default function Profile({ id, goBack, user, balance, totalEarned, goToBa
       >
         <img src={coinIcon} alt="coins" style={{ height: 25, width: 25 }} />
         <Text
-          weight="3"
+          weight="1"
           style={{
             fontSize: 14,
-            color: '#4000ff',
+            color: '#8c64d7',
             lineHeight: '18px',
           }}
         >
@@ -99,7 +99,7 @@ export default function Profile({ id, goBack, user, balance, totalEarned, goToBa
       </div>
     </Div>
 
-      <Div style={{ paddingTop: '20px', textAlign: 'center', backgroundColor: '#ffffff' }}>
+      <Div style={{ paddingTop: '20px', textAlign: 'center', backgroundColor: '#ceaeff', minHeight: '100vh', }}>
         {user?.photo_200 && (
           <img
             src={user.photo_200}
@@ -114,14 +114,13 @@ export default function Profile({ id, goBack, user, balance, totalEarned, goToBa
           />
         )}
 
-        <Text weight="3" style={{ fontSize: 18, color: '#311f68' }}>
+        <Text weight="1" style={{ fontSize: 18, color: '#000' }}>
           {user?.first_name} {user?.last_name}
         </Text>
 
         <Div 
             style={{
-                backgroundColor: '#ffffff',
-                minHeight: '100vh',
+                backgroundColor: '#ceaeff',
                 color: '#fff',
             }}
         >
@@ -130,9 +129,8 @@ export default function Profile({ id, goBack, user, balance, totalEarned, goToBa
               style={{
                 marginBottom: 12,
                 fontSize: 16,
-                color: '#311f68',
+                color: '#000',
                 textAlign: 'center',
-                paddingTop: '25px',
                 paddingBottom: '12px',
               }}
             >
@@ -143,7 +141,7 @@ export default function Profile({ id, goBack, user, balance, totalEarned, goToBa
               style={{
                 display: 'grid',
                 gridTemplateColumns: 'repeat(4, 1fr)',
-                gap: '20px',
+                gap: '10px',
                 padding: 0,
               }}
             >
@@ -173,17 +171,15 @@ export default function Profile({ id, goBack, user, balance, totalEarned, goToBa
                       transition: '0.2s ease',
                     }}
                   >
-                    <div style={{ color: '#311f68' }}>
+                    <div>
                       {ach.icon}
                     </div>
 
                     <Text
                       style={{
-                        marginTop: 6,
-                        fontSize: 18,
-                        color: '#311f68',
+                        fontSize: 14,
+                        color: '#000',
                         textAlign: 'center',
-                        lineHeight: '20px',
                       }}
                     >
                       {ach.title}
