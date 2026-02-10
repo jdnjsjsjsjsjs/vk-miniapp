@@ -219,11 +219,6 @@ export default function App() {
     }
   }, [user, balance, totalEarned]);
 
-  const cardText = {
-    fontSize: 14,
-    color: '#000',
-  };
-
   const isUserInTop3 = (() => {
     if (!user || usersList.length === 0) return false;
 
@@ -716,29 +711,35 @@ export default function App() {
           </Card>
         </Div>
 
-        <Div style={{ padding: '16px 16px 24px 16px', backgroundColor: '#ffffff' }}>
-          {/* Заголовок */}
-          <Text weight="3" style={{ marginLeft: 10, fontSize: 20, color: '#000' }}>
-            Призы и награды
-          </Text>
-
-          {/* Подзаголовок */}
-          <Text
+        <Div style={{ padding: '16px', backgroundColor: '#ceaeff' }}>
+          <Card
+            mode="shadow"
             style={{
-              marginLeft: 10,
-              marginTop: 4,
-              fontSize: 14,
-              color: '#000',
+              borderRadius: 12,
+              backgroundColor: '#ffffff',
+              padding: '12px',
+              cursor: 'pointer',
             }}
           >
-            выбирай и получай за баллы
-          </Text>
+            <Text weight="1" style={{ fontSize: 12, color: '#000', lineHeight: '16px' }}>
+              Призы и награды
+            </Text>
 
+            <Text
+              style={{
+                fontSize: 10,
+                color: '#000',
+                lineHeight: '16px'
+              }}
+            >
+              выбирай и получай за баллы
+            </Text>
+          </Card>
           {/* Карточки */}
           <Div
             style={{
               display: 'grid',
-              gridTemplateColumns: '1fr 1fr 1fr',
+              gridTemplateColumns: '1fr 2fr 3fr',
               gap: '12px',
               marginTop: 12,
               padding: 0,
@@ -752,7 +753,9 @@ export default function App() {
                 display: 'flex',
                 flexDirection: 'column',
                 cursor: 'pointer', 
-                overflow: 'hidden' }} 
+                overflow: 'hidden',
+                height: '120px',
+              }} 
               onClick={() => goToShopWithFilter({ min: 0, max: 100 })}
             >
               <img
@@ -760,16 +763,16 @@ export default function App() {
                 alt="box1"
                 style={{
                   position: 'absolute',
-                  right: -35,
-                  bottom: -50,
-                  width: 120,
-                  height: 120,
+                  right: -24,
+                  bottom: -15,
+                  width: 140,
+                  height: 140,
                   objectFit: 'contain',
                   pointerEvents: 'none',
                 }}
               />
-              <Text style={cardText}>До 100</Text>
-              <Text style={cardText}>баллов</Text>
+              <Text weight='1' style={{fontSize: 14, color: '#000', lineHeight: '14px' }} >до 100</Text>
+              <Text style={{fontSize: 12, color: '#000', lineHeight: '14px' }}>баллов</Text>
             </Card>
 
             <Card mode="shadow" 
@@ -779,7 +782,8 @@ export default function App() {
                 display: 'flex',
                 flexDirection: 'column',
                 cursor: 'pointer', 
-                overflow: 'hidden' }} 
+                overflow: 'hidden',
+                height: '120px', }} 
               onClick={() => goToShopWithFilter({ min: 100, max: 500 })}
             >
               <img
@@ -787,16 +791,16 @@ export default function App() {
                 alt="box2"
                 style={{
                   position: 'absolute',
-                  right: -35,
-                  bottom: -45,
-                  width: 120,
-                  height: 120,
+                  right: 3,
+                  bottom: -31,
+                  width: 180,
+                  height: 180,
                   objectFit: 'contain',
                   pointerEvents: 'none',
                 }}
               />
-              <Text style={cardText}>От 100 до</Text>
-              <Text style={cardText}>500 баллов</Text>
+              <Text weight='1' style={{fontSize: 14, color: '#000', lineHeight: '14px' }} >от 100</Text>
+              <Text style={{fontSize: 12, color: '#000', lineHeight: '14px' }}>баллов</Text>
             </Card>
 
             <Card mode="shadow" 
@@ -806,7 +810,8 @@ export default function App() {
                 display: 'flex',
                 flexDirection: 'column',
                 cursor: 'pointer', 
-                overflow: 'hidden' }} 
+                overflow: 'hidden',
+                height: '120px', }} 
               onClick={() => goToShopWithFilter({ min: 500, max: 1000 })}
             >
               <img
@@ -814,16 +819,16 @@ export default function App() {
                 alt="box3"
                 style={{
                   position: 'absolute',
-                  right: -35,
-                  bottom: -50,
-                  width: 120,
-                  height: 120,
+                  right: -5,
+                  bottom: -27,
+                  width: 190,
+                  height: 190,
                   objectFit: 'contain',
                   pointerEvents: 'none',
                 }}
               />
-              <Text style={cardText}>От 500</Text>
-              <Text style={cardText}>баллов</Text>
+              <Text weight='1' style={{fontSize: 14, color: '#000', lineHeight: '14px' }} >от 500</Text>
+              <Text style={{fontSize: 12, color: '#000', lineHeight: '14px' }}>баллов</Text>
             </Card>
           </Div>
         </Div>
