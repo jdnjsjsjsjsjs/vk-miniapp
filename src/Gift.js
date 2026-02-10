@@ -100,10 +100,10 @@ export default function Gift({ id, goBack, balance, goToBalance}) {
                 left: 0,
                 right: 0,
                 height: 56,
-                backgroundColor: '#ceaeff',
+                backgroundColor: '#fff',
                 display: 'flex',
                 alignItems: 'center',
-                padding: '0 16px',
+                padding: '0 4px',
                 zIndex: 1000,
                 }}
             >
@@ -117,7 +117,7 @@ export default function Gift({ id, goBack, balance, goToBalance}) {
                         paddingLeft: 0,
                         paddingRight: 8,
                         marginRight: 4,
-                        color: '#fff',
+                        color: '#ceaeff',
                     }}
                 >
                     Назад
@@ -151,35 +151,49 @@ export default function Gift({ id, goBack, balance, goToBalance}) {
                 </div>
             </Div>
 
-            <Div style={{ padding: 16, backgroundColor: '#ffffff', }}>
-            <Text
-                weight="2"
+            <Div style={{ padding: 16, backgroundColor: '#ceaeff', }}>
+            <Card
+                mode="shadow"
                 style={{
-                marginBottom: 12,
-                color: '#311f68',
-                textAlign: 'center',
+                    borderRadius: 12,
+                    padding: '16px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    backgroundColor: '#ffffff',
+                    marginLeft: 16,
+                    marginRight: 16,
                 }}
             >
-                {canClaim ? '🎁 Заберите приз!' : '⏳ Приходите завтра'}
-            </Text>
-
-            <Text
-                style={{
-                    textAlign: 'center',
-                    fontSize: 16,
-                    color: '#6d6d6d',
+                <Text
+                    weight="1"
+                    style={{
                     marginBottom: 12,
-                }}
-            >
-                {timeLeft}
-            </Text>
+                    color: '#000',
+                    textAlign: 'center',
+                    fontSize: 24,
+                    }}
+                >
+                    {canClaim ? 'Заберите приз!' : 'Приходите завтра'}
+                </Text>
+
+                <Text
+                    style={{
+                        textAlign: 'center',
+                        fontSize: 20,
+                        color: '#000',
+                    }}
+                >
+                    {timeLeft}
+                </Text>
+            </Card>
 
             <Div
                 style={{
                     display: 'grid',
                     gridTemplateColumns: 'repeat(3, 1fr)',
                     gap: 12,
-                    backgroundColor: '#ffffff',
+                    backgroundColor: '#ceaeff',
                 }}
             >
                 {rewards.map((reward, index) => {
