@@ -210,8 +210,8 @@ export default function Gift({ id, goBack, balance, goToBalance}) {
                                 borderRadius: 12,
                                 padding: '14px 10px',
                                 textAlign: 'center',
-                                backgroundColor: isCurrent ? '#f0edff' : '#ffffff',
-                                opacity: isDone ? 0.5 : 1,
+                                backgroundColor: isCurrent ? '#eaddff' : '#ffffff',
+                                opacity: isDone ? 0.4 : 1,
                                 filter: isLocked ? 'blur(2px)' : 'none',
                                 transition: 'all 0.2s ease',
                             }}
@@ -220,36 +220,50 @@ export default function Gift({ id, goBack, balance, goToBalance}) {
                                 <img src={coinsIcon} alt="coins" style={{ height: 50, width: 50 }} />
 
                                 <Text
-                                    weight="3"
+                                    weight="1"
                                     style={{
-                                        marginTop: 6,
                                         fontSize: 14,
-                                        color: '#311f68',
+                                        color: '#000',
                                     }}
                                 >
                                     День {day}
                                 </Text>
 
                                 <Text
-                                    weight="3"
+                                    weight="1"
                                     style={{
                                         marginTop: 2,
                                         fontSize: 18,
-                                        color: '#4000ff',
+                                        color: '#8c64d7',
                                     }}
                                 >
                                     +{reward}
                                 </Text>
 
                                 {isCurrent && canClaim && (
-                                    <Button
-                                        size="l"
-                                        mode="primary"
-                                        style={{ marginTop: 8, width: '100%' }}
+                                    <div
                                         onClick={claimGift}
+                                        style={{
+                                            display: 'flex',
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                            padding: '10px 20px',
+                                            marginTop: 20,
+                                            backgroundColor: '#8c64d7',
+                                            borderRadius: 999,
+                                            cursor: 'pointer',
+                                        }}
                                     >
-                                        Забрать
-                                    </Button>
+                                        <Text
+                                        weight="1"
+                                        style={{
+                                            fontSize: 14,
+                                            color: '#fff',
+                                        }}
+                                        >
+                                            Забрать
+                                        </Text>
+                                    </div>
                                 )}
                             </Div>
                         </Card>
