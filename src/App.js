@@ -411,6 +411,7 @@ export default function App() {
               display: 'flex',
               flexDirection: 'column',
               cursor: 'pointer',
+              overflow: 'hidden',
             }}
             onClick={goToProfile}
           >
@@ -445,23 +446,23 @@ export default function App() {
 
         <Div
           style={{
-            padding: '0 16px 16px 16px',
-            backgroundColor: '#ffffff',
+            padding: '16px 16px 16px 16px',
+            backgroundColor: '#ceaeff',
             display: 'grid',
-            gridTemplateColumns: '4fr 1fr',
+            gridTemplateColumns: '5fr 2fr',
             gap: '12px',
           }}
         >
           <Card
             mode="shadow"
             style={{
-              borderRadius: 12,
-              backgroundColor: '#ffffff',
-              padding: '16px',
-              cursor: 'pointer',
-              position: 'relative',
-              overflow: 'hidden',
-            }}
+                borderRadius: 12,
+                padding: '8px 10px 20px 18px',
+                display: 'flex',
+                backgroundColor: '#ffffff',
+                cursor: 'pointer',
+                overflow: 'hidden',
+              }}
             onClick={goToTasks}
           >
             <img
@@ -469,33 +470,29 @@ export default function App() {
               alt="tasks"
               style={{
                 position: 'absolute',
-                top: -18,
-                right: -18,
-                width: 150,
-                height: 150,
+                top: -5,
+                right: -25,
+                width: 220,
+                height: 220,
                 objectFit: 'contain',
                 pointerEvents: 'none',
                 zIndex: 1,
               }}
             />
 
-            <div style={{ position: 'relative', zIndex: 2 }}>
+            <div style={{ zIndex: 2 }}>
               {/* Заголовок */}
               <Text
-                weight="3"
-                style={{
-                  textAlign: 'center',
-                  fontSize: 16,
-                  color: '#000',
-                }}
+                weight="1"
+                style={{ fontSize: 12, color: '#000', paddingBottom: 3 }}
               >
                 Задания
               </Text>
 
               {/* Последние задания */}
-              <div style={{ marginTop: 12, display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <div style={{ marginTop: 12, display: 'flex', flexDirection: 'column', gap: 6, width: 200 }}>
                 {lastTasks.length === 0 ? (
-                  <Text style={{ fontSize: 13, color: '#999', textAlign: 'center' }}>
+                  <Text weight='1' style={{ fontSize: 14, color: '#000', textAlign: 'center', marginTop: 35 }}>
                     Заданий пока нет
                   </Text>
                 ) : (
@@ -507,10 +504,10 @@ export default function App() {
                         justifyContent: 'space-between',
                         alignItems: 'center',
                         padding: '6px 10px',
-                        borderRadius: 8,
+                        borderRadius: 999,
                         backgroundColor: '#f7f7f7',
                         color: '#8c64d7',
-                        fontSize: 13,
+                        fontSize: 12,
                       }}
                     >
                       <span
@@ -519,6 +516,7 @@ export default function App() {
                           textOverflow: 'ellipsis',
                           whiteSpace: 'nowrap',
                           maxWidth: '70%',
+                          fontWeight: 600,
                         }}
                       >
                         {task.title}
@@ -528,8 +526,8 @@ export default function App() {
                         display: 'flex', 
                         alignItems: 'center', 
                         gap: 4,
-                        fontSize: 15,
-                        fontWeight: 400,
+                        fontSize: 14,
+                        fontWeight: 600,
                         color: '#8c64d7' 
                       }}>
                         <img
@@ -550,16 +548,11 @@ export default function App() {
             mode="shadow"
             style={{
               borderRadius: 12,
+              padding: '12px',
               backgroundColor: '#ffffff',
-              padding: '16px',
-              cursor: 'pointer',
-              position: 'relative',
-              overflow: 'hidden',
-
               display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              textAlign: 'center',
+              flexDirection: 'column',
+              cursor: 'pointer',
             }}
             onClick={goToFavorites}
           >
@@ -568,17 +561,24 @@ export default function App() {
               alt="tasks"
               style={{
                 position: 'absolute',
-                top: -40,
-                right: -50,
+                top: 0,
+                right: -20,
                 width: 150,
                 height: 150,
                 objectFit: 'contain',
                 pointerEvents: 'none',
                 zIndex: 1,
+                overflow: 'hidden',
               }}
             />
             <div style={{ position: 'relative', zIndex: 2 }}>
-              <Text weight="3" style={{ fontSize: 18, color: '#000' }}>
+              <Text weight="1" 
+              style={{
+                fontSize: 12,
+                color: '#000',
+                marginTop: 142,
+                marginLeft: 4,
+              }}>
                 Избранное
               </Text>
             </div>
