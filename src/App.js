@@ -718,7 +718,6 @@ export default function App() {
               borderRadius: 12,
               backgroundColor: '#ffffff',
               padding: '12px',
-              cursor: 'pointer',
             }}
           >
             <Text weight="1" style={{ fontSize: 12, color: '#000', lineHeight: '16px' }}>
@@ -833,82 +832,87 @@ export default function App() {
           </Div>
         </Div>
 
-        <Div style={{ padding: '16px', backgroundColor: '#ffffff' }}>
-          <Text weight="3" style={{ marginBottom: 16, textAlign: 'center', fontSize: 20, color: '#311f68' }}>
-            Вопросы и ответы
-          </Text>
-          <Separator
-            style={{ margin: '0 16px 0 16px' }}
-          />
-          {/* Вопрос 1 */}
-          <Accordion
-            expanded={openedFaq === 1}
-            onChange={() => setOpenedFaq(openedFaq === 1 ? null : 1)}
-            style={{ marginTop: 12 }}
+        <Div style={{ padding: '16px', backgroundColor: '#ceaeff' }}>
+          <Card
+            mode="shadow"
+            style={{
+              borderRadius: 12,
+              backgroundColor: '#ffffff',
+              padding: '16px',
+            }}
           >
-            <Accordion.Summary>
-              <Text weight="medium" style={{ fontSize: 16, color: '#000' }}>
-                Как получить баллы?
-              </Text>
-            </Accordion.Summary>
-            <Accordion.Content>
-              <Div>
-                <Text style={{ fontSize: 14, color: '#000' }}>
-                  Баллы начисляются за выполнение заданий и активность в приложении.
+            <Text weight="1" style={{ fontSize: 14, color: '#000' }}>
+              Вопросы и ответы
+            </Text>
+            {/* Вопрос 1 */}
+            <Accordion
+              expanded={openedFaq === 1}
+              onChange={() => setOpenedFaq(openedFaq === 1 ? null : 1)}
+            >
+              <Accordion.Summary>
+                <Text weight="3" style={{ fontSize: 13, color: '#000' }}>
+                  как получить баллы?
                 </Text>
-              </Div>
-            </Accordion.Content>
-          </Accordion>
+              </Accordion.Summary>
+              <Accordion.Content>
+                <Div>
+                  <Text style={{ fontSize: 11, color: '#000', lineHeight: '12px' }}>
+                    Баллы начисляются за выполнение заданий и активность в приложении.
+                  </Text>
+                </Div>
+              </Accordion.Content>
+            </Accordion>
 
-          <Separator
-            style={{ margin: '0 16px 0 16px' }}
-          />
+            <Separator
+              style={{ margin: '0 16px 0 16px' }}
+            />
 
-          {/* Вопрос 2 */}
-          <Accordion
-            expanded={openedFaq === 2}
-            onChange={() => setOpenedFaq(openedFaq === 2 ? null : 2)}
-          >
-            <Accordion.Summary>
-              <Text weight="medium" style={{ fontSize: 16, color: '#000' }}>
-                Где посмотреть мои награды?
-              </Text>
-            </Accordion.Summary>
-            <Accordion.Content>
-              <Div>
-                <Text style={{ fontSize: 14, color: '#000' }}>
-                  Награды отображаются в разделе Призы и подарки.
+            {/* Вопрос 2 */}
+            <Accordion
+              expanded={openedFaq === 2}
+              onChange={() => setOpenedFaq(openedFaq === 2 ? null : 2)}
+            >
+              <Accordion.Summary>
+                <Text weight="3" style={{ fontSize: 13, color: '#000' }}>
+                  где посмотреть мои награды?
                 </Text>
-              </Div>
-            </Accordion.Content>
-          </Accordion>
+              </Accordion.Summary>
+              <Accordion.Content>
+                <Div>
+                  <Text style={{ fontSize: 11, color: '#000', lineHeight: '12px' }}>
+                    Награды отображаются в разделе Призы и подарки.
+                  </Text>
+                </Div>
+              </Accordion.Content>
+            </Accordion>
 
-          <Separator
-            style={{ margin: '0 16px 0 16px' }}
-          />
+            <Separator
+              style={{ margin: '0 16px 0 16px' }}
+            />
 
-          {/* Вопрос 3 */}
-          <Accordion
-            expanded={openedFaq === 3}
-            onChange={() => setOpenedFaq(openedFaq === 3 ? null : 3)}
-          >
-            <Accordion.Summary>
-              <Text weight="medium" style={{ fontSize: 16, color: '#000' }}>
-                Как обменять баллы на подарки?
-              </Text>
-            </Accordion.Summary>
-            <Accordion.Content>
-              <Div>
-                <Text style={{ fontSize: 14, color: '#000' }}>
-                  Выберите подарок и следуйте инструкции по обмену баллов.
+            {/* Вопрос 3 */}
+            <Accordion
+              expanded={openedFaq === 3}
+              onChange={() => setOpenedFaq(openedFaq === 3 ? null : 3)}
+            >
+              <Accordion.Summary>
+                <Text weight="3" style={{ fontSize: 13, color: '#000' }}>
+                  как обменять баллы на подарки?
                 </Text>
-              </Div>
-            </Accordion.Content>
-          </Accordion>
+              </Accordion.Summary>
+              <Accordion.Content>
+                <Div>
+                  <Text style={{ fontSize: 11, color: '#000', lineHeight: '12px' }}>
+                    Выберите подарок и следуйте инструкции по обмену баллов.
+                  </Text>
+                </Div>
+              </Accordion.Content>
+            </Accordion>
 
-          <Separator
-            style={{ margin: '0 16px 0 16px' }}
-          />
+            <Separator
+              style={{ margin: '0 16px 0 16px' }}
+            />
+          </Card>
         </Div>
       </Panel>
 
