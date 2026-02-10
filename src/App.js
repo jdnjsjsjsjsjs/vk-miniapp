@@ -377,7 +377,7 @@ export default function App() {
                   style={{
                     display: 'flex',
                     padding: '3px 20px 3px 20px',
-                    backgroundColor: canClaimGift ? '#fff' : '#f2f2f2',
+                    backgroundColor: canClaimGift ? '#8c64d7' : '#f2f2f2',
                     borderRadius: 999,
                     cursor: 'pointer',
                   }}
