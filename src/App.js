@@ -490,7 +490,7 @@ export default function App() {
               </Text>
 
               {/* Последние задания */}
-              <div style={{ marginTop: 12, display: 'flex', flexDirection: 'column', gap: 6, width: 200 }}>
+              <div style={{ marginTop: 12, display: 'flex', flexDirection: 'column', gap: 6, width: 210 }}>
                 {lastTasks.length === 0 ? (
                   <Text weight='1' style={{ fontSize: 14, color: '#000', textAlign: 'center', marginTop: 35 }}>
                     Заданий пока нет
