@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Panel, Div, Text, Button, ModalRoot, ModalCard, Textarea, Card } from '@vkontakte/vkui';
+import { Panel, Div, Button, ModalRoot, ModalCard, Textarea, Card } from '@vkontakte/vkui';
+import { CustomText } from './CustomTypography';
 import { Icon28ChevronBack, Icon28FavoriteOutline, Icon28Favorite } from '@vkontakte/icons';
 
 import coinIcon from './imgs/coin.png'
@@ -83,8 +84,8 @@ export default function Tasks({ id, goBack, balance, goToBalance, user }) {
                     >
                     {/* Динамический контент */}
                     <Div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                        <Text weight="2">{activeTask?.title}</Text>
-                        <Text style={{ color: '#666', paddingBottom: '16px' }}>{activeTask?.question}</Text>
+                        <CustomText weight="2">{activeTask?.title}</CustomText>
+                        <CustomText style={{ color: '#666', paddingBottom: '16px' }}>{activeTask?.question}</CustomText>
                         <Textarea
                             placeholder="Введите ответ"
                             value={answer}
@@ -143,7 +144,7 @@ export default function Tasks({ id, goBack, balance, goToBalance, user }) {
                         }}
                     >
                         <img src={coinIcon} alt="coins" style={{ height: 25, width: 25 }} />
-                        <Text
+                        <CustomText
                             weight="3"
                             style={{
                                 fontSize: 14,
@@ -152,7 +153,7 @@ export default function Tasks({ id, goBack, balance, goToBalance, user }) {
                             }}
                         >
                             {balance}
-                        </Text>
+                        </CustomText>
                     </div>
                 </Div>
 
@@ -164,7 +165,7 @@ export default function Tasks({ id, goBack, balance, goToBalance, user }) {
                             textAlign: 'left',
                         }}
                     >
-                        <Text
+                        <CustomText
                             weight="2"
                             style={{
                                 fontSize: 20,
@@ -172,13 +173,13 @@ export default function Tasks({ id, goBack, balance, goToBalance, user }) {
                             }}
                         >
                             Задания
-                        </Text>
+                        </CustomText>
                     </Div>
 
                     {tasks.length === 0 && (
-                        <Text style={{ textAlign: 'center', color: '#999' }}>
+                        <CustomText style={{ textAlign: 'center', color: '#999' }}>
                             Заданий пока нет
-                        </Text>
+                        </CustomText>
                     )}
 
                     {tasks.map(task => (
@@ -196,14 +197,14 @@ export default function Tasks({ id, goBack, balance, goToBalance, user }) {
                                 gap: 8,
                             }}
                         >
-                            <Text weight="medium" style={{ fontSize: 16, color: '#311f68' }}>
+                            <CustomText weight="medium" style={{ fontSize: 16, color: '#311f68' }}>
                                 {task.title}
-                            </Text>
+                            </CustomText>
 
-                            <Text style={{ fontSize: 14, color: '#666', display: 'flex', alignItems: 'center', gap: 4 }}>
+                            <CustomText style={{ fontSize: 14, color: '#666', display: 'flex', alignItems: 'center', gap: 4 }}>
                                 <img src={coinIcon} alt="coins" style={{ height: 25, width: 25 }} />
                                 {task.reward}
-                            </Text>
+                            </CustomText>
 
                             {task.status === null && (
                                 <Button
@@ -217,15 +218,15 @@ export default function Tasks({ id, goBack, balance, goToBalance, user }) {
                             )}
 
                             {task.status === 'pending' && (
-                                <Text style={{ color: '#ff9800', fontSize: 13, marginTop: 8 }}>
+                                <CustomText style={{ color: '#ff9800', fontSize: 13, marginTop: 8 }}>
                                 ⏳ На проверке
-                                </Text>
+                                </CustomText>
                             )}
 
                             {task.status === 'accepted' && (
-                                <Text style={{ color: '#4caf50', fontSize: 13, marginTop: 8 }}>
+                                <CustomText style={{ color: '#4caf50', fontSize: 13, marginTop: 8 }}>
                                 ✅ Принято
-                                </Text>
+                                </CustomText>
                             )}
 
                             {task.status === 'rejected' && (

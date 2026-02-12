@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Panel, Div, Text, Button, Card } from '@vkontakte/vkui';
+import { Panel, Div, Button, Card } from '@vkontakte/vkui';
+import { CustomText } from './CustomTypography';
 import { Icon28ChevronBack } from '@vkontakte/icons';
 import bridge from '@vkontakte/vk-bridge';
 
@@ -74,7 +75,7 @@ export default function Balance({ id, goBack, balance, goToBalance }) {
                     }}
                 >
                     <img src={coinIcon} alt="coins" style={{ height: 25, width: 25 }} />
-                    <Text
+                    <CustomText
                         weight="3"
                         style={{
                             fontSize: 14,
@@ -83,14 +84,14 @@ export default function Balance({ id, goBack, balance, goToBalance }) {
                         }}
                     >
                         {balance}
-                    </Text>
+                    </CustomText>
                 </div>
             </Div>
 
             <Div style={{ paddingTop: 64, paddingBottom: 32, backgroundColor: '#ffffff' }}>
-                <Text weight="3" style={{ fontSize: 20, color: '#311f68', textAlign: 'center', marginBottom: 16 }}>
+                <CustomText weight="3" style={{ fontSize: 20, color: '#311f68', textAlign: 'center', marginBottom: 16 }}>
                     Рейтинг пользователей
-                </Text>
+                </CustomText>
 
                 {/* Таблица рейтинга */}
                 {usersList.map((u, index) => {
@@ -109,15 +110,15 @@ export default function Balance({ id, goBack, balance, goToBalance }) {
                                 backgroundColor: isCurrentUser ? '#f0edff' : '#ffffff',
                             }}
                         >
-                            <Text weight="3" style={{ fontSize: 16, color: '#311f68', width: 30 }}>
+                            <CustomText weight="3" style={{ fontSize: 16, color: '#311f68', width: 30 }}>
                                 {index + 1}.
-                            </Text>
-                            <Text weight="3" style={{ fontSize: 16, color: '#311f68', flex: 1 }}>
+                            </CustomText>
+                            <CustomText weight="3" style={{ fontSize: 16, color: '#311f68', flex: 1 }}>
                                 {u.last_name} {u.first_name}
-                            </Text>
-                            <Text weight="3" style={{ fontSize: 16, color: '#4000ff' }}>
+                            </CustomText>
+                            <CustomText weight="3" style={{ fontSize: 16, color: '#4000ff' }}>
                                 {u.totalEarned}
-                            </Text>
+                            </CustomText>
                         </Card>
                     );
                 })}

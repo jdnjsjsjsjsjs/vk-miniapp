@@ -1,5 +1,6 @@
-import { Panel, Div, Text, Button, Card} from '@vkontakte/vkui';
+import { Panel, Div, Button, Card} from '@vkontakte/vkui';
 import { Icon28ChevronBack } from '@vkontakte/icons';
+import { CustomText } from './CustomTypography';
 
 import coinsIcon from './imgs/coins.png'
 
@@ -64,7 +65,7 @@ export default function Balance({ id, goBack, balance, goToTasks }) {
         >
           <img src={coinsIcon} alt="coins" style={{ height: 80, width: 80 }} />
 
-          <Text
+          <CustomText
             weight="3"
             style={{
               marginTop: 8,
@@ -74,9 +75,9 @@ export default function Balance({ id, goBack, balance, goToTasks }) {
             }}
           >
             Ваш баланс
-          </Text>
+          </CustomText>
 
-          <Text
+          <CustomText
             weight="3"
             style={{
               marginTop: 4,
@@ -86,7 +87,7 @@ export default function Balance({ id, goBack, balance, goToTasks }) {
             }}
           >
             {balance}
-          </Text>
+          </CustomText>
 
           <div
             onClick={goToTasks}
@@ -101,7 +102,7 @@ export default function Balance({ id, goBack, balance, goToTasks }) {
               cursor: 'pointer',
             }}
           >
-            <Text
+            <CustomText
               weight="1"
               style={{
                 fontSize: 14,
@@ -109,7 +110,7 @@ export default function Balance({ id, goBack, balance, goToTasks }) {
               }}
             >
               Перейти к заданиям
-            </Text>
+            </CustomText>
           </div>
         </Card>
       </Div>

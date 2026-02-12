@@ -1,4 +1,5 @@
-import { Panel, Div, Text, Button, Card } from '@vkontakte/vkui';
+import { Panel, Div, Button, Card } from '@vkontakte/vkui';
+import { CustomText } from './CustomTypography';
 import { Icon28ChevronBack } from '@vkontakte/icons';
 
 import coinsIcon from './imgs/coins.png'
@@ -86,7 +87,7 @@ export default function Profile({ id, goBack, user, balance, totalEarned, goToBa
         }}
       >
         <img src={coinIcon} alt="coins" style={{ height: 25, width: 25 }} />
-        <Text
+        <CustomText
           weight="1"
           style={{
             fontSize: 14,
@@ -95,7 +96,7 @@ export default function Profile({ id, goBack, user, balance, totalEarned, goToBa
           }}
         >
           {balance}
-        </Text>
+        </CustomText>
       </div>
     </Div>
 
@@ -114,9 +115,9 @@ export default function Profile({ id, goBack, user, balance, totalEarned, goToBa
           />
         )}
 
-        <Text weight="1" style={{ fontSize: 18, color: '#000' }}>
+        <CustomText weight="1" style={{ fontSize: 18, color: '#000' }}>
           {user?.first_name} {user?.last_name}
-        </Text>
+        </CustomText>
 
         <Div 
             style={{
@@ -124,7 +125,7 @@ export default function Profile({ id, goBack, user, balance, totalEarned, goToBa
                 color: '#fff',
             }}
         >
-            <Text
+            <CustomText
               weight="3"
               style={{
                 marginBottom: 12,
@@ -135,7 +136,7 @@ export default function Profile({ id, goBack, user, balance, totalEarned, goToBa
               }}
             >
               Достижения
-            </Text>
+            </CustomText>
 
             <Div
               style={{
@@ -175,7 +176,7 @@ export default function Profile({ id, goBack, user, balance, totalEarned, goToBa
                       {ach.icon}
                     </div>
 
-                    <Text
+                    <CustomText
                       style={{
                         fontSize: 14,
                         color: '#000',
@@ -183,7 +184,7 @@ export default function Profile({ id, goBack, user, balance, totalEarned, goToBa
                       }}
                     >
                       {ach.title}
-                    </Text>
+                    </CustomText>
                   </Div>
 
                   {!ach.unlocked && (

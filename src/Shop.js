@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'; 
-import { Panel, Div, Text, Button, ModalCard, ModalRoot, Slider, Input } from '@vkontakte/vkui';
+import { Panel, Div, Button, ModalCard, ModalRoot, Slider, Input } from '@vkontakte/vkui';
+import { CustomText } from './CustomTypography';
 import { Icon28ChevronBack } from '@vkontakte/icons';
 
 import coinIcon from './imgs/coin.png'
@@ -233,10 +234,10 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
                             marginBottom: 8,
                         }}
                     />
-                    <Text style={{ marginBottom: 12 }}>
+                    <CustomText style={{ marginBottom: 12 }}>
                         {activeItem?.description}
-                    </Text>
-                    <Text weight="3"
+                    </CustomText>
+                    <CustomText weight="3"
                         style={{
                             fontSize: 18,
                             color: '#4000ff',
@@ -244,7 +245,7 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
                         }}    
                     >
                         Цена: {activeItem?.price}
-                    </Text>
+                    </CustomText>
 
                     {isAdmin && (
                         <Div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
@@ -315,7 +316,7 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
                     />
 
                     {uploading && (
-                        <Text style={{ marginBottom: 8 }}>Загрузка изображения…</Text>
+                        <CustomText style={{ marginBottom: 8 }}>Загрузка изображения…</CustomText>
                     )}
 
                     {tempImage && (
@@ -411,7 +412,7 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
                     />
 
                     {uploading && (
-                        <Text style={{ marginBottom: 8 }}>Загрузка изображения…</Text>
+                        <CustomText style={{ marginBottom: 8 }}>Загрузка изображения…</CustomText>
                     )}
 
                     {tempImage && (
@@ -437,9 +438,9 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
                     header="Удалить товар?"
                     onClose={() => setActiveModal(null)}
                 >
-                    <Text style={{ marginBottom: 12 }}>
+                    <CustomText style={{ marginBottom: 12 }}>
                         Товар <b>{activeItem?.title}</b> будет удалён навсегда.
-                    </Text>
+                    </CustomText>
 
                     <Div style={{ display: 'flex', gap: 8 }}>
                         <Button mode="destructive" stretched onClick={deleteItem}>
@@ -512,7 +513,7 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
                         }}
                     >
                         <img src={coinIcon} alt="coins" style={{ height: 25, width: 25 }} />
-                        <Text
+                        <CustomText
                             weight="3"
                             style={{
                                 fontSize: 14,
@@ -521,14 +522,14 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
                             }}
                         >
                             {balance}
-                        </Text>
+                        </CustomText>
                     </div>
                 </Div>
 
                 <Div style={{ backgroundColor: '#fff', borderRadius: 12, padding: 16, margin: '16px' }}>
-                    <Text weight="medium" style={{ marginBottom: 8, color: '#311f68' }}>
+                    <CustomText weight="medium" style={{ marginBottom: 8, color: '#311f68' }}>
                         Фильтр по цене
-                    </Text>
+                    </CustomText>
 
                     <Slider
                         min={priceBounds[0]}
@@ -610,18 +611,18 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
                                     }}
                                 />
 
-                                <Text weight="medium" style={{ marginBottom: 4 }}>
+                                <CustomText weight="medium" style={{ marginBottom: 4 }}>
                                     {item.title}
-                                </Text>
+                                </CustomText>
 
-                                <Text weight='3' style={{ fontSize: 16, color: '#4000ff', marginBottom: 6 }}>
+                                <CustomText weight='3' style={{ fontSize: 16, color: '#4000ff', marginBottom: 6 }}>
                                     {item.price}
-                                </Text>
+                                </CustomText>
 
                                 {isOwned ? (
-                                    <Text style={{ color: '#4caf50', fontWeight: 600 }}>
+                                    <CustomText style={{ color: '#4caf50', fontWeight: 600 }}>
                                         ✔ Куплено
-                                    </Text>
+                                    </CustomText>
                                 ) : (
                                     <Button
                                         size="m"

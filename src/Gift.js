@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import bridge from '@vkontakte/vk-bridge';
-import { Panel, Div, Text, Button, Card } from '@vkontakte/vkui';
+import { Panel, Div, Button, Card } from '@vkontakte/vkui';
+import { CustomText } from './CustomTypography';
 import { Icon28ChevronBack } from '@vkontakte/icons';
 
 import coinsIcon from './imgs/coins.png'
@@ -138,7 +139,7 @@ export default function Gift({ id, goBack, balance, goToBalance}) {
                     }}
                 >
                     <img src={coinIcon} alt="coins" style={{ height: 25, width: 25 }} />
-                    <Text
+                    <CustomText
                         weight="1"
                         style={{
                             fontSize: 14,
@@ -147,7 +148,7 @@ export default function Gift({ id, goBack, balance, goToBalance}) {
                         }}
                     >
                         {balance}
-                    </Text>
+                    </CustomText>
                 </div>
             </Div>
 
@@ -165,7 +166,7 @@ export default function Gift({ id, goBack, balance, goToBalance}) {
                     marginRight: 16,
                 }}
             >
-                <Text
+                <CustomText
                     weight="1"
                     style={{
                     marginBottom: 12,
@@ -175,9 +176,9 @@ export default function Gift({ id, goBack, balance, goToBalance}) {
                     }}
                 >
                     {canClaim ? 'Заберите приз!' : 'Приходите завтра'}
-                </Text>
+                </CustomText>
 
-                <Text
+                <CustomText
                     style={{
                         textAlign: 'center',
                         fontSize: 20,
@@ -185,7 +186,7 @@ export default function Gift({ id, goBack, balance, goToBalance}) {
                     }}
                 >
                     {timeLeft}
-                </Text>
+                </CustomText>
             </Card>
 
             <Div
@@ -219,7 +220,7 @@ export default function Gift({ id, goBack, balance, goToBalance}) {
                             <Div style={{ padding: 0 }}>
                                 <img src={coinsIcon} alt="coins" style={{ height: 50, width: 50 }} />
 
-                                <Text
+                                <CustomText
                                     weight="1"
                                     style={{
                                         fontSize: 14,
@@ -227,9 +228,9 @@ export default function Gift({ id, goBack, balance, goToBalance}) {
                                     }}
                                 >
                                     День {day}
-                                </Text>
+                                </CustomText>
 
-                                <Text
+                                <CustomText
                                     weight="1"
                                     style={{
                                         marginTop: 2,
@@ -238,7 +239,7 @@ export default function Gift({ id, goBack, balance, goToBalance}) {
                                     }}
                                 >
                                     +{reward}
-                                </Text>
+                                </CustomText>
 
                                 {isCurrent && canClaim && (
                                     <div
@@ -254,7 +255,7 @@ export default function Gift({ id, goBack, balance, goToBalance}) {
                                             cursor: 'pointer',
                                         }}
                                     >
-                                        <Text
+                                        <CustomText
                                         weight="1"
                                         style={{
                                             fontSize: 14,
@@ -262,7 +263,7 @@ export default function Gift({ id, goBack, balance, goToBalance}) {
                                         }}
                                         >
                                             Забрать
-                                        </Text>
+                                        </CustomText>
                                     </div>
                                 )}
                             </Div>

@@ -1,7 +1,8 @@
 // AdminTasks.js
 import { useState, useEffect } from 'react';
-import { Panel, Div, Text, Button, ModalRoot, ModalCard, Input, Textarea } from '@vkontakte/vkui';
+import { Panel, Div, Button, ModalRoot, ModalCard, Input, Textarea } from '@vkontakte/vkui';
 import { Icon28ChevronBack } from '@vkontakte/icons'
+import { CustomText } from './CustomTypography';
 
 import coinIcon from './imgs/coin.png'
 
@@ -196,9 +197,9 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
           subheader={activeTask?.question}
         >
           {answers.length === 0 ? (
-            <Text style={{ color: '#999' }}>
+            <CustomText style={{ color: '#999' }}>
               Ответов пока нет
-            </Text>
+            </CustomText>
           ) : (
             answers.map(a => (
               <Div
@@ -215,10 +216,10 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
                   setActiveModal('answer');
                 }}
               >
-                <Text style={{ color: '#8c64d7' }}>
+                <CustomText style={{ color: '#8c64d7' }}>
                   {a.first_name} {a.last_name}
-                </Text>
-                <Text
+                </CustomText>
+                <CustomText
                   style={{
                     fontSize: 13,
                     fontWeight: 500,
@@ -233,7 +234,7 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
                   {a.status === 'pending' && '⏳ На проверке'}
                   {a.status === 'accepted' && '✅ Принято'}
                   {a.status === 'rejected' && '❌ Отклонено'}
-                </Text>
+                </CustomText>
               </Div>
             ))
           )}
@@ -272,7 +273,7 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
             )
           }
         >
-          <Text>{activeAnswer?.answer}</Text>
+          <CustomText>{activeAnswer?.answer}</CustomText>
         </ModalCard>
 
         <ModalCard
@@ -299,20 +300,20 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
           }
         >
           {/* Динамический контент вместо header/subheader */}
-          <Text weight="2" style={{ marginBottom: 8 }}>
+          <CustomText weight="2" style={{ marginBottom: 8 }}>
             {confirmAction === 'accept'
               ? 'Подтвердить принятие'
               : confirmAction === 'reject'
               ? 'Подтвердить отклонение'
               : ''}
-          </Text>
-          <Text style={{ color: '#666' }}>
+          </CustomText>
+          <CustomText style={{ color: '#666' }}>
             {confirmAction === 'accept'
               ? 'Пользователю будут начислены баллы'
               : confirmAction === 'reject'
               ? 'Ответ пользователя будет отклонён'
               : ''}
-          </Text>
+          </CustomText>
         </ModalCard>
 
         {/* Модалка редактирования */}
@@ -361,9 +362,9 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
           header="Удалить задание?"
           onClose={() => setActiveModal(null)}
         >
-          <Text style={{ marginBottom: 12 }}>
+          <CustomText style={{ marginBottom: 12 }}>
             Задание <b>{deleteTaskTarget?.title}</b> будет удалено навсегда.
-          </Text>
+          </CustomText>
           <Div style={{ display: 'flex', gap: 8 }}>
             <Button mode="destructive" stretched onClick={deleteTask}>
               Удалить
@@ -422,7 +423,7 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
                 }}
             >
                 <img src={coinIcon} alt="coins" style={{ height: 25, width: 25 }} />
-                <Text
+                <CustomText
                     weight="3"
                     style={{
                         fontSize: 14,
@@ -431,11 +432,11 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
                     }}
                 >
                     {balance}
-                </Text>
+                </CustomText>
             </div>
         </Div>
         <Div style={{ paddingTop: 56, padding: 16, backgroundColor: '#ffffff', minHeight: '100vh' }}>
-          <Text weight="2" style={{ fontSize: 20, color: '#8c64d7' }}>Админка заданий</Text>
+          <CustomText weight="2" style={{ fontSize: 20, color: '#8c64d7' }}>Админка заданий</CustomText>
             <Button
               size="l"
               mode="primary"
@@ -451,9 +452,9 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
               ➕ Добавить задание
             </Button>
             {tasks.length === 0 ? (
-              <Text style={{ marginTop: 16, color: '#999' }}>
+              <CustomText style={{ marginTop: 16, color: '#999' }}>
                 Заданий пока нет
-              </Text>
+              </CustomText>
             ) : (
               tasks.map(task => (
                 <Div
@@ -525,11 +526,11 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
                     {task.pendingCount}
                   </div>
 
-                  <Text weight="medium" style={{ fontSize: 16, color: '#8c64d7' }}>{task.title}</Text>
-                  <Text weight="medium" style={{ fontSize: 12, color: '#8c64d7' }}>{task.question}</Text>
-                  <Text style={{ fontSize: 14, color: '#666', marginTop: 4, display: 'flex', alignItems: 'center', gap: 4 }}>
+                  <CustomText weight="medium" style={{ fontSize: 16, color: '#8c64d7' }}>{task.title}</CustomText>
+                  <CustomText weight="medium" style={{ fontSize: 12, color: '#8c64d7' }}>{task.question}</CustomText>
+                  <CustomText style={{ fontSize: 14, color: '#666', marginTop: 4, display: 'flex', alignItems: 'center', gap: 4 }}>
                     <img src={coinIcon} alt="coins" style={{ height: 25, width: 25 }} /> {task.reward}
-                  </Text>
+                  </CustomText>
 
                   <Button
                     mode="tertiary"

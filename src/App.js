@@ -5,9 +5,9 @@ import { View,
   Div, 
   Gallery,
   Card,
-  Text,
   Accordion,
   Separator } from '@vkontakte/vkui';
+import { CustomText } from './CustomTypography';
 
 import Balance from './Balance';
 import Gift from './Gift';
@@ -16,7 +16,6 @@ import Rating from './Rating';
 import Shop from './Shop';
 import Profile from './Profile';
 import AdminTasks from './AdminTasks';
-import Favorites from './Favorites';
 
 import image1 from './imgs/1.png'
 import coinsIcon from './imgs/coins.png'
@@ -48,9 +47,9 @@ export default function App() {
   const getPlaceStyles = (place) => {
     switch (place) {
       case 1:
-        return { backgroundColor: '#8c64d7', color: '#fff' };
+        return { backgroundColor: '#8c64d7', color: '#fff', fontWeight: 700 };
       case 2:
-        return { backgroundColor: '#ceaeff', color: '#000' };
+        return { backgroundColor: '#ceaeff', color: '#000', fontWeight: 600 };
       case 3:
         return { backgroundColor: '#eaddff', color: '#000' };
       default:
@@ -203,7 +202,6 @@ export default function App() {
     setActivePanel('shop');
   };
   const goToProfile = () => setActivePanel('profile');
-  const goToFavorites = () => setActivePanel('favorites');
   const goToTasks = () => {
     if (user?.role === 'admin') {
       setActivePanel('adminTasks');
@@ -230,6 +228,7 @@ export default function App() {
   })();
 
   return (
+    <div style={{ fontFamily: "'Noto Sans Lao', sans-serif" }}>
     <View activePanel={activePanel}>
       <Panel id="main">
 
@@ -284,8 +283,8 @@ export default function App() {
             }}
           >
             <img src={coinIcon} alt="coins" style={{ height: 25, width: 25 }} />
-            <Text
-              weight="1"
+            <CustomText
+            weight='1'
               style={{
                 fontSize: 14,
                 color: '#8c64d7',
@@ -293,7 +292,7 @@ export default function App() {
               }}
             >
               {balance}
-            </Text>
+            </CustomText>
           </div>
         </Div>
 
@@ -354,12 +353,12 @@ export default function App() {
             >
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <div>
-                  <Text weight="1" style={{ fontSize: 12, color: '#000', paddingBottom: 3 }}>
+                  <CustomText weight="1" style={{ fontSize: 12, color: '#000', paddingBottom: 3 }}>
                     Баланс
-                  </Text>
-                  <Text weight="1" style={{ fontSize: 30, color: '#8c64d7' }}>
+                  </CustomText>
+                  <CustomText weight="1" style={{ fontSize: 30, color: '#8c64d7' }}>
                     {balance}
-                  </Text>
+                  </CustomText>
                 </div>
                 <img
                   src={coinsIcon}
@@ -389,9 +388,9 @@ export default function App() {
                   zIndex: 2,
                 }}
               >
-                <Text weight="1" style={{ fontSize: 12, color: '#000', paddingBottom: 3 }}>
+                <CustomText weight="1" style={{ fontSize: 12, color: '#000', paddingBottom: 3 }}>
                   Ежедневный вход
-                </Text>
+                </CustomText>
 
                 <div
                   onClick={goToBalance}
@@ -403,7 +402,7 @@ export default function App() {
                     cursor: 'pointer',
                   }}
                 >
-                  <Text
+                  <CustomText
                     weight="1"
                     style={{
                       fontSize: 12,
@@ -411,7 +410,7 @@ export default function App() {
                     }}
                   >
                     {canClaimGift ? 'получить' : giftTimeLeft}
-                  </Text>
+                  </CustomText>
                 </div>
               </div>
 
@@ -451,7 +450,7 @@ export default function App() {
               }}
             />
 
-            <Text
+            <CustomText
               weight="1"
               style={{
                 fontSize: 12,
@@ -461,7 +460,7 @@ export default function App() {
               }}
             >
               Достижения
-            </Text>
+            </CustomText>
           </Card>
         </Div>
 
@@ -470,7 +469,7 @@ export default function App() {
             padding: '16px 16px 16px 16px',
             backgroundColor: '#ceaeff',
             display: 'grid',
-            gridTemplateColumns: '5fr 2fr',
+            gridTemplateColumns: '1fr',
             gap: '12px',
           }}
         >
@@ -503,19 +502,19 @@ export default function App() {
 
             <div style={{ zIndex: 2 }}>
               {/* Заголовок */}
-              <Text
+              <CustomText
                 weight="1"
                 style={{ fontSize: 12, color: '#000', paddingBottom: 3 }}
               >
                 Задания
-              </Text>
+              </CustomText>
 
               {/* Последние задания */}
-              <div style={{ marginTop: 10, display: 'flex', flexDirection: 'column', gap: 6, width: 210 }}>
+              <div style={{ marginTop: 10, display: 'flex', flexDirection: 'column', gap: 6, width: 400, paddingBottom: 15 }}>
                 {lastTasks.length === 0 ? (
-                  <Text weight='1' style={{ fontSize: 14, color: '#000', textAlign: 'center', marginTop: 35 }}>
+                  <CustomText weight='1' style={{ fontSize: 14, color: '#000', textAlign: 'center', marginTop: 35 }}>
                     Заданий пока нет
-                  </Text>
+                  </CustomText>
                 ) : (
                   lastTasks.map(task => (
                     <div
@@ -564,46 +563,6 @@ export default function App() {
               </div>
             </div>
           </Card>
-
-          <Card
-            mode="shadow"
-            style={{
-              borderRadius: 12,
-              padding: '12px',
-              backgroundColor: '#ffffff',
-              display: 'flex',
-              flexDirection: 'column',
-              cursor: 'pointer',
-            }}
-            onClick={goToFavorites}
-          >
-            <img
-              src={tasksIcon}
-              alt="tasks"
-              style={{
-                position: 'absolute',
-                top: 0,
-                right: -15,
-                width: 150,
-                height: 150,
-                objectFit: 'contain',
-                pointerEvents: 'none',
-                zIndex: 1,
-                overflow: 'hidden',
-              }}
-            />
-            <div style={{ position: 'relative', zIndex: 2 }}>
-              <Text weight="1" 
-              style={{
-                fontSize: 12,
-                color: '#000',
-                marginTop: 142,
-                marginLeft: 4,
-              }}>
-                Избранное
-              </Text>
-            </div>
-          </Card>
         </Div>
 
         <Div
@@ -641,7 +600,7 @@ export default function App() {
 
             <div style={{ position: 'relative', marginLeft: isUserInTop3 ? 160 : 187 }}>
               {/* Заголовок */}
-              <Text
+              <CustomText
                 weight="1"
                 style={{
                   fontSize: 12,
@@ -649,7 +608,7 @@ export default function App() {
                 }}
               >
                 Рейтинг
-              </Text>
+              </CustomText>
 
               {/* Таблица рейтинга */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 6 }}>
@@ -669,7 +628,6 @@ export default function App() {
                           padding: '4px 12px',
                           borderRadius: 999,
                           backgroundColor: user && user.id === u.id ? '#f0edff' : '#f7f7f7',
-                          fontWeight: user && user.id === u.id ? '700' : '600',
                           color: '#8c64d7',
                           fontSize: 11,
                           ...PlaceStyle,
@@ -724,11 +682,11 @@ export default function App() {
               padding: '12px',
             }}
           >
-            <Text weight="1" style={{ fontSize: 12, color: '#000', lineHeight: '16px' }}>
+            <CustomText weight="1" style={{ fontSize: 12, color: '#000', lineHeight: '16px' }}>
               Призы и награды
-            </Text>
+            </CustomText>
 
-            <Text
+            <CustomText
               style={{
                 fontSize: 10,
                 color: '#000',
@@ -736,7 +694,7 @@ export default function App() {
               }}
             >
               выбирай и получай за баллы
-            </Text>
+            </CustomText>
           </Card>
           {/* Карточки */}
           <Div
@@ -774,8 +732,8 @@ export default function App() {
                   pointerEvents: 'none',
                 }}
               />
-              <Text weight='1' style={{fontSize: 14, color: '#000', lineHeight: '14px' }} >до 100</Text>
-              <Text style={{fontSize: 12, color: '#000', lineHeight: '14px' }}>баллов</Text>
+              <CustomText weight='1' style={{fontSize: 14, color: '#000', lineHeight: '14px' }} >до 100</CustomText>
+              <CustomText style={{fontSize: 12, color: '#000', lineHeight: '14px' }}>баллов</CustomText>
             </Card>
 
             <Card mode="shadow" 
@@ -802,8 +760,8 @@ export default function App() {
                   pointerEvents: 'none',
                 }}
               />
-              <Text weight='1' style={{fontSize: 14, color: '#000', lineHeight: '14px' }} >от 100</Text>
-              <Text style={{fontSize: 12, color: '#000', lineHeight: '14px' }}>баллов</Text>
+              <CustomText weight='1' style={{fontSize: 14, color: '#000', lineHeight: '14px' }} >от 100</CustomText>
+              <CustomText style={{fontSize: 12, color: '#000', lineHeight: '14px' }}>баллов</CustomText>
             </Card>
 
             <Card mode="shadow" 
@@ -830,8 +788,8 @@ export default function App() {
                   pointerEvents: 'none',
                 }}
               />
-              <Text weight='1' style={{fontSize: 14, color: '#000', lineHeight: '14px' }} >от 500</Text>
-              <Text style={{fontSize: 12, color: '#000', lineHeight: '14px' }}>баллов</Text>
+              <CustomText weight='1' style={{fontSize: 14, color: '#000', lineHeight: '14px' }} >от 500</CustomText>
+              <CustomText style={{fontSize: 12, color: '#000', lineHeight: '14px' }}>баллов</CustomText>
             </Card>
           </Div>
         </Div>
@@ -845,24 +803,24 @@ export default function App() {
               padding: '16px',
             }}
           >
-            <Text weight="1" style={{ fontSize: 14, color: '#000' }}>
+            <CustomText weight="1" style={{ fontSize: 14, color: '#000' }}>
               Вопросы и ответы
-            </Text>
+            </CustomText>
             {/* Вопрос 1 */}
             <Accordion
               expanded={openedFaq === 1}
               onChange={() => setOpenedFaq(openedFaq === 1 ? null : 1)}
             >
               <Accordion.Summary>
-                <Text weight="3" style={{ fontSize: 13, color: '#000' }}>
+                <CustomText weight="3" style={{ fontSize: 13, color: '#000' }}>
                   как получить баллы?
-                </Text>
+                </CustomText>
               </Accordion.Summary>
               <Accordion.Content>
                 <Div>
-                  <Text style={{ fontSize: 11, color: '#000', lineHeight: '12px' }}>
+                  <CustomText style={{ fontSize: 11, color: '#000', lineHeight: '12px' }}>
                     Баллы начисляются за выполнение заданий и активность в приложении.
-                  </Text>
+                  </CustomText>
                 </Div>
               </Accordion.Content>
             </Accordion>
@@ -877,15 +835,15 @@ export default function App() {
               onChange={() => setOpenedFaq(openedFaq === 2 ? null : 2)}
             >
               <Accordion.Summary>
-                <Text weight="3" style={{ fontSize: 13, color: '#000' }}>
+                <CustomText weight="3" style={{ fontSize: 13, color: '#000' }}>
                   где посмотреть мои награды?
-                </Text>
+                </CustomText>
               </Accordion.Summary>
               <Accordion.Content>
                 <Div>
-                  <Text style={{ fontSize: 11, color: '#000', lineHeight: '12px' }}>
+                  <CustomText style={{ fontSize: 11, color: '#000', lineHeight: '12px' }}>
                     Награды отображаются в разделе Призы и подарки.
-                  </Text>
+                  </CustomText>
                 </Div>
               </Accordion.Content>
             </Accordion>
@@ -900,15 +858,15 @@ export default function App() {
               onChange={() => setOpenedFaq(openedFaq === 3 ? null : 3)}
             >
               <Accordion.Summary>
-                <Text weight="3" style={{ fontSize: 13, color: '#000' }}>
+                <CustomText weight="3" style={{ fontSize: 13, color: '#000' }}>
                   как обменять баллы на подарки?
-                </Text>
+                </CustomText>
               </Accordion.Summary>
               <Accordion.Content>
                 <Div>
-                  <Text style={{ fontSize: 11, color: '#000', lineHeight: '12px' }}>
+                  <CustomText style={{ fontSize: 11, color: '#000', lineHeight: '12px' }}>
                     Выберите подарок и следуйте инструкции по обмену баллов.
-                  </Text>
+                  </CustomText>
                 </Div>
               </Accordion.Content>
             </Accordion>
@@ -940,9 +898,7 @@ export default function App() {
 
       {/* Панель профиля */}
       <Profile id="profile" goBack={goBack} user={user} balance={balance} totalEarned={totalEarned} goToBalance={goToBalance} />
-
-      {/* Панель избранных заданий */}
-      <Favorites id="favorites" goBack={goBack} balance={balance} goToBalance={goToBalance} user={user} />
     </View>
+    </div>
   )
 }
