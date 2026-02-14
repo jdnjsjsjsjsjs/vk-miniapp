@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'; 
-import { Panel, Div, Button, ModalCard, ModalRoot, Slider, Input } from '@vkontakte/vkui';
+import { Panel, Div, Button, ModalCard, ModalRoot, Slider, Input, Badge } from '@vkontakte/vkui';
 import { CustomText } from './CustomTypography';
-import { Icon28ChevronBack } from '@vkontakte/icons';
+import { Icon28ChevronBack, Icon28ShoppingCartOutline } from '@vkontakte/icons';
 
 import coinIcon from './imgs/coin.png'
 
@@ -16,7 +16,7 @@ const inputStyle = {
 
 export default function Shop({ id, goBack, balance, goToBalance, user, initialFilter }) {
     const [items, setItems] = useState([]);
-    const [ownedItems, setOwnedItems] = useState([]);
+    const [ownedItems, setOwnedItems] = useState({});
     const [activeItem, setActiveItem] = useState(null);
     const [activeModal, setActiveModal] = useState(null);
     const [editItem, setEditItem] = useState(null);
@@ -25,6 +25,7 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
     const [priceRange, setPriceRange] = useState([0, 0]);
     const [uploading, setUploading] = useState(false);
     const [tempImage, setTempImage] = useState(null);
+    const [cart, setCart] = useState({});
 
     const [newItem, setNewItem] = useState({
         title: '',
@@ -36,38 +37,58 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
     const isAdmin = user?.role === 'admin';
 
     useEffect(() => {
-        const url = isAdmin
-            ? `http://localhost:3001/api/admin/shop?userId=${user.id}`
-            : `http://localhost:3001/api/shop?userId=${user.id}`;
+        const fetchShop = async () => {
+            const url = isAdmin
+                ? `http://localhost:3001/api/admin/shop?userId=${user.id}`
+                : `http://localhost:3001/api/shop?userId=${user.id}`;
 
-        fetch(url)
-            .then(res => res.json())
-            .then(data => {
-                const loadedItems = isAdmin ? data : data.items;
-                const owned = isAdmin ? [] : data.ownedItems;
+            const res = await fetch(url);
+            const data = await res.json();
 
-                setItems(loadedItems);
+            const loadedItems = isAdmin ? data : data.items;
+            setItems(loadedItems);
+
+            if (!isAdmin) {
+                // Owned items
+                const owned = {};
+                data.ownedItems?.forEach(item => {
+                    owned[String(item.item_id)] = item.quantity;
+                });
                 setOwnedItems(owned);
 
-                if (loadedItems.length) {
-                    const prices = loadedItems.map(i => i.price);
-                    const min = Math.min(...prices);
-                    const max = Math.max(...prices);
+                const cartRes = await fetch(
+                    `http://localhost:3001/api/cart/${user.id}`
+                );
+                const cartData = await cartRes.json();
 
-                    setPriceBounds([min, max]);
-                    setPriceRange([min, max]);
+                // Cart items
+                const cartObj = {};
+                cartData.cart?.forEach(item => {
+                    cartObj[String(item.item_id)] = item.quantity;
+                });
+                setCart(cartObj);
+            }
 
-                    if (initialFilter) {
-                        const filterMin = Math.max(initialFilter.min ?? min, min);
-                        const filterMax =
-                            initialFilter.max === Infinity
-                            ? max
-                            : Math.min(initialFilter.max, max);
+            // Настройка диапазона цен
+            if (loadedItems.length) {
+                const prices = loadedItems.map(i => i.price);
+                const min = Math.min(...prices);
+                const max = Math.max(...prices);
+                setPriceBounds([min, max]);
 
-                        setPriceRange([filterMin, filterMax]);
-                    }
+                let rangeMin = min;
+                let rangeMax = max;
+
+                if (initialFilter) {
+                    rangeMin = Math.max(initialFilter.min ?? min, min);
+                    rangeMax = initialFilter.max === Infinity ? max : Math.min(initialFilter.max, max);
                 }
-            });
+
+                setPriceRange([rangeMin, rangeMax]);
+            }
+        };
+
+        fetchShop();
     }, [user.id, isAdmin, initialFilter]);
 
     useEffect(() => {
@@ -210,6 +231,27 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
             alert('Ошибка загрузки');
         } finally {
             setUploading(false);
+        }
+    };
+
+    const addToCart = (itemId) => {
+        fetch('http://localhost:3001/api/cart/add', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: user.id, itemId, quantity: 1 }),
+        }).then(() => setCart(prev => ({ ...prev, [String(itemId)]: (prev[String(itemId)] || 0) + 1 })));
+    };
+
+    const removeFromCart = (itemId) => {
+        const itemKey = String(itemId);
+        const newQty = (cart[itemKey] || 0) - 1;
+
+        if (newQty <= 0) {
+            const newCart = { ...cart };
+            delete newCart[itemKey];
+            setCart(newCart);
+        } else {
+            setCart(prev => ({ ...prev, [itemKey]: newQty }));
         }
     };
 
@@ -497,32 +539,55 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
                     >
                         Назад
                     </Button>
-                                
-                    {/* Баланс-капсула */}
-                    <div
-                        onClick={goToBalance}
-                        style={{
-                            marginLeft: 'auto',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 6,
-                            padding: '2px 18px 2px 2px',
-                            backgroundColor: '#f2f2f2',
-                            borderRadius: 999,
-                            cursor: 'pointer',
-                        }}
-                    >
-                        <img src={coinIcon} alt="coins" style={{ height: 25, width: 25 }} />
-                        <CustomText
-                            weight="3"
+
+                    {/* Контейнер для корзины и баланса */}
+                    <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 12 }}>
+                        {/* Кнопка корзины */}
+                        <div style={{ position: 'relative' }}>
+                            <Button
+                                mode="tertiary"
+                                size="l"
+                                onClick={() => setActiveModal('cart')}
+                                style={{ color: '#fff' }}
+                            >
+                                <Icon28ShoppingCartOutline />
+                            </Button>
+
+                            {Object.values(cart).reduce((a, b) => a + b, 0) > 0 && (
+                                <Badge
+                                    style={{ position: 'absolute', top: -4, right: -4 }}
+                                    mode="prominent"
+                                >
+                                    {Object.values(cart).reduce((a, b) => a + b, 0)}
+                                </Badge>
+                            )}
+                        </div>
+
+                        {/* Баланс-капсула */}
+                        <div
+                            onClick={goToBalance}
                             style={{
-                                fontSize: 14,
-                                color: '#4000ff',
-                                lineHeight: '18px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 6,
+                                padding: '2px 18px 2px 2px',
+                                backgroundColor: '#f2f2f2',
+                                borderRadius: 999,
+                                cursor: 'pointer',
                             }}
                         >
-                            {balance}
-                        </CustomText>
+                            <img src={coinIcon} alt="coins" style={{ height: 25, width: 25 }} />
+                            <CustomText
+                                weight="3"
+                                style={{
+                                    fontSize: 14,
+                                    color: '#4000ff',
+                                    lineHeight: '18px',
+                                }}
+                            >
+                                {balance}
+                            </CustomText>
+                        </div>
                     </div>
                 </Div>
 
@@ -561,6 +626,52 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
                     </Div>
                 </Div>
 
+                {/* КУПЛЕННОЕ */}
+                {Object.keys(ownedItems).length > 0 && (
+                    <Div style={{ padding: 16 }}>
+                        <CustomText weight="medium" style={{ marginBottom: 8, color: '#311f68' }}>
+                            Купленное
+                        </CustomText>
+
+                        <Div
+                            style={{
+                                display: 'grid',
+                                gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))',
+                                gap: 12,
+                            }}
+                        >
+                            {Object.entries(ownedItems).map(([itemId, qty]) => {
+                                const item = items.find(i => i.id === Number(itemId));
+                                if (!item) return null;
+                                return (
+                                    <Div
+                                        key={itemId}
+                                        style={{
+                                            backgroundColor: '#e8f5e9',
+                                            borderRadius: 12,
+                                            padding: 8,
+                                            opacity: 0.8,
+                                            cursor: 'default',
+                                            border: '1px solid #e0e0e0',
+                                        }}
+                                    >
+                                        <img
+                                            src={`http://localhost:3001${item.image}`}
+                                            alt=""
+                                            style={{ width: '100%', borderRadius: 8, marginBottom: 8 }}
+                                        />
+                                        <CustomText weight="medium">{item.title}</CustomText>
+                                        <CustomText style={{ color: '#4caf50', fontWeight: 600 }}>
+                                            ✔ Куплено {ownedItems[item.id] || 0} шт.
+                                        </CustomText>
+                                    </Div>
+                                );
+                            })}
+                        </Div>
+                    </Div>
+                )}
+
+                {/* МАГАЗИН */}
                 <Div
                     style={{
                         display: 'grid',
@@ -570,86 +681,68 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
                     }}
                 >
                     {filteredItems.map(item => {
-                        const isOwned = ownedItems.includes(item.id);
-                        const cannotBuy = balance < item.price;
+                        const isOwned = !!ownedItems[item.id]; 
 
                         return (
-                            <Div
-                                key={item.id}
-                                style={{
-                                    backgroundColor: isOwned ? '#e8f5e9' : '#ffffff',
-                                    borderRadius: 12,
-                                    padding: 8,
-                                    transition: 'transform 0.15s ease, box-shadow 0.15s ease',
-                                    opacity: isOwned ? 0.7 : 1,
-                                    cursor: isOwned ? 'default' : 'pointer',
-                                    border: '1px solid #e0e0e0',
-                                }}
-                                onMouseEnter={e => {
-                                    if (isOwned) return;
-                                    e.currentTarget.style.transform = 'translateY(-2px)';
-                                    e.currentTarget.style.boxShadow = '0 6px 16px rgba(0,0,0,0.12)';
-                                }}
-                                onMouseLeave={e => {
-                                    if (isOwned) return;
-                                    e.currentTarget.style.transform = 'none';
-                                    e.currentTarget.style.boxShadow = 'none';
-                                }}
-                                onClick={() => {
-                                    if (isOwned) return;
-                                    setActiveItem(item);
-                                    setActiveModal('item');
-                                }}
-                            >
+                            <Div key={item.id} style={{
+                                backgroundColor: isOwned ? '#f0f0ff' : '#ffffff',
+                                borderRadius: 12,
+                                padding: 8,
+                                transition: 'transform 0.15s ease, box-shadow 0.15s ease',
+                                cursor: 'pointer',
+                                border: '1px solid #e0e0e0',
+                            }}>
                                 <img
-                                    src={`http://localhost:3001${item.image}`} // <-- добавляем базовый адрес
+                                    src={`http://localhost:3001${item.image}`}
                                     alt=""
-                                    style={{
-                                        width: '100%',
-                                        borderRadius: 8,
-                                        marginBottom: 8,
-                                    }}
+                                    style={{ width: '100%', borderRadius: 8, marginBottom: 8 }}
                                 />
-
-                                <CustomText weight="medium" style={{ marginBottom: 4 }}>
-                                    {item.title}
-                                </CustomText>
-
-                                <CustomText weight='3' style={{ fontSize: 16, color: '#4000ff', marginBottom: 6 }}>
+                                <CustomText weight="medium">{item.title}</CustomText>
+                                <CustomText weight="3" style={{ fontSize: 16, color: '#4000ff', marginBottom: 6 }}>
                                     {item.price}
                                 </CustomText>
 
-                                {isOwned ? (
-                                    <CustomText style={{ color: '#4caf50', fontWeight: 600 }}>
-                                        ✔ Куплено
-                                    </CustomText>
-                                ) : (
-                                    <Button
-                                        size="m"
-                                        mode="primary"
-                                        stretched
-                                        disabled={cannotBuy}
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            if (cannotBuy) return;
-
-                                            fetch(`http://localhost:3001/api/shop/buy/${item.id}`, {
-                                                method: 'POST',
-                                                headers: { 'Content-Type': 'application/json' },
-                                                body: JSON.stringify({ userId: user.id }),
-                                            })
-                                                .then(res => res.json())
-                                                .then(data => {
-                                                    if (data.success) {
-                                                        setOwnedItems(prev => [...prev, item.id]);
-                                                    } else {
-                                                        alert(data.error);
-                                                    }
-                                                });
+                                {(cart[String(item.id)] || 0) === 0 ? (
+                                    <div
+                                        onClick={() => addToCart(item.id)}
+                                        style={{
+                                            backgroundColor: '#4000ff',
+                                            color: '#fff',
+                                            padding: '6px 0',
+                                            borderRadius: 8,
+                                            textAlign: 'center',
+                                            fontWeight: 600,
+                                            cursor: 'pointer',
                                         }}
                                     >
-                                        {cannotBuy ? 'Не хватает монет' : 'Купить'}
-                                    </Button>
+                                        В корзину
+                                    </div>
+                                ) : (
+                                    <Div style={{ display: 'flex', gap: 4, justifyContent: 'center', alignItems: 'center' }}>
+                                        <div
+                                            onClick={() => removeFromCart(item.id)}
+                                            style={{
+                                                width: 32, height: 32, borderRadius: 8,
+                                                backgroundColor: '#eee', textAlign: 'center', lineHeight: '32px',
+                                                cursor: 'pointer', fontWeight: 600
+                                            }}
+                                        >
+                                            -
+                                        </div>
+                                        <CustomText style={{ width: 32, textAlign: 'center', fontWeight: 600 }}>
+                                            {cart[String(item.id)]}
+                                        </CustomText>
+                                        <div
+                                            onClick={() => addToCart(item.id)}
+                                            style={{
+                                                width: 32, height: 32, borderRadius: 8,
+                                                backgroundColor: '#eee', textAlign: 'center', lineHeight: '32px',
+                                                cursor: 'pointer', fontWeight: 600
+                                            }}
+                                        >
+                                            +
+                                        </div>
+                                    </Div>
                                 )}
                             </Div>
                         );

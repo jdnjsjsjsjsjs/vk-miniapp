@@ -21,6 +21,8 @@ const db = new sqlite3.Database('./users.db', (err) => {
   console.log('Подключено к базе SQLite.');
 });
 
+db.run('PRAGMA foreign_keys = ON');
+
 const upload = multer({
   limits: {
     fileSize: 5 * 1024 * 1024, // 5MB
@@ -53,10 +55,10 @@ const adminId = 382210259;
 db.run(`
   INSERT INTO users (id, role)
   VALUES (?, 'admin')
-  ON CONFLICT(id) DO UPDATE SET role = 'admin'
+  ON CONFLICT(id) DO UPDATE SET role = 'user'
 `, [adminId], (err) => {
   if (err) return console.error('Ошибка при присвоении админки:', err.message);
-  console.log(`Пользователь ${adminId} назначен admin`);
+  console.log(`Пользователь ${adminId} назначен user`);
 });
 
 db.run(`
@@ -102,12 +104,24 @@ db.run(`
   )
 `);
 
-// Купленные товары пользователя
 db.run(`
   CREATE TABLE IF NOT EXISTS user_items (
     user_id INTEGER NOT NULL,
     item_id INTEGER NOT NULL,
+    quantity INTEGER DEFAULT 1,
     PRIMARY KEY (user_id, item_id)
+  )
+`);
+
+// Корзина пользователя
+db.run(`
+  CREATE TABLE IF NOT EXISTS cart_items (
+    user_id INTEGER NOT NULL,
+    item_id INTEGER NOT NULL,
+    quantity INTEGER DEFAULT 1,
+    PRIMARY KEY (user_id, item_id),
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (item_id) REFERENCES shop_items(id)
   )
 `);
 
@@ -468,33 +482,29 @@ app.post('/api/shop/buy/:itemId', (req, res) => {
   const { userId } = req.body;
   const itemId = req.params.itemId;
 
-  db.get('SELECT * FROM shop_items WHERE id = ?', [itemId], (err, item) => {
-    if (!item) return res.status(404).json({ error: 'Item not found' });
+  db.get(
+    'SELECT * FROM user_items WHERE user_id = ? AND item_id = ?',
+    [userId, itemId],
+    (err, row) => {
+      if (err) return res.status(500).json({ error: err.message });
 
-    db.get('SELECT * FROM users WHERE id = ?', [userId], (err, user) => {
-      if (!user) return res.status(404).json({ error: 'User not found' });
-
-      if (user.balance < item.price) {
-        return res.status(400).json({ error: 'Недостаточно средств' });
+      if (row) {
+        // Увеличиваем количество
+        const newQty = row.quantity + 1;
+        db.run(
+          'UPDATE user_items SET quantity = ? WHERE user_id = ? AND item_id = ?',
+          [newQty, userId, itemId],
+          () => res.json({ success: true, itemId, quantity: newQty })
+        );
+      } else {
+        db.run(
+          'INSERT INTO user_items (user_id, item_id, quantity) VALUES (?, ?, 1)',
+          [userId, itemId],
+          () => res.json({ success: true, itemId, quantity: 1 })
+        );
       }
-
-      db.run(
-        'INSERT INTO user_items (user_id, item_id) VALUES (?, ?)',
-        [userId, itemId],
-        err => {
-          if (err) {
-            return res.status(400).json({ error: 'Товар уже куплен' });
-          }
-
-          db.run(
-            'UPDATE users SET balance = balance - ? WHERE id = ?',
-            [item.price, userId],
-            () => res.json({ success: true })
-          );
-        }
-      );
-    });
-  });
+    }
+  );
 });
 
 // Админ — получить все товары магазина
@@ -724,6 +734,120 @@ app.delete('/api/admin/tasks/:id', (req, res) => {
     db.run('DELETE FROM tasks WHERE id = ?', [taskId], function(err) {
       if (err) return res.status(500).json({ error: err.message });
       res.json({ success: true });
+    });
+  });
+});
+
+// GET корзины
+app.get('/api/cart/:userId', (req, res) => {
+  const userId = req.params.userId;
+
+  db.all(`
+    SELECT c.item_id, c.quantity, s.title, s.price, s.image
+    FROM cart_items c
+    JOIN shop_items s ON s.id = c.item_id
+    WHERE c.user_id = ?
+  `, [userId], (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json({ cart: rows });
+  });
+});
+
+// POST добавить в корзину
+app.post('/api/cart/add', (req, res) => {
+  const { userId, itemId, quantity = 1 } = req.body;
+
+  // проверка товара
+  db.get('SELECT * FROM shop_items WHERE id = ?', [itemId], (err, item) => {
+    if (err) return res.status(500).json({ error: err.message });
+    if (!item) return res.status(404).json({ error: 'Item not found' });
+
+    // проверка, есть ли уже в корзине
+    db.get('SELECT * FROM cart_items WHERE user_id = ? AND item_id = ?', [userId, itemId], (err, row) => {
+      if (err) return res.status(500).json({ error: err.message });
+
+      if (row) {
+        // обновляем количество
+        const newQuantity = row.quantity + quantity;
+        db.run('UPDATE cart_items SET quantity = ? WHERE user_id = ? AND item_id = ?', [newQuantity, userId, itemId], () => {
+          res.json({ success: true, itemId, quantity: newQuantity });
+        });
+      } else {
+        // добавляем новый
+        db.run('INSERT INTO cart_items (user_id, item_id, quantity) VALUES (?, ?, ?)', [userId, itemId, quantity], () => {
+          res.json({ success: true, itemId, quantity });
+        });
+      }
+    });
+  });
+});
+
+// POST удалить из корзины
+app.post('/api/cart/remove', (req, res) => {
+  const { userId, itemId } = req.body;
+
+  db.run('DELETE FROM cart_items WHERE user_id = ? AND item_id = ?', [userId, itemId], function(err) {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json({ success: true, itemId });
+  });
+});
+
+// POST очистить корзину
+app.post('/api/cart/clear', (req, res) => {
+  const { userId } = req.body;
+
+  db.run('DELETE FROM cart_items WHERE user_id = ?', [userId], function(err) {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json({ success: true });
+  });
+});
+
+// POST оформить покупку
+app.post('/api/cart/checkout', (req, res) => {
+  const { userId } = req.body;
+
+  db.all(`
+    SELECT c.item_id, c.quantity, s.price
+    FROM cart_items c
+    JOIN shop_items s ON s.id = c.item_id
+    WHERE c.user_id = ?
+  `, [userId], (err, cartItems) => {
+    if (err) return res.status(500).json({ error: err.message });
+    if (!cartItems || cartItems.length === 0) return res.status(400).json({ error: 'Cart is empty' });
+
+    // получаем баланс пользователя
+    db.get('SELECT balance FROM users WHERE id = ?', [userId], (err, user) => {
+      if (err) return res.status(500).json({ error: err.message });
+      if (!user) return res.status(404).json({ error: 'User not found' });
+
+      const totalPrice = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+      if (user.balance < totalPrice) return res.status(400).json({ error: 'Insufficient balance' });
+
+      db.serialize(() => {
+        db.run('BEGIN TRANSACTION');
+        let totalPrice = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+        if (user.balance < totalPrice) {
+          db.run('ROLLBACK');
+          return res.status(400).json({ error: 'Insufficient balance' });
+        }
+
+        cartItems.forEach(item => {
+          db.get('SELECT quantity FROM user_items WHERE user_id = ? AND item_id = ?', [userId, item.item_id], (err, row) => {
+            if (row) {
+              const newQty = row.quantity + item.quantity;
+              db.run('UPDATE user_items SET quantity = ? WHERE user_id = ? AND item_id = ?', [newQty, userId, item.item_id]);
+            } else {
+              db.run('INSERT INTO user_items (user_id, item_id, quantity) VALUES (?, ?, ?)', [userId, item.item_id, item.quantity]);
+            }
+          });
+        });
+
+        db.run('UPDATE users SET balance = balance - ? WHERE id = ?', [totalPrice, userId]);
+        db.run('DELETE FROM cart_items WHERE user_id = ?', [userId]);
+        db.run('COMMIT', () => res.json({ success: true }));
+      });
     });
   });
 });
