@@ -682,15 +682,15 @@ export default function App() {
               padding: '12px',
             }}
           >
-            <CustomText weight="1" style={{ fontSize: 12, color: '#000', lineHeight: '16px' }}>
+            <CustomText weight="1" style={{ fontSize: window.innerWidth < 768 ? 10 : 12, color: '#000', lineHeight: window.innerWidth < 768 ? '12px' : '16px' }}>
               Призы и награды
             </CustomText>
 
             <CustomText
               style={{
-                fontSize: 10,
+                fontSize: window.innerWidth < 768 ? 9 : 10,
                 color: '#000',
-                lineHeight: '16px'
+                lineHeight: window.innerWidth < 768 ? '14px' : '16px'
               }}
             >
               выбирай и получай за баллы
@@ -732,8 +732,8 @@ export default function App() {
                   pointerEvents: 'none',
                 }}
               />
-              <CustomText weight='1' style={{fontSize: window.innerWidth < 768 ? 10 : 14, color: '#000', lineHeight: '14px' }} >до 100</CustomText>
-              <CustomText style={{fontSize: window.innerWidth < 768 ? 9 : 12, color: '#000', lineHeight: '14px' }}>баллов</CustomText>
+              <CustomText weight='1' style={{fontSize: window.innerWidth < 768 ? 10 : 14, color: '#000', lineHeight: window.innerWidth < 768 ? '11px' : '14px' }} >до 100</CustomText>
+              <CustomText style={{fontSize: window.innerWidth < 768 ? 9 : 12, color: '#000', lineHeight: window.innerWidth < 768 ? '11px' : '14px' }}>баллов</CustomText>
             </Card>
 
             <Card mode="shadow" 
@@ -760,8 +760,8 @@ export default function App() {
                   pointerEvents: 'none',
                 }}
               />
-              <CustomText weight='1' style={{fontSize: window.innerWidth < 768 ? 10 : 14, color: '#000', lineHeight: '14px' }} >от 100</CustomText>
-              <CustomText style={{fontSize: window.innerWidth < 768 ? 9 : 12, color: '#000', lineHeight: '14px' }}>баллов</CustomText>
+              <CustomText weight='1' style={{fontSize: window.innerWidth < 768 ? 10 : 14, color: '#000', lineHeight: window.innerWidth < 768 ? '11px' : '14px' }} >от 100</CustomText>
+              <CustomText style={{fontSize: window.innerWidth < 768 ? 9 : 12, color: '#000', lineHeight: window.innerWidth < 768 ? '11px' : '14px' }}>баллов</CustomText>
             </Card>
 
             <Card mode="shadow" 
@@ -788,8 +788,8 @@ export default function App() {
                   pointerEvents: 'none',
                 }}
               />
-              <CustomText weight='1' style={{fontSize: window.innerWidth < 768 ? 10 : 14, color: '#000', lineHeight: '14px' }} >от 500</CustomText>
-              <CustomText style={{fontSize: window.innerWidth < 768 ? 10 : 12, color: '#000', lineHeight: '14px' }}>баллов</CustomText>
+              <CustomText weight='1' style={{fontSize: window.innerWidth < 768 ? 10 : 14, color: '#000', lineHeight: window.innerWidth < 768 ? '11px' : '14px' }} >от 500</CustomText>
+              <CustomText style={{fontSize: window.innerWidth < 768 ? 10 : 12, color: '#000', lineHeight: window.innerWidth < 768 ? '11px' : '14px' }}>баллов</CustomText>
             </Card>
           </Div>
         </Div>
@@ -803,7 +803,7 @@ export default function App() {
               padding: '16px',
             }}
           >
-            <CustomText weight="1" style={{ fontSize: 14, color: '#000' }}>
+            <CustomText weight="1" style={{ fontSize: window.innerWidth < 768 ? 11 : 14, color: '#000' }}>
               Вопросы и ответы
             </CustomText>
             {/* Вопрос 1 */}
@@ -812,13 +812,13 @@ export default function App() {
               onChange={() => setOpenedFaq(openedFaq === 1 ? null : 1)}
             >
               <Accordion.Summary>
-                <CustomText weight="3" style={{ fontSize: 13, color: '#000' }}>
+                <CustomText weight="3" style={{ fontSize: window.innerWidth < 768 ? 10 : 13, color: '#000' }}>
                   как получить баллы?
                 </CustomText>
               </Accordion.Summary>
               <Accordion.Content>
                 <Div>
-                  <CustomText style={{ fontSize: 11, color: '#000', lineHeight: '12px' }}>
+                  <CustomText style={{ fontSize: window.innerWidth < 768 ? 9 : 11, color: '#000', lineHeight: '12px' }}>
                     Баллы начисляются за выполнение заданий и активность в приложении.
                   </CustomText>
                 </Div>
@@ -835,13 +835,13 @@ export default function App() {
               onChange={() => setOpenedFaq(openedFaq === 2 ? null : 2)}
             >
               <Accordion.Summary>
-                <CustomText weight="3" style={{ fontSize: 13, color: '#000' }}>
+                <CustomText weight="3" style={{ fontSize: window.innerWidth < 768 ? 10 : 13, color: '#000' }}>
                   где посмотреть мои награды?
                 </CustomText>
               </Accordion.Summary>
               <Accordion.Content>
                 <Div>
-                  <CustomText style={{ fontSize: 11, color: '#000', lineHeight: '12px' }}>
+                  <CustomText style={{ fontSize: window.innerWidth < 768 ? 9 : 11, color: '#000', lineHeight: '12px' }}>
                     Награды отображаются в разделе Призы и подарки.
                   </CustomText>
                 </Div>
@@ -858,13 +858,13 @@ export default function App() {
               onChange={() => setOpenedFaq(openedFaq === 3 ? null : 3)}
             >
               <Accordion.Summary>
-                <CustomText weight="3" style={{ fontSize: 13, color: '#000' }}>
+                <CustomText weight="3" style={{ fontSize: window.innerWidth < 768 ? 10 : 13, color: '#000' }}>
                   как обменять баллы на подарки?
                 </CustomText>
               </Accordion.Summary>
               <Accordion.Content>
                 <Div>
-                  <CustomText style={{ fontSize: 11, color: '#000', lineHeight: '12px' }}>
+                  <CustomText style={{ fontSize: window.innerWidth < 768 ? 9 : 11, color: '#000', lineHeight: '12px' }}>
                     Выберите подарок и следуйте инструкции по обмену баллов.
                   </CustomText>
                 </Div>
