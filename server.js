@@ -797,14 +797,12 @@ app.post('/api/cart/checkout', (req, res) => {
         }
 
         cartItems.forEach(item => {
-          db.get('SELECT quantity FROM user_items WHERE user_id = ? AND item_id = ?', [userId, item.item_id], (err, row) => {
-            if (row) {
-              const newQty = row.quantity + item.quantity;
-              db.run('UPDATE user_items SET quantity = ? WHERE user_id = ? AND item_id = ?', [newQty, userId, item.item_id]);
-            } else {
-              db.run('INSERT INTO user_items (user_id, item_id, quantity) VALUES (?, ?, ?)', [userId, item.item_id, item.quantity]);
-            }
-          });
+          db.run(`
+            INSERT INTO user_items (user_id, item_id, quantity)
+            VALUES (?, ?, ?)
+            ON CONFLICT(user_id, item_id)
+            DO UPDATE SET quantity = quantity + excluded.quantity
+          `, [userId, item.item_id, item.quantity]);
         });
 
         db.run('UPDATE users SET balance = balance - ? WHERE id = ?', [totalPrice, userId]);

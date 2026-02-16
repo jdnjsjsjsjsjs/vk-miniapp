@@ -26,6 +26,7 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
     const [uploading, setUploading] = useState(false);
     const [tempImage, setTempImage] = useState(null);
     const [cart, setCart] = useState({});
+    const [cartItemsFull, setCartItemsFull] = useState([]);
 
     const [newItem, setNewItem] = useState({
         title: '',
@@ -36,60 +37,37 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
 
     const isAdmin = user?.role === 'admin';
 
+    const loadShop = async () => {
+        const url = isAdmin
+            ? `http://localhost:3001/api/admin/shop?userId=${user.id}`
+            : `http://localhost:3001/api/shop?userId=${user.id}`;
+
+        const res = await fetch(url);
+        const data = await res.json();
+
+        const loadedItems = isAdmin ? data : data.items;
+        setItems(loadedItems);
+
+        if (!isAdmin) {
+            const owned = {};
+            data.ownedItems?.forEach(item => {
+                owned[String(item.item_id)] = item.quantity;
+            });
+            setOwnedItems(owned);
+        }
+
+        if (loadedItems.length) {
+            const prices = loadedItems.map(i => i.price);
+            const min = Math.min(...prices);
+            const max = Math.max(...prices);
+            setPriceBounds([min, max]);
+            setPriceRange([min, max]);
+        }
+    };
+
     useEffect(() => {
-        const fetchShop = async () => {
-            const url = isAdmin
-                ? `http://localhost:3001/api/admin/shop?userId=${user.id}`
-                : `http://localhost:3001/api/shop?userId=${user.id}`;
-
-            const res = await fetch(url);
-            const data = await res.json();
-
-            const loadedItems = isAdmin ? data : data.items;
-            setItems(loadedItems);
-
-            if (!isAdmin) {
-                // Owned items
-                const owned = {};
-                data.ownedItems?.forEach(item => {
-                    owned[String(item.item_id)] = item.quantity;
-                });
-                setOwnedItems(owned);
-
-                const cartRes = await fetch(
-                    `http://localhost:3001/api/cart/${user.id}`
-                );
-                const cartData = await cartRes.json();
-
-                // Cart items
-                const cartObj = {};
-                cartData.cart?.forEach(item => {
-                    cartObj[String(item.item_id)] = item.quantity;
-                });
-                setCart(cartObj);
-            }
-
-            // Настройка диапазона цен
-            if (loadedItems.length) {
-                const prices = loadedItems.map(i => i.price);
-                const min = Math.min(...prices);
-                const max = Math.max(...prices);
-                setPriceBounds([min, max]);
-
-                let rangeMin = min;
-                let rangeMax = max;
-
-                if (initialFilter) {
-                    rangeMin = Math.max(initialFilter.min ?? min, min);
-                    rangeMax = initialFilter.max === Infinity ? max : Math.min(initialFilter.max, max);
-                }
-
-                setPriceRange([rangeMin, rangeMax]);
-            }
-        };
-
-        fetchShop();
-    }, [user.id, isAdmin, initialFilter]);
+        loadShop();
+    }, [user.id, isAdmin]);
 
     useEffect(() => {
         const [min, max] = priceRange;
@@ -234,35 +212,66 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
         }
     };
 
-    const addToCart = (itemId) => {
-        fetch('http://localhost:3001/api/cart/add', {
+    const addToCart = async (itemId) => {
+        await fetch('http://localhost:3001/api/cart/add', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ userId: user.id, itemId, quantity: 1 }),
-        }).then(() => setCart(prev => ({ ...prev, [String(itemId)]: (prev[String(itemId)] || 0) + 1 })));
+        });
     };
 
-    const removeFromCart = (itemId) => {
-        fetch('http://localhost:3001/api/cart/decrease', {
+    const removeFromCart = async (itemId) => {
+        await fetch('http://localhost:3001/api/cart/decrease', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ userId: user.id, itemId }),
-        })
-        .then(res => res.json())
-        .then(data => {
-            const itemKey = String(itemId);
-
-            if (data.quantity <= 0) {
-                const newCart = { ...cart };
-                delete newCart[itemKey];
-                setCart(newCart);
-            } else {
-                setCart(prev => ({
-                    ...prev,
-                    [itemKey]: data.quantity
-                }));
-            }
         });
+    };
+
+    const loadCart = async () => {
+        const res = await fetch(`http://localhost:3001/api/cart/${user.id}`);
+        const data = await res.json();
+
+        const cartObj = {};
+        data.cart?.forEach(item => {
+            cartObj[String(item.item_id)] = item.quantity;
+        });
+
+        setCart(cartObj);
+        setCartItemsFull(data.cart || []);
+    };
+
+    const checkout = async () => {
+        const res = await fetch('http://localhost:3001/api/cart/checkout', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: user.id }),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            alert(data.error || 'Ошибка покупки');
+            return;
+        }
+
+        await loadCart();
+
+        // Обновляем купленные
+        const shopRes = await fetch(`http://localhost:3001/api/shop?userId=${user.id}`);
+        const shopData = await shopRes.json();
+
+        const owned = {};
+        shopData.ownedItems?.forEach(item => {
+            owned[String(item.item_id)] = item.quantity;
+        });
+
+        setOwnedItems(owned);
+
+        alert('Покупка успешна!');
+        await loadCart();
+        await loadShop();
+        setActiveModal(null);
     };
 
     return (
@@ -503,6 +512,127 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
                         </Button>
                     </Div>
                 </ModalCard>
+
+                <ModalCard
+                    id="cart"
+                    header="Корзина"
+                    onClose={() => setActiveModal(null)}
+                >
+                    {/* БЛОК КУПЛЕННОЕ */}
+                    {Object.keys(ownedItems).length > 0 && (
+                        <Div style={{ marginBottom: 16 }}>
+                            <CustomText weight="medium" style={{ marginBottom: 8 }}>
+                                Купленное
+                            </CustomText>
+
+                            {Object.entries(ownedItems).map(([itemId, qty]) => {
+                                const item = items.find(i => i.id === Number(itemId));
+                                if (!item) return null;
+
+                                return (
+                                    <Div
+                                        key={itemId}
+                                        style={{
+                                            display: 'flex',
+                                            justifyContent: 'space-between',
+                                            padding: 8,
+                                            background: '#f1f8e9',
+                                            borderRadius: 8,
+                                            marginBottom: 6,
+                                        }}
+                                    >
+                                        <CustomText>{item.title}</CustomText>
+                                        <CustomText weight="3">
+                                            {qty} шт.
+                                        </CustomText>
+                                    </Div>
+                                );
+                            })}
+                        </Div>
+                    )}
+
+                    {/* ЕСЛИ КОРЗИНА ПУСТА */}
+                    {cartItemsFull.length === 0 ? (
+                        <CustomText>Корзина пуста</CustomText>
+                    ) : (
+                        <>
+                            {cartItemsFull.map(item => (
+                                <Div
+                                    key={item.item_id}
+                                    style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: 8,
+                                        marginBottom: 12,
+                                    }}
+                                >
+                                    <img
+                                        src={`http://localhost:3001${item.image}`}
+                                        alt=""
+                                        style={{
+                                            width: 50,
+                                            height: 50,
+                                            objectFit: 'cover',
+                                            borderRadius: 8,
+                                        }}
+                                    />
+
+                                    <div style={{ flex: 1 }}>
+                                        <CustomText weight="medium">
+                                            {item.title}
+                                        </CustomText>
+                                        <CustomText style={{ color: '#4000ff' }}>
+                                            {item.price} × {item.quantity}
+                                        </CustomText>
+                                    </div>
+
+                                    <Div style={{ display: 'flex', gap: 4 }}>
+                                        <Button
+                                            size="s"
+                                            mode="secondary"
+                                            onClick={async () => {
+                                                await removeFromCart(item.item_id);
+                                                await loadCart();
+                                            }}
+                                        >
+                                            -
+                                        </Button>
+
+                                        <Button
+                                            size="s"
+                                            mode="secondary"
+                                            onClick={async () => {
+                                                await addToCart(item.item_id);
+                                                await loadCart();
+                                            }}
+                                        >
+                                            +
+                                        </Button>
+                                    </Div>
+                                </Div>
+                            ))}
+
+                            <Div style={{ marginTop: 16 }}>
+                                <CustomText weight="3" style={{ fontSize: 16 }}>
+                                    Итого:{" "}
+                                    {cartItemsFull.reduce(
+                                        (sum, i) => sum + i.price * i.quantity,
+                                        0
+                                    )}
+                                </CustomText>
+                            </Div>
+
+                            <Button
+                                mode="primary"
+                                stretched
+                                style={{ marginTop: 12 }}
+                                onClick={checkout}
+                            >
+                                Оплатить
+                            </Button>
+                        </>
+                    )}
+                </ModalCard>
             </ModalRoot>
 
             <Panel id={id}>
@@ -557,7 +687,10 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
                             <Button
                                 mode="tertiary"
                                 size="l"
-                                onClick={() => setActiveModal('cart')}
+                                onClick={async () => {
+                                    await loadCart();
+                                    setActiveModal('cart');
+                                }}
                                 style={{ color: '#fff' }}
                             >
                                 <Icon28ShoppingCartOutline />
