@@ -301,7 +301,7 @@ export default function App() {
           <Gallery
             slideWidth="100%"
             bullets="light"
-            style={{ height: 310 }}
+            style={{ height: window.innerWidth < 768 ? 250 : 400 }}
             timeout={4000}
             looped
           >
@@ -312,7 +312,7 @@ export default function App() {
                 alt={`Slide ${i + 1}`}
                 style={{
                   width: '100%',
-                  height: 310,
+                  height: '100%',
                   objectFit: 'cover',
                 }}
               />
@@ -353,17 +353,17 @@ export default function App() {
             >
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <div>
-                  <CustomText weight="1" style={{ fontSize: 12, color: '#000', paddingBottom: 3 }}>
+                  <CustomText weight="1" style={{ fontSize: window.innerWidth < 768 ? 9 : 12, color: '#000', paddingBottom: 3 }}>
                     Баланс
                   </CustomText>
-                  <CustomText weight="1" style={{ fontSize: 30, color: '#8c64d7' }}>
+                  <CustomText weight="1" style={{ fontSize: window.innerWidth < 768 ? 25 : 30, color: '#8c64d7' }}>
                     {balance}
                   </CustomText>
                 </div>
                 <img
                   src={coinsIcon}
                   alt="coins"
-                  style={{ width: 80, height: 80, objectFit: 'contain', paddingLeft: '100px', position: 'absolute', right: 0, bottom: -4 }}
+                  style={{ width: window.innerWidth < 768 ? 70 : 80, height: window.innerWidth < 768 ? 70 : 80, objectFit: 'contain', paddingLeft: '100px', position: 'absolute', right: window.innerWidth < 768 ? 3 : 0, bottom: window.innerWidth < 768 ? 1 : -4 }}
                 />
               </div>
             </Card>
@@ -388,7 +388,7 @@ export default function App() {
                   zIndex: 2,
                 }}
               >
-                <CustomText weight="1" style={{ fontSize: 12, color: '#000', paddingBottom: 3 }}>
+                <CustomText weight="1" style={{ fontSize: window.innerWidth < 768 ? 9 : 12, color: '#000', paddingBottom: 3 }}>
                   Ежедневный вход
                 </CustomText>
 
@@ -405,7 +405,7 @@ export default function App() {
                   <CustomText
                     weight="1"
                     style={{
-                      fontSize: 12,
+                      fontSize: window.innerWidth ? 10 : 12,
                       color: canClaimGift ? '#fff' : '#8c64d7',
                     }}
                   >
@@ -417,7 +417,7 @@ export default function App() {
               <img
                 src={giftImg}
                 alt="gift"
-                style={{ width: 90, height: 90, objectFit: 'contain', paddingLeft: '100px', position: 'absolute', right: -3, bottom: -11 }}
+                style={{ width: window.innerWidth < 768 ? 75 : 90, height: window.innerWidth < 768 ? 75 : 90, objectFit: 'contain', paddingLeft: '100px', position: 'absolute', right: -3, bottom: window.innerWidth < 768 ? -5 : -11 }}
               />
             </Card>
           </div>
@@ -442,8 +442,8 @@ export default function App() {
                 position: 'absolute',
                 top: -20,
                 right: -30,
-                width: 200,
-                height: 200,
+                width: window.innerWidth < 768 ? 180 : 200,
+                height: window.innerWidth < 768 ? 180 : 200,
                 objectFit: 'contain',
                 pointerEvents: 'none',
                 transform: 'rotate(15deg)',
@@ -453,7 +453,7 @@ export default function App() {
             <CustomText
               weight="1"
               style={{
-                fontSize: 12,
+                fontSize: window.innerWidth < 768 ? 10 : 12,
                 color: '#000',
                 marginTop: 109,
                 marginLeft: 4,
@@ -490,10 +490,10 @@ export default function App() {
               alt="tasks"
               style={{
                 position: 'absolute',
-                top: -5,
+                top: window.innerWidth < 768 ? 1 : -5,
                 right: -25,
-                width: 220,
-                height: 220,
+                width: window.innerWidth < 768 ? 170 : 220,
+                height: window.innerWidth < 768 ? 170 : 220,
                 objectFit: 'contain',
                 pointerEvents: 'none',
                 zIndex: 1,
@@ -504,13 +504,13 @@ export default function App() {
               {/* Заголовок */}
               <CustomText
                 weight="1"
-                style={{ fontSize: 12, color: '#000', paddingBottom: 3 }}
+                style={{ fontSize: window.innerWidth < 768 ? 9 : 12, color: '#000', paddingBottom: 3 }}
               >
                 Задания
               </CustomText>
 
               {/* Последние задания */}
-              <div style={{ marginTop: 10, display: 'flex', flexDirection: 'column', gap: 6, width: 400, paddingBottom: 15 }}>
+              <div style={{ marginTop: window.innerWidth < 768 ? 3 : 10, display: 'flex', flexDirection: 'column', gap: 6, width: window.innerWidth < 768 ? 200 : 400, paddingBottom: 15 }}>
                 {lastTasks.length === 0 ? (
                   <CustomText weight='1' style={{ fontSize: 14, color: '#000', textAlign: 'center', marginTop: 35 }}>
                     Заданий пока нет
@@ -523,11 +523,11 @@ export default function App() {
                         display: 'flex',
                         justifyContent: 'space-between',
                         alignItems: 'center',
-                        padding: '6px 10px',
+                        padding: window.innerWidth < 768 ? '3px 7px' : '6px 10px',
                         borderRadius: 999,
                         backgroundColor: '#f7f7f7',
                         color: '#8c64d7',
-                        fontSize: 12,
+                        fontSize: window.innerWidth < 768 ? 9 : 12,
                       }}
                     >
                       <span
@@ -546,7 +546,7 @@ export default function App() {
                         display: 'flex', 
                         alignItems: 'center', 
                         gap: 4,
-                        fontSize: 14,
+                        fontSize: window.innerWidth < 768 ? 12 : 14,
                         fontWeight: 600,
                         color: '#8c64d7' 
                       }}>
@@ -603,7 +603,7 @@ export default function App() {
               <CustomText
                 weight="1"
                 style={{
-                  fontSize: 12,
+                  fontSize: window.innerWidth < 768 ? 10 : 12,
                   color: '#000',
                 }}
               >
@@ -611,7 +611,7 @@ export default function App() {
               </CustomText>
 
               {/* Таблица рейтинга */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 6 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: window.innerWidth < 768 ? 3 : 6 }}>
                 {usersList
                   .sort((a, b) => b.totalEarned - a.totalEarned)
                   .slice(0, 3)
@@ -629,7 +629,7 @@ export default function App() {
                           borderRadius: 999,
                           backgroundColor: user && user.id === u.id ? '#f0edff' : '#f7f7f7',
                           color: '#8c64d7',
-                          fontSize: 11,
+                          fontSize: window.innerWidth < 768 ? 9 : 11,
                           ...PlaceStyle,
                           
                         }}
@@ -700,7 +700,7 @@ export default function App() {
           <Div
             style={{
               display: 'grid',
-              gridTemplateColumns: '1fr 2fr 3fr',
+              gridTemplateColumns: window.innerWidth < 768 ? '2fr 3fr 3fr' :'1fr 2fr 3fr',
               gap: '12px',
               marginTop: 12,
               padding: 0,
@@ -715,7 +715,7 @@ export default function App() {
                 flexDirection: 'column',
                 cursor: 'pointer', 
                 overflow: 'hidden',
-                height: '120px',
+                height: window.innerWidth < 768 ? '100px' : '120px',
               }} 
               onClick={() => goToShopWithFilter({ min: 0, max: 100 })}
             >
@@ -724,16 +724,16 @@ export default function App() {
                 alt="box1"
                 style={{
                   position: 'absolute',
-                  right: -24,
+                  right: window.innerWidth < 768 ? -22 : -24,
                   bottom: -15,
-                  width: 140,
-                  height: 140,
+                  width: window.innerWidth < 768 ? 120 : 140,
+                  height: window.innerWidth < 768 ? 120 : 140,
                   objectFit: 'contain',
                   pointerEvents: 'none',
                 }}
               />
-              <CustomText weight='1' style={{fontSize: 14, color: '#000', lineHeight: '14px' }} >до 100</CustomText>
-              <CustomText style={{fontSize: 12, color: '#000', lineHeight: '14px' }}>баллов</CustomText>
+              <CustomText weight='1' style={{fontSize: window.innerWidth < 768 ? 10 : 14, color: '#000', lineHeight: '14px' }} >до 100</CustomText>
+              <CustomText style={{fontSize: window.innerWidth < 768 ? 9 : 12, color: '#000', lineHeight: '14px' }}>баллов</CustomText>
             </Card>
 
             <Card mode="shadow" 
@@ -744,7 +744,7 @@ export default function App() {
                 flexDirection: 'column',
                 cursor: 'pointer', 
                 overflow: 'hidden',
-                height: '120px', }} 
+                height: window.innerWidth < 768 ? '100px' : '120px', }} 
               onClick={() => goToShopWithFilter({ min: 100, max: 500 })}
             >
               <img
@@ -752,16 +752,16 @@ export default function App() {
                 alt="box2"
                 style={{
                   position: 'absolute',
-                  right: 3,
-                  bottom: -31,
-                  width: 180,
-                  height: 180,
+                  right: window.innerWidth < 768 ? -10 : 3,
+                  bottom: window.innerWidth < 768 ? -25 : -31,
+                  width: window.innerWidth < 768 ? 140 : 180,
+                  height: window.innerWidth < 768 ? 140 : 180,
                   objectFit: 'contain',
                   pointerEvents: 'none',
                 }}
               />
-              <CustomText weight='1' style={{fontSize: 14, color: '#000', lineHeight: '14px' }} >от 100</CustomText>
-              <CustomText style={{fontSize: 12, color: '#000', lineHeight: '14px' }}>баллов</CustomText>
+              <CustomText weight='1' style={{fontSize: window.innerWidth < 768 ? 10 : 14, color: '#000', lineHeight: '14px' }} >от 100</CustomText>
+              <CustomText style={{fontSize: window.innerWidth < 768 ? 9 : 12, color: '#000', lineHeight: '14px' }}>баллов</CustomText>
             </Card>
 
             <Card mode="shadow" 
@@ -772,7 +772,7 @@ export default function App() {
                 flexDirection: 'column',
                 cursor: 'pointer', 
                 overflow: 'hidden',
-                height: '120px', }} 
+                height: window.innerWidth < 768 ? '100px' : '120px', }} 
               onClick={() => goToShopWithFilter({ min: 500, max: 1000 })}
             >
               <img
@@ -780,16 +780,16 @@ export default function App() {
                 alt="box3"
                 style={{
                   position: 'absolute',
-                  right: -5,
-                  bottom: -27,
-                  width: 190,
-                  height: 190,
+                  right: window.innerWidth < 768 ? -7 : -5,
+                  bottom: window.innerWidth < 768 ? -18 : -27,
+                  width: window.innerWidth < 768 ? 130 : 190,
+                  height: window.innerWidth < 768 ? 130 : 190,
                   objectFit: 'contain',
                   pointerEvents: 'none',
                 }}
               />
-              <CustomText weight='1' style={{fontSize: 14, color: '#000', lineHeight: '14px' }} >от 500</CustomText>
-              <CustomText style={{fontSize: 12, color: '#000', lineHeight: '14px' }}>баллов</CustomText>
+              <CustomText weight='1' style={{fontSize: window.innerWidth < 768 ? 10 : 14, color: '#000', lineHeight: '14px' }} >от 500</CustomText>
+              <CustomText style={{fontSize: window.innerWidth < 768 ? 10 : 12, color: '#000', lineHeight: '14px' }}>баллов</CustomText>
             </Card>
           </Div>
         </Div>
