@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Panel, Div, Button, ModalRoot, ModalCard, Textarea, Card } from '@vkontakte/vkui';
 import { CustomText } from './CustomTypography';
-import { Icon28ChevronBack, Icon28FavoriteOutline, Icon28Favorite } from '@vkontakte/icons';
+import { Icon28ChevronBack } from '@vkontakte/icons';
 
 import coinIcon from './imgs/coin.png'
 
@@ -245,12 +245,8 @@ export default function Tasks({ id, goBack, balance, goToBalance, user }) {
                                     position: 'absolute',
                                     top: 12,
                                     right: 12,
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: 6,
                                 }}
                             >
-                                {/* Капсула дедлайна */}
                                 <div
                                     style={{
                                     padding: '4px 10px',
@@ -264,46 +260,6 @@ export default function Tasks({ id, goBack, balance, goToBalance, user }) {
                                 >
                                     {getTimeLeft(task.expires_at)}
                                 </div>
-
-                                {/* Кнопка избранного */}
-                                <button
-                                    onClick={async (e) => {
-                                    e.stopPropagation();
-
-                                    const res = await fetch('http://localhost:3001/api/favorites/toggle', {
-                                        method: 'POST',
-                                        headers: { 'Content-Type': 'application/json' },
-                                        body: JSON.stringify({
-                                        userId: user.id,
-                                        taskId: task.id
-                                        })
-                                    });
-
-                                    const data = await res.json();
-
-                                    setTasks(prev =>
-                                        prev.map(t =>
-                                        t.id === task.id
-                                            ? { ...t, isFavorite: data.isFavorite }
-                                            : t
-                                        )
-                                    );
-                                    }}
-                                    style={{
-                                    background: 'transparent',
-                                    border: 'none',
-                                    padding: 0,
-                                    cursor: 'pointer',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    }}
-                                >
-                                    {task.isFavorite ? (
-                                    <Icon28Favorite fill="#ff9800" />
-                                    ) : (
-                                    <Icon28FavoriteOutline />
-                                    )}
-                                </button>
                             </div>
                         </Card>
                     ))}

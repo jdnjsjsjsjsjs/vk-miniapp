@@ -97,14 +97,6 @@ db.run(`
 `);
 
 db.run(`
-  CREATE TABLE IF NOT EXISTS favorite_tasks (
-    user_id INTEGER NOT NULL,
-    task_id INTEGER NOT NULL,
-    PRIMARY KEY (user_id, task_id)
-  )
-`);
-
-db.run(`
   CREATE TABLE IF NOT EXISTS user_items (
     user_id INTEGER NOT NULL,
     item_id INTEGER NOT NULL,
@@ -250,20 +242,14 @@ app.get('/api/tasks/:userId', (req, res) => {
       t.question,
       t.reward,
       t.expires_at,
-      a.status,
-      CASE 
-        WHEN f.task_id IS NOT NULL THEN 1
-        ELSE 0
-      END AS isFavorite
+      a.status
     FROM tasks t
     LEFT JOIN task_answers a 
       ON a.task_id = t.id AND a.user_id = ?
-    LEFT JOIN favorite_tasks f
-      ON f.task_id = t.id AND f.user_id = ?
     WHERE t.expires_at IS NULL 
       OR t.expires_at > datetime('now')
     ORDER BY t.created_at DESC
-  `, [userId, userId], (err, rows) => {
+  `, [userId], (err, rows) => {
     if (err) return res.status(500).json({ error: err.message });
     res.json(rows);
   });
@@ -582,58 +568,6 @@ app.delete('/api/admin/shop/:id', (req, res) => {
       res.json({ success: true });
     });
   });
-});
-
-// Получение задания
-app.get('/api/favorites/:userId', (req, res) => {
-  const { userId } = req.params;
-
-  db.all(`
-    SELECT 
-      t.id,
-      t.title,
-      t.question,
-      t.reward,
-      t.expires_at,
-      a.status
-    FROM favorite_tasks f
-    JOIN tasks t ON t.id = f.task_id
-    LEFT JOIN task_answers a 
-      ON a.task_id = t.id AND a.user_id = ?
-    WHERE t.expires_at IS NULL 
-       OR t.expires_at > datetime('now')
-    ORDER BY t.created_at DESC
-  `, [userId], (err, rows) => {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json(rows);
-  });
-});
-
-// Переключение избранного
-app.post('/api/favorites/toggle', (req, res) => {
-  const { userId, taskId } = req.body;
-
-  db.get(
-    'SELECT 1 FROM favorite_tasks WHERE user_id = ? AND task_id = ?',
-    [userId, taskId],
-    (err, row) => {
-      if (row) {
-        // уже в избранном → удаляем
-        db.run(
-          'DELETE FROM favorite_tasks WHERE user_id = ? AND task_id = ?',
-          [userId, taskId],
-          () => res.json({ isFavorite: false })
-        );
-      } else {
-        // не в избранном → добавляем
-        db.run(
-          'INSERT INTO favorite_tasks (user_id, task_id) VALUES (?, ?)',
-          [userId, taskId],
-          () => res.json({ isFavorite: true })
-        );
-      }
-    }
-  );
 });
 
 // Загрузка картинки
