@@ -451,13 +451,12 @@ app.get('/api/shop', (req, res) => {
     }
 
     db.all(
-      'SELECT item_id FROM user_items WHERE user_id = ?',
+      'SELECT item_id, quantity FROM user_items WHERE user_id = ?',
       [userId],
       (err, rows) => {
         if (err) return res.status(500).json({ error: err.message });
 
-        const ownedItems = rows.map(r => r.item_id);
-        res.json({ items, ownedItems });
+        res.json({ items, ownedItems: rows });
       }
     );
   });

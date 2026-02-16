@@ -255,22 +255,11 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
             return;
         }
 
-        await loadCart();
-
-        // Обновляем купленные
-        const shopRes = await fetch(`http://localhost:3001/api/shop?userId=${user.id}`);
-        const shopData = await shopRes.json();
-
-        const owned = {};
-        shopData.ownedItems?.forEach(item => {
-            owned[String(item.item_id)] = item.quantity;
-        });
-
-        setOwnedItems(owned);
-
         alert('Покупка успешна!');
+
         await loadCart();
         await loadShop();
+
         setActiveModal(null);
     };
 
@@ -518,40 +507,6 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
                     header="Корзина"
                     onClose={() => setActiveModal(null)}
                 >
-                    {/* БЛОК КУПЛЕННОЕ */}
-                    {Object.keys(ownedItems).length > 0 && (
-                        <Div style={{ marginBottom: 16 }}>
-                            <CustomText weight="medium" style={{ marginBottom: 8 }}>
-                                Купленное
-                            </CustomText>
-
-                            {Object.entries(ownedItems).map(([itemId, qty]) => {
-                                const item = items.find(i => i.id === Number(itemId));
-                                if (!item) return null;
-
-                                return (
-                                    <Div
-                                        key={itemId}
-                                        style={{
-                                            display: 'flex',
-                                            justifyContent: 'space-between',
-                                            padding: 8,
-                                            background: '#f1f8e9',
-                                            borderRadius: 8,
-                                            marginBottom: 6,
-                                        }}
-                                    >
-                                        <CustomText>{item.title}</CustomText>
-                                        <CustomText weight="3">
-                                            {qty} шт.
-                                        </CustomText>
-                                    </Div>
-                                );
-                            })}
-                        </Div>
-                    )}
-
-                    {/* ЕСЛИ КОРЗИНА ПУСТА */}
                     {cartItemsFull.length === 0 ? (
                         <CustomText>Корзина пуста</CustomText>
                     ) : (
@@ -815,86 +770,90 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
                 )}
 
                 {/* МАГАЗИН */}
-                <Div
-                    style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))',
-                        gap: 12,
-                        padding: 16,
-                    }}
-                >
-                    {filteredItems.map(item => {
-                        const isOwned = !!ownedItems[item.id]; 
+                <Div style={{ padding: 16 }}>
+                    <CustomText weight="medium" style={{ marginBottom: 8, color: '#311f68' }}>
+                        Магазин
+                    </CustomText>
+                    <Div
+                        style={{
+                            display: 'grid',
+                            gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))',
+                            gap: 12,
+                        }}
+                    >
+                        {filteredItems.map(item => {
+                            const isOwned = !!ownedItems[item.id]; 
 
-                        return (
-                            <Div key={item.id} style={{
-                                backgroundColor: isOwned ? '#f0f0ff' : '#ffffff',
-                                borderRadius: 12,
-                                padding: 8,
-                                transition: 'transform 0.15s ease, box-shadow 0.15s ease',
-                                cursor: 'pointer',
-                                border: '1px solid #e0e0e0',
-                            }}
-                            onClick={() => {
-                                setActiveItem(item);
-                                setActiveModal('item');
-                            }}
-                            >
-                                <img
-                                    src={`http://localhost:3001${item.image}`}
-                                    alt=""
-                                    style={{ width: '100%', borderRadius: 8, marginBottom: 8 }}
-                                />
-                                <CustomText weight="medium">{item.title}</CustomText>
-                                <CustomText weight="3" style={{ fontSize: 16, color: '#4000ff', marginBottom: 6 }}>
-                                    {item.price}
-                                </CustomText>
+                            return (
+                                <Div key={item.id} style={{
+                                    backgroundColor: isOwned ? '#f0f0ff' : '#ffffff',
+                                    borderRadius: 12,
+                                    padding: 8,
+                                    transition: 'transform 0.15s ease, box-shadow 0.15s ease',
+                                    cursor: 'pointer',
+                                    border: '1px solid #e0e0e0',
+                                }}
+                                onClick={() => {
+                                    setActiveItem(item);
+                                    setActiveModal('item');
+                                }}
+                                >
+                                    <img
+                                        src={`http://localhost:3001${item.image}`}
+                                        alt=""
+                                        style={{ width: '100%', borderRadius: 8, marginBottom: 8 }}
+                                    />
+                                    <CustomText weight="medium">{item.title}</CustomText>
+                                    <CustomText weight="3" style={{ fontSize: 16, color: '#4000ff', marginBottom: 6 }}>
+                                        {item.price}
+                                    </CustomText>
 
-                                {(cart[String(item.id)] || 0) === 0 ? (
-                                    <div
-                                        onClick={() => addToCart(item.id)}
-                                        style={{
-                                            backgroundColor: '#4000ff',
-                                            color: '#fff',
-                                            padding: '6px 0',
-                                            borderRadius: 8,
-                                            textAlign: 'center',
-                                            fontWeight: 600,
-                                            cursor: 'pointer',
-                                        }}
-                                    >
-                                        В корзину
-                                    </div>
-                                ) : (
-                                    <Div style={{ display: 'flex', gap: 4, justifyContent: 'center', alignItems: 'center' }}>
-                                        <div
-                                            onClick={() => removeFromCart(item.id)}
-                                            style={{
-                                                width: 32, height: 32, borderRadius: 8,
-                                                backgroundColor: '#eee', textAlign: 'center', lineHeight: '32px',
-                                                cursor: 'pointer', fontWeight: 600
-                                            }}
-                                        >
-                                            -
-                                        </div>
-                                        <CustomText style={{ width: 32, textAlign: 'center', fontWeight: 600 }}>
-                                            {cart[String(item.id)]}
-                                        </CustomText>
+                                    {(cart[String(item.id)] || 0) === 0 ? (
                                         <div
                                             onClick={() => addToCart(item.id)}
                                             style={{
-                                                width: 32, height: 32, borderRadius: 8,
-                                                backgroundColor: '#eee', textAlign: 'center', lineHeight: '32px',
-                                                cursor: 'pointer', fontWeight: 600
+                                                backgroundColor: '#4000ff',
+                                                color: '#fff',
+                                                padding: '6px 0',
+                                                borderRadius: 8,
+                                                textAlign: 'center',
+                                                fontWeight: 600,
+                                                cursor: 'pointer',
                                             }}
                                         >
-                                            +
+                                            В корзину
                                         </div>
-                                    </Div>
-                                )}
-                            </Div>
-                        );
-                    })}
+                                    ) : (
+                                        <Div style={{ display: 'flex', gap: 4, justifyContent: 'center', alignItems: 'center' }}>
+                                            <div
+                                                onClick={() => removeFromCart(item.id)}
+                                                style={{
+                                                    width: 32, height: 32, borderRadius: 8,
+                                                    backgroundColor: '#eee', textAlign: 'center', lineHeight: '32px',
+                                                    cursor: 'pointer', fontWeight: 600
+                                                }}
+                                            >
+                                                -
+                                            </div>
+                                            <CustomText style={{ width: 32, textAlign: 'center', fontWeight: 600 }}>
+                                                {cart[String(item.id)]}
+                                            </CustomText>
+                                            <div
+                                                onClick={() => addToCart(item.id)}
+                                                style={{
+                                                    width: 32, height: 32, borderRadius: 8,
+                                                    backgroundColor: '#eee', textAlign: 'center', lineHeight: '32px',
+                                                    cursor: 'pointer', fontWeight: 600
+                                                }}
+                                            >
+                                                +
+                                            </div>
+                                        </Div>
+                                    )}
+                                </Div>
+                            );
+                        })}
+                    </Div>
                 </Div>
             </Panel>
         </>
