@@ -141,7 +141,7 @@ export default function Profile({ id, goBack, user, balance, totalEarned, goToBa
             <Div
               style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(4, 1fr)',
+                gridTemplateColumns: window.innerWidth < 768 ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)',
                 gap: '10px',
                 padding: 0,
               }}

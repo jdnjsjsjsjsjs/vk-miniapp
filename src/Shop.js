@@ -834,7 +834,12 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
                                 transition: 'transform 0.15s ease, box-shadow 0.15s ease',
                                 cursor: 'pointer',
                                 border: '1px solid #e0e0e0',
-                            }}>
+                            }}
+                            onClick={() => {
+                                setActiveItem(item);
+                                setActiveModal('item');
+                            }}
+                            >
                                 <img
                                     src={`http://localhost:3001${item.image}`}
                                     alt=""

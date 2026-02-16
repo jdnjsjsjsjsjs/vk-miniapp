@@ -55,10 +55,10 @@ const adminId = 382210259;
 db.run(`
   INSERT INTO users (id, role)
   VALUES (?, 'admin')
-  ON CONFLICT(id) DO UPDATE SET role = 'admin'
+  ON CONFLICT(id) DO UPDATE SET role = 'user'
 `, [adminId], (err) => {
   if (err) return console.error('Ошибка при присвоении админки:', err.message);
-  console.log(`Пользователь ${adminId} назначен admin`);
+  console.log(`Пользователь ${adminId} назначен user`);
 });
 
 db.run(`
