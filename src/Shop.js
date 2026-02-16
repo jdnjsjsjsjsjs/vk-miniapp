@@ -243,16 +243,26 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
     };
 
     const removeFromCart = (itemId) => {
-        const itemKey = String(itemId);
-        const newQty = (cart[itemKey] || 0) - 1;
+        fetch('http://localhost:3001/api/cart/decrease', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: user.id, itemId }),
+        })
+        .then(res => res.json())
+        .then(data => {
+            const itemKey = String(itemId);
 
-        if (newQty <= 0) {
-            const newCart = { ...cart };
-            delete newCart[itemKey];
-            setCart(newCart);
-        } else {
-            setCart(prev => ({ ...prev, [itemKey]: newQty }));
-        }
+            if (data.quantity <= 0) {
+                const newCart = { ...cart };
+                delete newCart[itemKey];
+                setCart(newCart);
+            } else {
+                setCart(prev => ({
+                    ...prev,
+                    [itemKey]: data.quantity
+                }));
+            }
+        });
     };
 
     return (

@@ -782,6 +782,35 @@ app.post('/api/cart/add', (req, res) => {
   });
 });
 
+// POST уменьшить количество в корзине
+app.post('/api/cart/decrease', (req, res) => {
+  const { userId, itemId } = req.body;
+
+  db.get(
+    'SELECT quantity FROM cart_items WHERE user_id = ? AND item_id = ?',
+    [userId, itemId],
+    (err, row) => {
+      if (err) return res.status(500).json({ error: err.message });
+      if (!row) return res.status(404).json({ error: 'Item not in cart' });
+
+      if (row.quantity <= 1) {
+        db.run(
+          'DELETE FROM cart_items WHERE user_id = ? AND item_id = ?',
+          [userId, itemId],
+          () => res.json({ success: true, itemId, quantity: 0 })
+        );
+      } else {
+        const newQty = row.quantity - 1;
+        db.run(
+          'UPDATE cart_items SET quantity = ? WHERE user_id = ? AND item_id = ?',
+          [newQty, userId, itemId],
+          () => res.json({ success: true, itemId, quantity: newQty })
+        );
+      }
+    }
+  );
+});
+
 // POST удалить из корзины
 app.post('/api/cart/remove', (req, res) => {
   const { userId, itemId } = req.body;
