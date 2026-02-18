@@ -493,10 +493,8 @@ export default function App() {
                 padding: '8px 5px 0px 18px',
                 display: 'flex',
                 backgroundColor: '#ffffff',
-                cursor: 'pointer',
                 overflow: 'hidden',
               }}
-            onClick={goToTasks}
           >
             <img
               src={tasksIcon}
@@ -513,7 +511,7 @@ export default function App() {
               }}
             />
 
-            <div style={{ zIndex: 2 }}>
+            <div style={{ zIndex: 2, position: 'relative' }}>
               {/* Заголовок */}
               <CustomText
                 weight="1"
@@ -521,6 +519,37 @@ export default function App() {
               >
                 Задания
               </CustomText>
+
+              <div
+                style={{
+                  position: 'absolute',
+                  top: window.innerWidth < 768 ? 0 : 2,
+                  right: window.innerWidth < 768 ? 5 : 10,
+
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+
+                  height: window.innerWidth < 768 ? 18 : 22,
+                  padding: '0 8px',
+
+                  backgroundColor: '#8c64d7',
+                  borderRadius: 999,
+                  cursor: 'pointer',
+                }}
+                onClick={goToTasks}
+              >
+                <span
+                  style={{
+                    fontSize: window.innerWidth < 768 ? 8 : 10,
+                    color: '#fff',
+                    fontWeight: 600,
+                    lineHeight: 1,
+                  }}
+                >
+                  все
+                </span>
+              </div>
 
               {/* Последние задания */}
               <div style={{ marginTop: window.innerWidth < 768 ? 3 : 10, display: 'flex', flexDirection: 'column', gap: 6, width: window.innerWidth < 768 ? 200 : 400, paddingBottom: 15 }}>
