@@ -924,7 +924,7 @@ export default function App() {
       </Panel>
 
       {/* Панель Баланс */}
-      <Balance id="balance" goBack={goBack} balance={balance} goToTasks={goToTasks} />
+      <Balance id="balance" goBack={goBack} balance={balance} goToTasks={goToTasks} totalEarned={totalEarned} />
 
       {/* Панель подарок за вход*/}
       <Gift id="gift" goBack={goBack} balance={balance} goToBalance={goToBalance} />

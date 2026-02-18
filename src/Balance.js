@@ -4,7 +4,7 @@ import { CustomText } from './CustomTypography';
 
 import coinsIcon from './imgs/coins.png'
 
-export default function Balance({ id, goBack, balance, goToTasks }) {
+export default function Balance({ id, goBack, balance, goToTasks, totalEarned }) {
   return (
     <Panel id={id}>
       {/* Отступ под фикс-хедер */}
@@ -42,7 +42,6 @@ export default function Balance({ id, goBack, balance, goToTasks }) {
         </Button>
       </Div>
 
-      {/* Контент */}
       <Div
         style={{
           padding: '16px',
@@ -54,64 +53,118 @@ export default function Balance({ id, goBack, balance, goToTasks }) {
         <Card
           mode="shadow"
           style={{
-            borderRadius: 12,
-            padding: '16px 16px 26px 16px',
+            borderRadius: 16,
+            padding: '12px',
             display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
+            justifyContent: 'space-between',
+            alignItems: 'stretch',
             backgroundColor: '#ffffff',
             overflow: 'hidden',
+            position: 'relative',
           }}
         >
-          <img src={coinsIcon} alt="coins" style={{ height: 80, width: 80 }} />
-
-          <CustomText
-            weight="3"
-            style={{
-              marginTop: 8,
-              fontSize: 16,
-              color: '#000',
-              paddingBottom: '8px',
-            }}
-          >
-            Ваш баланс
-          </CustomText>
-
-          <CustomText
-            weight="3"
-            style={{
-              marginTop: 4,
-              marginBottom: 20,
-              fontSize: 32,
-              color: '#000',
-            }}
-          >
-            {balance}
-          </CustomText>
-
           <div
-            onClick={goToTasks}
             style={{
               display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              padding: '10px 20px',
-              marginTop: 20,
-              backgroundColor: '#8c64d7',
-              borderRadius: 999,
-              cursor: 'pointer',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              zIndex: 2,
+              width: '100%',
             }}
           >
-            <CustomText
-              weight="1"
+            <div
               style={{
-                fontSize: 14,
-                color: '#fff',
+                display: 'flex',
+                alignItems: 'flex-start',
               }}
             >
-              Перейти к заданиям
-            </CustomText>
+              <div>
+                <CustomText
+                  style={{
+                    fontSize: 10,
+                    color: '#000',
+                    fontWeight: 600,
+                  }}
+                >
+                  Баланс капиталов
+                </CustomText>
+
+                <CustomText
+                  weight="3"
+                  style={{
+                    marginTop: 6,
+                    fontSize: 32,
+                    color: '#8c64d7',
+                    fontWeight: 900,
+                  }}
+                >
+                  {balance}
+                </CustomText>
+              </div>
+
+              <div style={{ textAlign: 'left', marginLeft: 50 }}>
+                <CustomText
+                  style={{
+                    fontSize: 10,
+                    color: '#000',
+                    fontWeight: 300,
+                  }}
+                >
+                  Заработано
+                </CustomText>
+
+                <CustomText
+                  weight="3"
+                  style={{
+                    marginTop: 6,
+                    fontSize: 22,
+                    color: '#ceaeff',
+                    fontWeight: 900,
+                  }}
+                >
+                  {totalEarned}
+                </CustomText>
+              </div>
+            </div>
+
+            <div
+              onClick={goToTasks}
+              style={{
+                marginTop: 15,
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                padding: '4px 14px',
+                backgroundColor: '#8c64d7',
+                borderRadius: 999,
+                cursor: 'pointer',
+                width: 'fit-content',
+              }}
+            >
+              <CustomText
+                weight="1"
+                style={{
+                  fontSize: 10,
+                  color: '#fff',
+                }}
+              >
+                Перейти к заданиям
+              </CustomText>
+            </div>
           </div>
+
+          <img
+            src={coinsIcon}
+            alt="coins"
+            style={{
+              height: 140,
+              width: 140,
+              position: 'absolute',
+              objectFit: 'contain',
+              right: -15,
+              bottom: -15,
+            }}
+          />
         </Card>
       </Div>
     </Panel>
