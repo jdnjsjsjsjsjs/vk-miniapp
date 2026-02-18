@@ -414,6 +414,8 @@ app.get('/api/createTestUsers', (req, res) => {
     { id: 103, first_name: 'Сергей', last_name: 'Сергеев', totalEarned: 3 },
     { id: 104, first_name: 'Анна', last_name: 'Ананьева', totalEarned: 15 },
     { id: 105, first_name: 'Мария', last_name: 'Миронова', totalEarned: 20 },
+    { id: 106, first_name: 'Марьян', last_name: 'Игорев', totalEarned: 25 },
+    { id: 107, first_name: 'Игорь', last_name: 'Жежков', totalEarned: 300 },
   ];
 
   let completed = 0;

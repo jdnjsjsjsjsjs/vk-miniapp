@@ -321,10 +321,11 @@ export default function App() {
         </Div>
 
         <Div style={{ 
-          padding: '16px 16px 16px 16px',
+          padding: '16px 16px 0px 16px',
           backgroundColor: '#ceaeff',
           display: 'grid',
           gridTemplateColumns: '1fr 1fr',
+          gridTemplateRows: 'auto auto',
           gap: '12px',
           position: 'relative',
           marginTop: '-40px',
@@ -356,7 +357,7 @@ export default function App() {
                   <CustomText weight="1" style={{ fontSize: window.innerWidth < 768 ? 9 : 12, color: '#000', paddingBottom: 3 }}>
                     Баланс
                   </CustomText>
-                  <CustomText weight="1" style={{ fontSize: window.innerWidth < 768 ? 25 : 30, color: '#8c64d7' }}>
+                  <CustomText style={{ fontSize: window.innerWidth < 768 ? 25 : 30, fontWeight: 1000, color: '#8c64d7' }}>
                     {balance}
                   </CustomText>
                 </div>
@@ -388,30 +389,42 @@ export default function App() {
                   zIndex: 2,
                 }}
               >
-                <CustomText weight="1" style={{ fontSize: window.innerWidth < 768 ? 9 : 12, color: '#000', paddingBottom: 3 }}>
+                <CustomText weight="1" style={{ fontSize: window.innerWidth < 768 ? 9 : 12, color: '#000', paddingBottom: 2 }}>
                   Ежедневный вход
                 </CustomText>
 
-                <div
-                  onClick={goToBalance}
-                  style={{
-                    display: 'flex',
-                    padding: '3px 20px 3px 20px',
-                    backgroundColor: canClaimGift ? '#8c64d7' : '#f2f2f2',
-                    borderRadius: 999,
-                    cursor: 'pointer',
-                  }}
-                >
-                  <CustomText
-                    weight="1"
+                {canClaimGift ? (
+                  <div
+                    onClick={goToGift}
                     style={{
-                      fontSize: window.innerWidth ? 10 : 12,
-                      color: canClaimGift ? '#fff' : '#8c64d7',
+                      display: 'flex',
+                      padding: '2px 15px',
+                      backgroundColor: '#8c64d7',
+                      borderRadius: 999,
+                      cursor: 'pointer',
                     }}
                   >
-                    {canClaimGift ? 'получить' : giftTimeLeft}
+                    <CustomText
+                      weight="1"
+                      style={{
+                        fontSize: window.innerWidth < 768 ? 9 : 12,
+                        color: '#fff',
+                      }}
+                    >
+                      получить
+                    </CustomText>
+                  </div>
+                ) : (
+                  <CustomText
+                    style={{
+                      fontSize: window.innerWidth < 768 ? 19 : 30,
+                      color: '#8c64d7',
+                      fontWeight: 1000,
+                    }}
+                  >
+                    {giftTimeLeft}
                   </CustomText>
-                </div>
+                )}
               </div>
 
               <img
@@ -426,7 +439,7 @@ export default function App() {
             mode="shadow"
             style={{
               borderRadius: 12,
-              padding: '12px',
+              padding: '12px 12px 7px 12px',
               backgroundColor: '#ffffff',
               display: 'flex',
               flexDirection: 'column',
@@ -490,7 +503,7 @@ export default function App() {
               alt="tasks"
               style={{
                 position: 'absolute',
-                top: window.innerWidth < 768 ? 1 : -5,
+                top: window.innerWidth < 768 ? -5 : -5,
                 right: -25,
                 width: window.innerWidth < 768 ? 170 : 220,
                 height: window.innerWidth < 768 ? 170 : 220,
@@ -523,10 +536,10 @@ export default function App() {
                         display: 'flex',
                         justifyContent: 'space-between',
                         alignItems: 'center',
-                        padding: window.innerWidth < 768 ? '3px 7px' : '6px 10px',
+                        padding: window.innerWidth < 768 ? '0px 7px' : '6px 10px',
                         borderRadius: 999,
-                        backgroundColor: '#f7f7f7',
-                        color: '#8c64d7',
+                        backgroundColor: '#ffffff',
+                        border: '1px solid #8c64d7',
                         fontSize: window.innerWidth < 768 ? 9 : 12,
                       }}
                     >
@@ -536,20 +549,23 @@ export default function App() {
                           textOverflow: 'ellipsis',
                           whiteSpace: 'nowrap',
                           maxWidth: '70%',
-                          fontWeight: 600,
+                          fontWeight: 300,
+                          color: '#000',
                         }}
                       >
                         {task.title}
                       </span>
 
-                      <span style={{ 
-                        display: 'flex', 
-                        alignItems: 'center', 
-                        gap: 4,
-                        fontSize: window.innerWidth < 768 ? 12 : 14,
-                        fontWeight: 600,
-                        color: '#8c64d7' 
-                      }}>
+                      <span
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 4,
+                          fontSize: window.innerWidth < 768 ? 12 : 14,
+                          fontWeight: 600,
+                          color: '#8c64d7',               // цвет награды остаётся фиолетовым
+                        }}
+                      >
                         <img
                           src={coinIcon}
                           alt="coins"
@@ -589,16 +605,16 @@ export default function App() {
                 style={{
                   position: 'absolute',
                   top: isUserInTop3 ? 63 : 75,
-                  left: isUserInTop3 ? 85 : 100,
+                  left: isUserInTop3 ? 85 : 90,
                   transform: 'translate(-50%, -50%)',
-                  width: isUserInTop3 ? 170 : 205,
-                  height: isUserInTop3 ? 170 : 205,
+                  width: isUserInTop3 ? 170 : 180,
+                  height: isUserInTop3 ? 170 : 180,
                   objectFit: 'contain',
                   pointerEvents: 'none',
                 }}
               />
 
-            <div style={{ position: 'relative', marginLeft: isUserInTop3 ? 160 : 187 }}>
+            <div style={{ position: 'relative', marginLeft: isUserInTop3 ? 160 : 165 }}>
               {/* Заголовок */}
               <CustomText
                 weight="1"
@@ -656,7 +672,7 @@ export default function App() {
                           padding: '4px 12px',
                           borderRadius: 999,
                           fontWeight: 600,
-                          fontSize: 11,
+                          fontSize: window.innerWidth < 768 ? 9 : 11,
                           ...getPlaceStyles(currentIndex + 1),
                         }}
                       >
@@ -683,7 +699,7 @@ export default function App() {
             }}
           >
             <CustomText weight="1" style={{ fontSize: window.innerWidth < 768 ? 10 : 12, color: '#000', lineHeight: window.innerWidth < 768 ? '12px' : '16px' }}>
-              Призы и награды
+              Магазин артефактов
             </CustomText>
 
             <CustomText
@@ -693,7 +709,7 @@ export default function App() {
                 lineHeight: window.innerWidth < 768 ? '14px' : '16px'
               }}
             >
-              выбирай и получай за баллы
+              выбирай и покупай за капиталы
             </CustomText>
           </Card>
           {/* Карточки */}
@@ -733,7 +749,7 @@ export default function App() {
                 }}
               />
               <CustomText weight='1' style={{fontSize: window.innerWidth < 768 ? 10 : 14, color: '#000', lineHeight: window.innerWidth < 768 ? '11px' : '14px' }} >до 100</CustomText>
-              <CustomText style={{fontSize: window.innerWidth < 768 ? 9 : 12, color: '#000', lineHeight: window.innerWidth < 768 ? '11px' : '14px' }}>баллов</CustomText>
+              <CustomText style={{fontSize: window.innerWidth < 768 ? 9 : 12, color: '#000', lineHeight: window.innerWidth < 768 ? '11px' : '14px' }}>капиталов</CustomText>
             </Card>
 
             <Card mode="shadow" 
@@ -761,7 +777,7 @@ export default function App() {
                 }}
               />
               <CustomText weight='1' style={{fontSize: window.innerWidth < 768 ? 10 : 14, color: '#000', lineHeight: window.innerWidth < 768 ? '11px' : '14px' }} >от 100</CustomText>
-              <CustomText style={{fontSize: window.innerWidth < 768 ? 9 : 12, color: '#000', lineHeight: window.innerWidth < 768 ? '11px' : '14px' }}>баллов</CustomText>
+              <CustomText style={{fontSize: window.innerWidth < 768 ? 9 : 12, color: '#000', lineHeight: window.innerWidth < 768 ? '11px' : '14px' }}>капиталов</CustomText>
             </Card>
 
             <Card mode="shadow" 
@@ -789,7 +805,7 @@ export default function App() {
                 }}
               />
               <CustomText weight='1' style={{fontSize: window.innerWidth < 768 ? 10 : 14, color: '#000', lineHeight: window.innerWidth < 768 ? '11px' : '14px' }} >от 500</CustomText>
-              <CustomText style={{fontSize: window.innerWidth < 768 ? 10 : 12, color: '#000', lineHeight: window.innerWidth < 768 ? '11px' : '14px' }}>баллов</CustomText>
+              <CustomText style={{fontSize: window.innerWidth < 768 ? 10 : 12, color: '#000', lineHeight: window.innerWidth < 768 ? '11px' : '14px' }}>капиталов</CustomText>
             </Card>
           </Div>
         </Div>
@@ -813,13 +829,13 @@ export default function App() {
             >
               <Accordion.Summary>
                 <CustomText weight="3" style={{ fontSize: window.innerWidth < 768 ? 10 : 13, color: '#000' }}>
-                  как получить баллы?
+                  Как получить капиталы?
                 </CustomText>
               </Accordion.Summary>
               <Accordion.Content>
                 <Div>
                   <CustomText style={{ fontSize: window.innerWidth < 768 ? 9 : 11, color: '#000', lineHeight: '12px' }}>
-                    Баллы начисляются за выполнение заданий и активность в приложении.
+                    Капиталы начисляются за выполнение заданий и активность в приложении.
                   </CustomText>
                 </Div>
               </Accordion.Content>
@@ -836,13 +852,13 @@ export default function App() {
             >
               <Accordion.Summary>
                 <CustomText weight="3" style={{ fontSize: window.innerWidth < 768 ? 10 : 13, color: '#000' }}>
-                  где посмотреть мои награды?
+                  где посмотреть мои достижения?
                 </CustomText>
               </Accordion.Summary>
               <Accordion.Content>
                 <Div>
                   <CustomText style={{ fontSize: window.innerWidth < 768 ? 9 : 11, color: '#000', lineHeight: '12px' }}>
-                    Награды отображаются в разделе Призы и подарки.
+                    Твои достижения в профиле!
                   </CustomText>
                 </Div>
               </Accordion.Content>
@@ -859,13 +875,13 @@ export default function App() {
             >
               <Accordion.Summary>
                 <CustomText weight="3" style={{ fontSize: window.innerWidth < 768 ? 10 : 13, color: '#000' }}>
-                  как обменять баллы на подарки?
+                  как обменять капиталы на подарки?
                 </CustomText>
               </Accordion.Summary>
               <Accordion.Content>
                 <Div>
                   <CustomText style={{ fontSize: window.innerWidth < 768 ? 9 : 11, color: '#000', lineHeight: '12px' }}>
-                    Выберите подарок и следуйте инструкции по обмену баллов.
+                    Выберите подарок и следуйте инструкции по обмену капиталов.
                   </CustomText>
                 </Div>
               </Accordion.Content>
