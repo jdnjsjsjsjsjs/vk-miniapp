@@ -2,21 +2,18 @@ import { useState, useEffect } from 'react';
 import bridge from '@vkontakte/vk-bridge';
 import { Panel, Div, Button, Card } from '@vkontakte/vkui';
 import { CustomText } from './CustomTypography';
-import { Icon28ChevronBack } from '@vkontakte/icons';
+import { Icon28ChevronBack, Icon28CheckCircleOutline } from '@vkontakte/icons';
 
 import coinsIcon from './imgs/coins.png'
 import coinIcon from './imgs/coin.png'
 
 const rewards = [
-        5,5,5, 10,10,10,
-        15,15,15,
-        20,20,20,
-        25,25,25,
-        30,30,30,
-        40,40,40,
-        50,50,50,
-        75,75,75,
-        100,100,100
+        1,1,1,1,2,
+        2,2,2,2,3,
+        3,3,3,3,4,
+        4,4,4,4,5,
+        5,5,5,5,6,
+        6,6,6,6,7,
     ];
 
 export default function Gift({ id, goBack, balance, goToBalance}) {
@@ -61,7 +58,7 @@ export default function Gift({ id, goBack, balance, goToBalance}) {
         const now = new Date();
         const tomorrow = new Date();
 
-        tomorrow.setHours(24, 0, 0, 0); // следующая полночь
+        tomorrow.setHours(24, 0, 0, 0);
 
         const diff = tomorrow - now;
 
@@ -90,7 +87,7 @@ export default function Gift({ id, goBack, balance, goToBalance}) {
     }, [canClaim]);
     
     return (
-        <Panel id={id}>
+        <Panel id={id} style={{backgroundColor: '#ceaeff', minHeight: '100vh'}}>
             <Div style={{ height: 32, backgroundColor: '#ffffff' }} />
                         
             {/* Кастомный хедер */}
@@ -152,37 +149,39 @@ export default function Gift({ id, goBack, balance, goToBalance}) {
                 </div>
             </Div>
 
-            <Div style={{ padding: 16, backgroundColor: '#ceaeff', }}>
+            <Div style={{ padding: '10px 0px 0px 0px', backgroundColor: '#ceaeff' }}>
             <Card
                 mode="shadow"
                 style={{
                     borderRadius: 12,
-                    padding: '16px',
+                    padding: '12px',
                     display: 'flex',
-                    flexDirection: 'column',
+                    flexDirection: 'row',
                     alignItems: 'center',
+                    justifyContent: 'space-between',
                     backgroundColor: '#ffffff',
                     marginLeft: 16,
                     marginRight: 16,
                 }}
             >
-                <CustomText
-                    weight="1"
-                    style={{
-                    marginBottom: 12,
-                    color: '#000',
-                    textAlign: 'center',
-                    fontSize: 24,
-                    }}
-                >
-                    {canClaim ? 'Заберите приз!' : 'Приходите завтра'}
-                </CustomText>
+                {/* Левый блок: заголовок */}
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <CustomText style={{ fontSize: 12, color: '#000', fontWeight: 600 }}>
+                        Заходи 30 дней подряд
+                    </CustomText>
+                    <CustomText style={{ fontSize: 10, color: '#000', lineHeight: 1 }}>
+                        и получай капиталы
+                    </CustomText>
+                </div>
 
+                {/* Правый блок: вертикальный таймер */}
                 <CustomText
+                    weight="3"
                     style={{
+                        fontSize: 22,
+                        color: '#8c64d7',
+                        fontWeight: 1000,
                         textAlign: 'center',
-                        fontSize: 20,
-                        color: '#000',
                     }}
                 >
                     {timeLeft}
@@ -192,85 +191,102 @@ export default function Gift({ id, goBack, balance, goToBalance}) {
             <Div
                 style={{
                     display: 'grid',
-                    gridTemplateColumns: 'repeat(3, 1fr)',
-                    gap: 12,
+                    gridTemplateColumns: 'repeat(5, 1fr)',
+                    gap: 3,
                     backgroundColor: '#ceaeff',
                 }}
-            >
+                >
                 {rewards.map((reward, index) => {
                     const day = index + 1;
                     const isCurrent = day === giftDay;
-                    const isLocked = day > giftDay;
                     const isDone = day < giftDay;
+                    const isLocked = day > giftDay;
+                    const isFifth = day % 5 === 0;
+
+                    const cardBg = isFifth ? '#8c64d7' : '#ffffff';
+                    const textColor = isFifth ? '#ffffff' : '#8c64d7';
 
                     return (
                         <Card
-                            key={day}
-                            mode="shadow"
-                            style={{
-                                borderRadius: 12,
-                                padding: '14px 10px',
-                                textAlign: 'center',
-                                backgroundColor: isCurrent ? '#eaddff' : '#ffffff',
-                                opacity: isDone ? 0.4 : 1,
-                                filter: isLocked ? 'blur(2px)' : 'none',
-                                transition: 'all 0.2s ease',
-                            }}
+                        key={day}
+                        mode="shadow"
+                        style={{
+                            borderRadius: 12,
+                            textAlign: 'center',
+                            backgroundColor: cardBg,
+                            filter: isLocked ? 'blur(2px)' : 'none',
+                            position: 'relative',
+                            width: '100%',
+                            aspectRatio: '1 / 1',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                        }}
                         >
-                            <Div style={{ padding: 0 }}>
-                                <img src={coinsIcon} alt="coins" style={{ height: 50, width: 50 }} />
+                        <CustomText weight="1" style={{ fontSize: 8, color: isFifth ? '#fff' : '#000' }}>
+                            День {day}
+                        </CustomText>
 
-                                <CustomText
-                                    weight="1"
-                                    style={{
-                                        fontSize: 14,
-                                        color: '#000',
-                                    }}
-                                >
-                                    День {day}
-                                </CustomText>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                            <CustomText style={{ fontWeight: 1000, fontSize: 14, color: textColor }}>
+                            +{reward}
+                            </CustomText>
+                            <img src={coinIcon} alt="coins" style={{ width: 20, height: 20 }} />
+                        </div>
 
-                                <CustomText
-                                    weight="1"
-                                    style={{
-                                        marginTop: 2,
-                                        fontSize: 18,
-                                        color: '#8c64d7',
-                                    }}
-                                >
-                                    +{reward}
-                                </CustomText>
-
-                                {isCurrent && canClaim && (
-                                    <div
-                                        onClick={claimGift}
-                                        style={{
-                                            display: 'flex',
-                                            justifyContent: 'center',
-                                            alignItems: 'center',
-                                            padding: '10px 20px',
-                                            marginTop: 20,
-                                            backgroundColor: '#8c64d7',
-                                            borderRadius: 999,
-                                            cursor: 'pointer',
-                                        }}
-                                    >
-                                        <CustomText
-                                        weight="1"
-                                        style={{
-                                            fontSize: 14,
-                                            color: '#fff',
-                                        }}
-                                        >
-                                            Забрать
-                                        </CustomText>
-                                    </div>
-                                )}
-                            </Div>
+                        {/* Кнопка или галочка */}
+                        {isDone ? (
+                            <div
+                            style={{
+                                width: 20,
+                                height: 20,
+                                borderRadius: '50%',
+                                backgroundColor: isFifth ? '#ffffff' : '#8c64d7',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                marginTop: 2,
+                            }}
+                            >
+                            <Icon28CheckCircleOutline style={{ color: isFifth ? '#8c64d7' : '#fff' }} />
+                            </div>
+                        ) : isCurrent && canClaim ? (
+                            <div
+                            onClick={claimGift}
+                            style={{
+                                marginTop: 2,
+                                padding: '0px 5px',
+                                backgroundColor: isFifth ? '#ffffff' : '#8c64d7',
+                                color: isFifth ? '#8c64d7' : '#fff',
+                                borderRadius: 999,
+                                cursor: 'pointer',
+                            }}
+                            >
+                            <CustomText weight="1" style={{ fontSize: 8 }}>
+                                Получить
+                            </CustomText>
+                            </div>
+                        ) : (
+                            <div
+                            style={{
+                                marginTop: 2,
+                                padding: '0px 5px',
+                                backgroundColor: isFifth ? '#ffffff' : '#8c64d7',
+                                borderRadius: 999,
+                                opacity: 0.5,
+                                cursor: 'not-allowed',
+                            }}
+                            >
+                            <CustomText weight="1" style={{ fontSize: 8, color: isFifth ? '#8c64d7' : '#fff' }}>
+                                Получить
+                            </CustomText>
+                            </div>
+                        )}
                         </Card>
                     );
-                })}
-            </Div>
+                    })}
+                </Div>
             </Div>
         </Panel>
     );
