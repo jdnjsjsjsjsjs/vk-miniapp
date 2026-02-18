@@ -23,6 +23,15 @@ const db = new sqlite3.Database('./users.db', (err) => {
 
 db.run('PRAGMA foreign_keys = ON');
 
+// Функция записи транзакции
+function addTransaction(userId, type, amount, description = '') {
+  db.run(
+    `INSERT INTO transactions (user_id, type, amount, description)
+     VALUES (?, ?, ?, ?)`,
+    [userId, type, amount, description]
+  );
+}
+
 const upload = multer({
   limits: {
     fileSize: 5 * 1024 * 1024, // 5MB
@@ -49,16 +58,29 @@ db.run(`
   )
 `);
 
+// Таблица транзакций
+db.run(`
+  CREATE TABLE IF NOT EXISTS transactions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    type TEXT NOT NULL,              -- income | expense
+    amount INTEGER NOT NULL,
+    description TEXT,
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+  )
+`);
+
 // Даём админку нужному пользователю
 const adminId = 382210259;
 
 db.run(`
   INSERT INTO users (id, role)
   VALUES (?, 'admin')
-  ON CONFLICT(id) DO UPDATE SET role = 'user'
+  ON CONFLICT(id) DO UPDATE SET role = 'admin'
 `, [adminId], (err) => {
   if (err) return console.error('Ошибка при присвоении админки:', err.message);
-  console.log(`Пользователь ${adminId} назначен user`);
+  console.log(`Пользователь ${adminId} назначен admin`);
 });
 
 db.run(`
@@ -168,6 +190,7 @@ app.post('/api/user/:id/addBalance', (req, res) => {
 
     db.run('UPDATE users SET balance = ?, totalEarned = ? WHERE id = ?', [newBalance, newTotal, userId], function(err) {
       if (err) return res.status(500).json({ error: err.message });
+      addTransaction(userId, 'income', amount, 'Пополнение баланса');
       res.json({ id: userId, balance: newBalance, totalEarned: newTotal });
     });
   });
@@ -214,6 +237,7 @@ app.post('/api/user/:id/claimGift', (req, res) => {
        WHERE id = ?`,
       [reward, reward, today, userId],
       () => {
+        addTransaction(userId, 'income', reward, 'Ежедневный бонус');
         res.json({
           reward,
           gift_day: user.gift_day,
@@ -390,6 +414,7 @@ app.post('/api/admin/answers/:answerId', (req, res) => {
                   totalEarned = totalEarned + ?
               WHERE id = ?
             `, [answer.reward, answer.reward, answer.user_id]);
+            addTransaction(answer.user_id, 'income', answer.reward, 'Награда за задание');
           }
 
           res.json({ success: true });
@@ -808,10 +833,28 @@ app.post('/api/cart/checkout', (req, res) => {
 
         db.run('UPDATE users SET balance = balance - ? WHERE id = ?', [totalPrice, userId]);
         db.run('DELETE FROM cart_items WHERE user_id = ?', [userId]);
+        addTransaction(userId, 'expense', totalPrice, 'Покупка в магазине');  
         db.run('COMMIT', () => res.json({ success: true }));
       });
     });
   });
+});
+
+// Получить историю транзакций пользователя
+app.get('/api/user/:id/transactions', (req, res) => {
+  const userId = req.params.id;
+
+  db.all(
+    `SELECT id, type, amount, description, created_at
+     FROM transactions
+     WHERE user_id = ?
+     ORDER BY created_at DESC`,
+    [userId],
+    (err, rows) => {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json(rows);
+    }
+  );
 });
 
 app.listen(PORT, () => console.log(`Сервер запущен на http://localhost:${PORT}`));

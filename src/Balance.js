@@ -1,13 +1,40 @@
+import { useState, useEffect } from 'react';
 import { Panel, Div, Button, Card} from '@vkontakte/vkui';
 import { Icon28ChevronBack } from '@vkontakte/icons';
 import { CustomText } from './CustomTypography';
 
 import coinsIcon from './imgs/coins.png'
+import coinicon from './imgs/coin.png'
 
-export default function Balance({ id, goBack, balance, goToTasks, totalEarned }) {
+export default function Balance({ id, goBack, balance, goToTasks, totalEarned, userId }) {
+  const [transactions, setTransactions] = useState([]);
+
+  useEffect(() => {
+    async function fetchTransactions() {
+      try {
+        const res = await fetch(`http://localhost:3001/api/user/${userId}/transactions`);
+        const data = await res.json();
+
+        const grouped = data.reduce((acc, tx) => {
+          const date = new Date(tx.created_at).toLocaleDateString('ru-RU'); // 17.02.2026
+          if (!acc[date]) acc[date] = [];
+          acc[date].push(tx);
+          return acc;
+        }, {});
+
+        setTransactions(grouped);
+      } catch (error) {
+        console.error('Ошибка загрузки транзакций', error);
+      }
+    }
+
+    if (userId) {
+      fetchTransactions();
+    }
+  }, [userId]);
+
   return (
     <Panel id={id}>
-      {/* Отступ под фикс-хедер */}
       <Div style={{ height: 32, backgroundColor: '#ffffff' }} />
 
       {/* Кастомный хедер */}
@@ -165,6 +192,70 @@ export default function Balance({ id, goBack, balance, goToTasks, totalEarned })
               bottom: -15,
             }}
           />
+        </Card>
+
+        <Card
+          mode="shadow"
+          style={{
+            borderRadius: 16,
+            padding: '12px',
+            backgroundColor: '#ffffff',
+            marginTop: 20,
+            overflow: 'hidden',
+          }}
+        >
+          <CustomText
+            style={{
+              fontSize: 10,
+              fontWeight: 700,
+              marginBottom: 5,
+              color: '#000',
+            }}
+          >
+            История
+          </CustomText>
+
+          {Object.keys(transactions).length === 0 ? (
+            <CustomText style={{ fontSize: 12, color: '#555' }}>
+              Транзакций пока нет
+            </CustomText>
+          ) : (
+            Object.entries(transactions).map(([date, txs]) => (
+              <div key={date} style={{ marginBottom: 12 }}>
+                <CustomText style={{ fontSize: 9, fontWeight: 300, marginBottom: 2, color: '#555' }}>
+                  {date === new Date().toLocaleDateString('ru-RU') ? 'Сегодня' : date}
+                </CustomText>
+                {txs.map(tx => (
+                  <Div
+                    key={tx.id}
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      padding: '3px 0',
+                      borderBottom: '1px solid #eee',
+                    }}
+                  >
+                    <CustomText style={{ fontSize: 10, color: '#000' }}>
+                      {tx.description || 'Транзакция'}
+                    </CustomText>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                      <CustomText
+                        style={{
+                          fontSize: 12,
+                          fontWeight: 600,
+                          color: '#8c64d7',
+                        }}
+                      >
+                        {tx.type === 'income' ? '+' : '-'}{tx.amount}
+                      </CustomText>
+                      <img src={coinicon} alt="coin" style={{ width: 23, height: 23 }} />
+                    </div>
+                  </Div>
+                ))}
+              </div>
+            ))
+          )}
         </Card>
       </Div>
     </Panel>
