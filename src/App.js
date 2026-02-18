@@ -38,6 +38,7 @@ export default function App() {
   const [lastScrollY, setLastScrollY] = useState(0);
   const [balance, setBalance] = useState(0);
   const [totalEarned, setTotalEarned] = useState(0);
+  const [totalSpent, setTotalSpent] = useState(0);
   const [canClaimGift, setCanClaimGift] = useState(false);
   const [giftTimeLeft, setGiftTimeLeft] = useState('00:00:00');
   const [usersList, setUsersList] = useState([]);
@@ -112,6 +113,7 @@ export default function App() {
 
       setBalance(data.balance);
       setTotalEarned(data.totalEarned);
+      setTotalSpent(data.totalSpent || 0);
 
       const today = new Date().toISOString().slice(0, 10);
       const canClaim = data.last_gift_date !== today;
@@ -924,7 +926,7 @@ export default function App() {
       </Panel>
 
       {/* Панель Баланс */}
-      <Balance id="balance" goBack={goBack} balance={balance} goToTasks={goToTasks} totalEarned={totalEarned} userId={user?.id} />
+      <Balance id="balance" goBack={goBack} balance={balance} goToTasks={goToTasks} totalEarned={totalEarned} userId={user?.id} totalSpent={totalSpent} />
 
       {/* Панель подарок за вход*/}
       <Gift id="gift" goBack={goBack} balance={balance} goToBalance={goToBalance} />

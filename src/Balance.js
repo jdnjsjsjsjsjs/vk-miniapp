@@ -6,7 +6,7 @@ import { CustomText } from './CustomTypography';
 import coinsIcon from './imgs/coins.png'
 import coinicon from './imgs/coin.png'
 
-export default function Balance({ id, goBack, balance, goToTasks, totalEarned, userId }) {
+export default function Balance({ id, goBack, balance, goToTasks, totalEarned, userId, totalSpent }) {
   const [transactions, setTransactions] = useState([]);
 
   useEffect(() => {
@@ -83,81 +83,29 @@ export default function Balance({ id, goBack, balance, goToTasks, totalEarned, u
             borderRadius: 16,
             padding: '12px',
             display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'stretch',
+            alignItems: 'left',
             backgroundColor: '#ffffff',
             overflow: 'hidden',
             position: 'relative',
           }}
         >
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between',
-              zIndex: 2,
-              width: '100%',
-            }}
-          >
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'flex-start',
-              }}
+          {/* Левый блок: Баланс + кнопка */}
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <CustomText style={{ fontSize: 10, color: '#000', fontWeight: 600 }}>
+              Баланс капиталов
+            </CustomText>
+            <CustomText
+              weight="3"
+              style={{ marginTop: 6, fontSize: 32, color: '#8c64d7', fontWeight: 1000, marginBottom: 10 }}
             >
-              <div>
-                <CustomText
-                  style={{
-                    fontSize: 10,
-                    color: '#000',
-                    fontWeight: 600,
-                  }}
-                >
-                  Баланс капиталов
-                </CustomText>
+              {balance}
+            </CustomText>
 
-                <CustomText
-                  weight="3"
-                  style={{
-                    marginTop: 6,
-                    fontSize: 32,
-                    color: '#8c64d7',
-                    fontWeight: 900,
-                  }}
-                >
-                  {balance}
-                </CustomText>
-              </div>
-
-              <div style={{ textAlign: 'left', marginLeft: 50 }}>
-                <CustomText
-                  style={{
-                    fontSize: 10,
-                    color: '#000',
-                    fontWeight: 300,
-                  }}
-                >
-                  Заработано
-                </CustomText>
-
-                <CustomText
-                  weight="3"
-                  style={{
-                    marginTop: 6,
-                    fontSize: 22,
-                    color: '#ceaeff',
-                    fontWeight: 900,
-                  }}
-                >
-                  {totalEarned}
-                </CustomText>
-              </div>
-            </div>
-
+            {/* Кнопка под балансом */}
             <div
               onClick={goToTasks}
               style={{
-                marginTop: 15,
+                marginTop: 12,
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
@@ -168,18 +116,39 @@ export default function Balance({ id, goBack, balance, goToTasks, totalEarned, u
                 width: 'fit-content',
               }}
             >
-              <CustomText
-                weight="1"
-                style={{
-                  fontSize: 10,
-                  color: '#fff',
-                }}
-              >
+              <CustomText weight="1" style={{ fontSize: 10, color: '#fff' }}>
                 Перейти к заданиям
               </CustomText>
             </div>
           </div>
 
+          {/* Правый блок: Заработано + Потрачено */}
+          <div style={{ textAlign: 'left', display: 'flex', flexDirection: 'column', marginLeft: 20 }}>
+            <div>
+              <CustomText style={{ fontSize: 10, color: '#000', fontWeight: 300 }}>
+                Заработано
+              </CustomText>
+              <CustomText
+                weight="3"
+                style={{ marginTop: 3, fontSize: 22, color: '#ceaeff', fontWeight: 900 }}
+              >
+                {totalEarned}
+              </CustomText>
+            </div>
+            <div style={{ marginTop: 8 }}>
+              <CustomText style={{ fontSize: 10, color: '#000', fontWeight: 300 }}>
+                Потрачено
+              </CustomText>
+              <CustomText
+                weight="3"
+                style={{ marginTop: 3, fontSize: 22, color: '#ceaeff', fontWeight: 900 }}
+              >
+                {totalSpent}
+              </CustomText>
+            </div>
+          </div>
+
+          {/* Монетки */}
           <img
             src={coinsIcon}
             alt="coins"

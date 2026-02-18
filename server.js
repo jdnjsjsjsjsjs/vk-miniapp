@@ -52,6 +52,7 @@ db.run(`
     last_name TEXT DEFAULT '',
     balance INTEGER DEFAULT 0,
     totalEarned INTEGER DEFAULT 0,
+    totalSpent INTEGER DEFAULT 0,
     gift_day INTEGER DEFAULT 1,
     last_gift_date TEXT,
     role TEXT DEFAULT 'user'
@@ -148,11 +149,11 @@ app.get('/api/user/:id', (req, res) => {
 
     if (!row) {
       db.run(
-        'INSERT INTO users (id, first_name, last_name, balance, totalEarned) VALUES (?, ?, ?, ?, ?)',
-        [userId, '', '', 0, 0],
+        'INSERT INTO users (id, first_name, last_name, balance, totalEarned, totalSpent) VALUES (?, ?, ?, ?, ?, ?)',
+        [userId, '', '', 0, 0, 0],
         function(err) {
           if (err) return res.status(500).json({ error: err.message });
-          res.json({ id: userId, first_name: '', last_name: '', balance: 0, totalEarned: 0, role: 'user' });
+          res.json({ id: userId, first_name: '', last_name: '', balance: 0, totalEarned: 0, totalSpent: 0, role: 'user' });
         }
       );
     } else {
@@ -831,7 +832,7 @@ app.post('/api/cart/checkout', (req, res) => {
           `, [userId, item.item_id, item.quantity]);
         });
 
-        db.run('UPDATE users SET balance = balance - ? WHERE id = ?', [totalPrice, userId]);
+        db.run('UPDATE users SET balance = balance - ?, totalSpent = totalSpent + ? WHERE id = ?', [totalPrice, totalPrice, userId]);
         db.run('DELETE FROM cart_items WHERE user_id = ?', [userId]);
         addTransaction(userId, 'expense', totalPrice, 'Покупка в магазине');  
         db.run('COMMIT', () => res.json({ success: true }));
