@@ -210,7 +210,7 @@ export default function Balance({ id, goBack, balance, goToBalance }) {
                                             textAlign: 'center',
                                         }}
                                     >
-                                        {u.last_name} {u.first_name}
+                                        {u.first_name} {u.last_name}
                                     </CustomText>
                                     <CustomText weight="1" style={{ fontSize: 12 }}>
                                         {u.totalEarned}
