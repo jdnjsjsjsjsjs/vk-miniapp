@@ -122,7 +122,7 @@ export default function Balance({ id, goBack, balance, goToBalance }) {
                         alignItems: 'center',
                         justifyContent: 'space-between',
                         backgroundColor: '#ffffff',
-                        marginBottom: 20,
+                        marginBottom: 15,
                     }}
                 >
                     {/* Текст */}

@@ -4,6 +4,7 @@ import { CustomText } from './CustomTypography';
 import { Icon28ChevronBack } from '@vkontakte/icons';
 
 import coinIcon from './imgs/coin.png'
+import tasksIcon from './imgs/tasks.png'
 
 export default function Tasks({ id, goBack, balance, goToBalance, user }) {
     const [tasks, setTasks] = useState([]);
@@ -25,7 +26,7 @@ export default function Tasks({ id, goBack, balance, goToBalance, user }) {
     }, [user]);
 
     function getTimeLeft(expiresAt) {
-        if (!expiresAt) return 'Бессрочно';
+        if (!expiresAt) return 'бессрочно';
 
         const now = new Date();
         const end = new Date(expiresAt);
@@ -72,7 +73,6 @@ export default function Tasks({ id, goBack, balance, goToBalance, user }) {
                             setIsSubmitting(false);
                             setActiveTask(null);
 
-                            // перезагружаем задания
                             fetch(`http://localhost:3001/api/tasks/${user.id}`)
                             .then(res => res.json())
                             .then(setTasks);
@@ -95,9 +95,9 @@ export default function Tasks({ id, goBack, balance, goToBalance, user }) {
                     </ModalCard>
             </ModalRoot>
 
-            <Panel id={id}>
-                <Div style={{ height: 32, backgroundColor: '#ffffff' }}/>
-                            
+            <Panel id={id} style={{ backgroundColor: '#ceaeff', minHeight: '100vh' }}>
+                <Div style={{ height: 32, backgroundColor: '#ceaeff' }} />
+                        
                 {/* Кастомный хедер */}
                 <Div
                     style={{
@@ -106,10 +106,10 @@ export default function Tasks({ id, goBack, balance, goToBalance, user }) {
                     left: 0,
                     right: 0,
                     height: 56,
-                    backgroundColor: '#ceaeff',
+                    backgroundColor: '#fff',
                     display: 'flex',
                     alignItems: 'center',
-                    padding: '0 16px',
+                    padding: '0 4px',
                     zIndex: 1000,
                     }}
                 >
@@ -123,12 +123,12 @@ export default function Tasks({ id, goBack, balance, goToBalance, user }) {
                             paddingLeft: 0,
                             paddingRight: 8,
                             marginRight: 4,
-                            color: '#fff',
+                            color: '#ceaeff',
                         }}
                     >
                         Назад
                     </Button>
-
+                    
                     {/* Баланс-капсула */}
                     <div
                         onClick={goToBalance}
@@ -145,10 +145,10 @@ export default function Tasks({ id, goBack, balance, goToBalance, user }) {
                     >
                         <img src={coinIcon} alt="coins" style={{ height: 25, width: 25 }} />
                         <CustomText
-                            weight="3"
+                            weight="1"
                             style={{
                                 fontSize: 14,
-                                color: '#4000ff',
+                                color: '#8c64d7',
                                 lineHeight: '18px',
                             }}
                         >
@@ -157,112 +157,210 @@ export default function Tasks({ id, goBack, balance, goToBalance, user }) {
                     </div>
                 </Div>
 
-                {/* Контент */}
-                <Div style={{ paddingTop: 10, backgroundColor: '#ffffff', minHeight: '100vh' }}>
-                    <Div
+                <Div
+                    style={{
+                        padding: '12px',
+                        backgroundColor: '#ceaeff'
+                    }}
+                >
+                    <Card
+                        mode="shadow"
                         style={{
-                            paddingBottom: 20,
-                            textAlign: 'left',
+                            borderRadius: 10,
+                            padding: '20px 15px',
+                            display: 'flex',
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            backgroundColor: '#ffffff',
+                            marginBottom: 15,
                         }}
                     >
+                        {/* Текст */}
                         <CustomText
-                            weight="2"
+                            weight="1"
                             style={{
-                                fontSize: 20,
-                                color: '#311f68',
+                                fontSize: 16,
+                                color: '#000',
                             }}
                         >
                             Задания
                         </CustomText>
-                    </Div>
 
-                    {tasks.length === 0 && (
-                        <CustomText style={{ textAlign: 'center', color: '#999' }}>
-                            Заданий пока нет
-                        </CustomText>
-                    )}
-
-                    {tasks.map(task => (
-                        <Card
-                            key={task.id}
-                            mode="shadow"
+                        {/* Картинка справа */}
+                        <img
+                            src={tasksIcon}
+                            alt="tasks"
                             style={{
-                                position: 'relative',
-                                borderRadius: 12,
-                                padding: '16px',
-                                marginBottom: 12,
-                                backgroundColor: '#f5f5f5',
-                                display: 'flex',
-                                flexDirection: 'column',
-                                gap: 8,
+                                width: 75,
+                                height: 75,
+                                objectFit: 'contain',
+                                position: 'absolute',
+                                right: -5,
                             }}
-                        >
-                            <CustomText weight="medium" style={{ fontSize: 16, color: '#311f68' }}>
-                                {task.title}
+                        />
+                    </Card>
+
+                    <Card
+                        mode="shadow"
+                        style={{
+                            borderRadius: 10,
+                            padding: '12px',
+                            backgroundColor: '#ffffff',
+                            paddingTop: 15,
+                        }}
+                    >
+                        {tasks.length === 0 && (
+                            <CustomText style={{ textAlign: 'center', color: '#000' }}>
+                                Заданий пока нет
                             </CustomText>
+                        )}
 
-                            <CustomText style={{ fontSize: 14, color: '#666', display: 'flex', alignItems: 'center', gap: 4 }}>
-                                <img src={coinIcon} alt="coins" style={{ height: 25, width: 25 }} />
-                                {task.reward}
-                            </CustomText>
-
-                            {task.status === null && (
-                                <Button
-                                size="l"
-                                mode="primary"
-                                style={{ marginTop: 8 }}
-                                onClick={() => { setActiveTask(task); setAnswer(''); }}
-                                >
-                                    Выполнить
-                                </Button>
-                            )}
-
-                            {task.status === 'pending' && (
-                                <CustomText style={{ color: '#ff9800', fontSize: 13, marginTop: 8 }}>
-                                ⏳ На проверке
-                                </CustomText>
-                            )}
-
-                            {task.status === 'accepted' && (
-                                <CustomText style={{ color: '#4caf50', fontSize: 13, marginTop: 8 }}>
-                                ✅ Принято
-                                </CustomText>
-                            )}
-
-                            {task.status === 'rejected' && (
-                                <Button
-                                size="l"
-                                mode="primary"
-                                style={{ marginTop: 8 }}
-                                onClick={() => { setActiveTask(task); setAnswer(''); }}
-                                >
-                                Переделать
-                                </Button>
-                            )}
-
-                            <div
+                        {tasks.map(task => (
+                            <Card
+                                key={task.id}
                                 style={{
-                                    position: 'absolute',
-                                    top: 12,
-                                    right: 12,
+                                    position: 'relative',
+                                    borderRadius: 12,
+                                    padding: '14px',
+                                    marginBottom: 6,
+                                    backgroundColor: '#ffffff',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    border: '1px solid #ceaeff'
                                 }}
                             >
+                                <CustomText weight="2" style={{ fontSize: 10, color: '#000' }}>
+                                    {task.title}
+                                </CustomText>
+
+                                <CustomText style={{ fontSize: 16, color: '#8c64d7', display: 'flex', alignItems: 'center', gap: 4, fontWeight: 1000 }}>
+                                    {task.reward}
+                                    <img src={coinIcon} alt="coins" style={{ height: 25, width: 25 }} />
+                                </CustomText>
+
+                                {task.status === null && (
+                                    <div
+                                        onClick={() => { setActiveTask(task); setAnswer(''); }}
+                                        style={{
+                                            marginTop: 8,
+                                            width: '100%',
+                                            backgroundColor: '#8c64d7',
+                                            borderRadius: 999,
+                                            padding: '2px 0',
+                                            textAlign: 'center',
+                                            cursor: 'pointer',
+                                        }}
+                                    >
+                                        <CustomText
+                                            weight="1"
+                                            style={{
+                                                color: '#ffffff',
+                                                fontSize: 10,
+                                            }}
+                                        >
+                                            выполнить
+                                        </CustomText>
+                                    </div>
+                                )}
+
+                                {task.status === 'pending' && (
+                                    <div
+                                        style={{
+                                            marginTop: 8,
+                                            width: '100%',
+                                            backgroundColor: '#ceaeff',
+                                            borderRadius: 999,
+                                            padding: '2px 0',
+                                            textAlign: 'center',
+                                            cursor: 'pointer',
+                                        }}
+                                    >
+                                        <CustomText
+                                            weight="1"
+                                            style={{
+                                                color: '#ffffff',
+                                                fontSize: 10,
+                                            }}
+                                        >
+                                            на проверке
+                                        </CustomText>
+                                    </div>
+                                )}
+
+                                {task.status === 'accepted' && (
+                                    <div
+                                        style={{
+                                            marginTop: 8,
+                                            width: '100%',
+                                            backgroundColor: '#eaddff',
+                                            borderRadius: 999,
+                                            padding: '2px 0',
+                                            textAlign: 'center',
+                                            cursor: 'pointer',
+                                        }}
+                                    >
+                                        <CustomText
+                                            weight="1"
+                                            style={{
+                                                color: '#8c64d7',
+                                                fontSize: 10,
+                                            }}
+                                        >
+                                            принято
+                                        </CustomText>
+                                    </div>
+                                )}
+
+                                {task.status === 'rejected' && (
+                                    <div
+                                        onClick={() => { setActiveTask(task); setAnswer(''); }}
+                                        style={{
+                                            marginTop: 8,
+                                            width: '100%',
+                                            backgroundColor: '#8c64d7',
+                                            borderRadius: 999,
+                                            padding: '2px 0',
+                                            textAlign: 'center',
+                                            cursor: 'pointer',
+                                        }}
+                                    >
+                                        <CustomText
+                                            weight="1"
+                                            style={{
+                                                color: '#ffffff',
+                                                fontSize: 10,
+                                            }}
+                                        >
+                                            переделать
+                                        </CustomText>
+                                    </div>
+                                )}
+
                                 <div
                                     style={{
-                                    padding: '4px 10px',
-                                    borderRadius: 999,
-                                    backgroundColor: task.expires_at ? '#ede7ff' : '#e0e0e0',
-                                    color: '#311f68',
-                                    fontSize: 12,
-                                    fontWeight: 600,
-                                    whiteSpace: 'nowrap',
+                                        position: 'absolute',
+                                        top: 12,
+                                        right: 12,
                                     }}
                                 >
-                                    {getTimeLeft(task.expires_at)}
+                                    <div
+                                        style={{
+                                            padding: '4px 10px',
+                                            borderRadius: 999,
+                                            backgroundColor: '#ffffff',
+                                            color: '#8c64d7',
+                                            fontSize: 10,
+                                            fontWeight: 600,
+                                            whiteSpace: 'nowrap',
+                                        }}
+                                    >
+                                        {getTimeLeft(task.expires_at)}
+                                    </div>
                                 </div>
-                            </div>
-                        </Card>
-                    ))}
+                            </Card>
+                        ))}
+                    </Card>
                 </Div>
             </Panel>
         </>
