@@ -234,7 +234,7 @@ export default function App() {
     <View activePanel={activePanel}>
       <Panel id="main">
 
-        <Div style={{ height: 32, backgroundColor: '#ceaeff' }} />
+        <Div style={{ height: 20, backgroundColor: '#ceaeff' }} />
 
         {/* Кастомный хедер */}
         <Div
