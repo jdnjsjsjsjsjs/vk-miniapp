@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Panel, Div, Button, ModalRoot, ModalCard, Textarea, Card } from '@vkontakte/vkui';
 import { CustomText } from './CustomTypography';
-import { Icon28ChevronBack } from '@vkontakte/icons';
+import { Icon28ChevronBack, Icon16Search } from '@vkontakte/icons';
 
 import coinIcon from './imgs/coin.png'
 import tasksIcon from './imgs/tasks.png'
@@ -11,6 +11,8 @@ export default function Tasks({ id, goBack, balance, goToBalance, user }) {
     const [activeTask, setActiveTask] = useState(null);
     const [answer, setAnswer] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [searchOpen, setSearchOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
 
     useEffect(() => {
         if (!user?.id) return;
@@ -174,18 +176,55 @@ export default function Tasks({ id, goBack, balance, goToBalance, user }) {
                             justifyContent: 'space-between',
                             backgroundColor: '#ffffff',
                             marginBottom: 15,
+                            position: 'relative'
                         }}
                     >
                         {/* Текст */}
-                        <CustomText
-                            weight="1"
-                            style={{
-                                fontSize: 16,
-                                color: '#000',
-                            }}
-                        >
-                            Задания
-                        </CustomText>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                            <CustomText
+                                weight="1"
+                                style={{
+                                    fontSize: 16,
+                                    color: '#000',
+                                }}
+                            >
+                                Задания
+                            </CustomText>
+
+                            {/* Кнопка / инпут поиска */}
+                            {!searchOpen ? (
+                                <div
+                                    onClick={() => setSearchOpen(true)}
+                                    style={{
+                                        width: 25,
+                                        height: 25,
+                                        backgroundColor: '#8c64d7',
+                                        borderRadius: 10,
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        cursor: 'pointer',
+                                    }}
+                                >
+                                    <Icon16Search fill="#ffffff" style={{ height: 14, width: 14 }} />
+                                </div>
+                            ) : (
+                                <input
+                                    autoFocus
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    onBlur={() => { if(!searchQuery) setSearchOpen(false); }}
+                                    placeholder="..."
+                                    style={{
+                                        width: 150,
+                                        padding: '4px 8px',
+                                        borderRadius: 8,
+                                        border: '1px solid #8c64d7',
+                                        outline: 'none',
+                                    }}
+                                />
+                            )}
+                        </div>
 
                         {/* Картинка справа */}
                         <img
@@ -216,7 +255,9 @@ export default function Tasks({ id, goBack, balance, goToBalance, user }) {
                             </CustomText>
                         )}
 
-                        {tasks.map(task => (
+                        {tasks
+                        .filter(task => task.title.toLowerCase().includes(searchQuery.toLowerCase()))
+                        .map(task => (
                             <Card
                                 key={task.id}
                                 style={{
