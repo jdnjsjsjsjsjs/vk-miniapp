@@ -4,7 +4,6 @@ import { Panel, Div, Button, Card } from '@vkontakte/vkui';
 import { CustomText } from './CustomTypography';
 import { Icon28ChevronBack, Icon28CheckCircleOutline } from '@vkontakte/icons';
 
-import coinsIcon from './imgs/coins.png'
 import coinIcon from './imgs/coin.png'
 
 const rewards = [

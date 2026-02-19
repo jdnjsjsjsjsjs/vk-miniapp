@@ -1,14 +1,18 @@
 import { useEffect, useState } from 'react';
+import { useRef } from 'react';
 import { Panel, Div, Button, Card } from '@vkontakte/vkui';
 import { CustomText } from './CustomTypography';
 import { Icon28ChevronBack } from '@vkontakte/icons';
 import bridge from '@vkontakte/vk-bridge';
 
 import coinIcon from './imgs/coin.png'
+import cupsIcon from './imgs/cups.png'
 
 export default function Balance({ id, goBack, balance, goToBalance }) {
     const [user, setUser] = useState(null);
     const [usersList, setUsersList] = useState([]);
+    const currentUserRef = useRef(null);
+    const [isUserVisible, setIsUserVisible] = useState(true);
     
     useEffect(() => {
         bridge.send('VKWebAppGetUserInfo')
@@ -25,9 +29,28 @@ export default function Balance({ id, goBack, balance, goToBalance }) {
             });
     }, []);
 
+    useEffect(() => {
+        const element = currentUserRef.current;
+        if (!element) return;
+
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                setIsUserVisible(entry.isIntersecting);
+            },
+            {
+                root: null,
+                threshold: 0.2,
+            }
+        );
+
+        observer.observe(element);
+
+        return () => observer.unobserve(element);
+    }, [usersList, user]);
+
     return (
-        <Panel id={id}>
-            <Div style={{ height: 1, backgroundColor: '#ffffff' }} />
+        <Panel id={id} style={{backgroundColor: '#ceaeff', minHeight: '100vh'}}>
+            <Div style={{ height: 32, backgroundColor: '#ceaeff' }} />
                         
             {/* Кастомный хедер */}
             <Div
@@ -37,10 +60,10 @@ export default function Balance({ id, goBack, balance, goToBalance }) {
                 left: 0,
                 right: 0,
                 height: 56,
-                backgroundColor: '#ceaeff',
+                backgroundColor: '#fff',
                 display: 'flex',
                 alignItems: 'center',
-                padding: '0 16px',
+                padding: '0 4px',
                 zIndex: 1000,
                 }}
             >
@@ -54,12 +77,12 @@ export default function Balance({ id, goBack, balance, goToBalance }) {
                         paddingLeft: 0,
                         paddingRight: 8,
                         marginRight: 4,
-                        color: '#fff',
+                        color: '#ceaeff',
                     }}
                 >
                     Назад
                 </Button>
-                            
+                
                 {/* Баланс-капсула */}
                 <div
                     onClick={goToBalance}
@@ -76,10 +99,10 @@ export default function Balance({ id, goBack, balance, goToBalance }) {
                 >
                     <img src={coinIcon} alt="coins" style={{ height: 25, width: 25 }} />
                     <CustomText
-                        weight="3"
+                        weight="1"
                         style={{
                             fontSize: 14,
-                            color: '#4000ff',
+                            color: '#8c64d7',
                             lineHeight: '18px',
                         }}
                     >
@@ -88,50 +111,168 @@ export default function Balance({ id, goBack, balance, goToBalance }) {
                 </div>
             </Div>
 
-            <Div style={{ paddingTop: 64, paddingBottom: 32, backgroundColor: '#ffffff' }}>
-                <CustomText weight="3" style={{ fontSize: 20, color: '#311f68', textAlign: 'center', marginBottom: 16 }}>
-                    Рейтинг пользователей
-                </CustomText>
+            <Div style={{ padding: '10px', backgroundColor: '#ceaeff' }}>
+                <Card
+                    mode="shadow"
+                    style={{
+                        borderRadius: 10,
+                        padding: '20px 15px',
+                        display: 'flex',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        backgroundColor: '#ffffff',
+                        marginBottom: 20,
+                    }}
+                >
+                    {/* Текст */}
+                    <CustomText
+                        weight="1"
+                        style={{
+                            fontSize: 16,
+                            color: '#000',
+                        }}
+                    >
+                        Рейтинг пользователей
+                    </CustomText>
 
-                {/* Таблица рейтинга */}
-                {usersList.map((u, index) => {
-                    const isCurrentUser = user && user.id === u.id; // предполагаем, что в базе vkId = user.id
-                    return (
-                        <Card
-                            key={u.id}
-                            mode="shadow"
-                            style={{
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                                alignItems: 'center',
-                                padding: '12px 16px',
-                                marginBottom: 8,
-                                borderRadius: 12,
-                                backgroundColor: isCurrentUser ? '#f0edff' : '#ffffff',
-                            }}
-                        >
-                            <CustomText weight="3" style={{ fontSize: 16, color: '#311f68', width: 30 }}>
-                                {index + 1}.
-                            </CustomText>
-                            <CustomText weight="3" style={{ fontSize: 16, color: '#311f68', flex: 1 }}>
-                                {u.last_name} {u.first_name}
-                            </CustomText>
-                            <CustomText weight="3" style={{ fontSize: 16, color: '#4000ff' }}>
-                                {u.totalEarned}
-                            </CustomText>
-                        </Card>
-                    );
-                })}
-            </Div>
+                    {/* Картинка справа */}
+                    <img
+                        src={cupsIcon}
+                        alt="trophy"
+                        style={{
+                            width: 75,
+                            height: 75,
+                            objectFit: 'contain',
+                            position: 'absolute',
+                            right: 10,
+                        }}
+                    />
+                </Card>
+                
+                <Card
+                    mode="shadow"
+                    style={{
+                        borderRadius: 10,
+                        padding: '12px',
+                        backgroundColor: '#ffffff',
+                        paddingTop: 15,
+                    }}
+                >
+                    {/* Таблица рейтинга */}
+                    {usersList.map((u, index) => {
+                        const isCurrentUser = user && user.id === u.id; // предполагаем, что в базе vkId = user.id
+                        return (
+                            <Card
+                                key={u.id}
+                                style={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    padding: '2px 13px',
+                                    marginBottom: 8,
+                                    borderRadius: 999,
 
-            <Div 
-                style={{
-                    backgroundColor: '#ffffff',
-                    minHeight: '100vh',
-                    color: '#fff',
-                }}
-            >
-                {/* Контент будет здесь */}
+                                    backgroundColor:
+                                        index === 0 ? '#8c64d7' :
+                                        index === 1 ? '#ceaeff' :
+                                        index === 2 ? '#eaddff' :
+                                        '#ffffff',
+
+                                    color:
+                                        index === 0 ? '#ffffff' :
+                                        '#000000',
+
+                                    border: isCurrentUser
+                                        ? '1px solid #8c64d7'
+                                        : index > 2
+                                            ? '1px solid #eaddff'
+                                            : 'none',
+                                }}
+                            >
+                                <div ref={isCurrentUser ? currentUserRef : null}
+                                    style={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'center',
+                                        width: '100%',
+                                    }}
+                                >
+                                    <CustomText weight={isCurrentUser ? "1" : "2"} style={{ fontSize: 12, width: 30 }}>
+                                        {index + 1}.
+                                    </CustomText>
+                                    <CustomText
+                                        weight={isCurrentUser ? "1" : "2"}
+                                        style={{
+                                            fontSize: 12,
+                                            width: 30,
+                                            flex: 1,
+                                            textAlign: 'center',
+                                        }}
+                                    >
+                                        {u.last_name} {u.first_name}
+                                    </CustomText>
+                                    <CustomText weight="1" style={{ fontSize: 12 }}>
+                                        {u.totalEarned}
+                                    </CustomText>
+                                </div>
+                            </Card>
+                        );
+                    })}
+                </Card>
+
+                {!isUserVisible && user && (
+                    <div
+                        style={{
+                            position: 'fixed',
+                            bottom: 15,
+                            left: 20,
+                            right: 20,
+                            zIndex: 2000,
+                        }}
+                    >
+                        {usersList
+                            .filter(u => u.id === user.id)
+                            .map((u, index) => {
+                                const position = usersList.findIndex(x => x.id === user.id);
+
+                                return (
+                                    <Card
+                                        key="sticky-user"
+                                        style={{
+                                            display: 'flex',
+                                            justifyContent: 'space-between',
+                                            alignItems: 'center',
+                                            padding: '8px 13px',
+                                            borderRadius: 999,
+                                            backgroundColor: '#ffffff',
+                                            border: '2px solid #8c64d7',
+                                            boxShadow: '0 6px 30px rgba(0,0,0,0.15)',
+                                        }}
+                                    >
+                                        <CustomText style={{ fontSize: 12, width: 30 }}>
+                                            {position + 1}.
+                                        </CustomText>
+
+                                        <CustomText
+                                            weight="1"
+                                            style={{
+                                                fontSize: 12,
+                                                flex: 1,
+                                                textAlign: 'center',
+                                            }}
+                                        >
+                                            {u.last_name} {u.first_name}
+                                        </CustomText>
+
+                                        <CustomText style={{ fontSize: 12, fontWeight: 1000 }}>
+                                            {u.totalEarned}
+                                        </CustomText>
+                                    </Card>
+                                );
+                            })}
+                    </div>
+                )}
             </Div>
         </Panel>
     );

@@ -513,7 +513,7 @@ export default function App() {
               }}
             />
 
-            <div style={{ zIndex: 2, position: 'relative' }}>
+            <div style={{ zIndex: 2, position: 'relative', width: '66%' }}>
               {/* Заголовок */}
               <CustomText
                 weight="1"
@@ -554,7 +554,7 @@ export default function App() {
               </div>
 
               {/* Последние задания */}
-              <div style={{ marginTop: window.innerWidth < 768 ? 3 : 10, display: 'flex', flexDirection: 'column', gap: 6, width: window.innerWidth < 768 ? 200 : 400, paddingBottom: 15 }}>
+              <div style={{ marginTop: window.innerWidth < 768 ? 3 : 10, display: 'flex', flexDirection: 'column', gap: 6, width: '100%', paddingBottom: 15 }}>
                 {lastTasks.length === 0 ? (
                   <CustomText weight='1' style={{ fontSize: 14, color: '#000', textAlign: 'center', marginTop: 35 }}>
                     Заданий пока нет
@@ -635,17 +635,17 @@ export default function App() {
                 alt="cups"
                 style={{
                   position: 'absolute',
-                  top: isUserInTop3 ? 63 : 75,
-                  left: isUserInTop3 ? 85 : 90,
+                  top: isUserInTop3 ? 63 : 70,
+                  left: isUserInTop3 ? 74 : 77,
                   transform: 'translate(-50%, -50%)',
-                  width: isUserInTop3 ? 170 : 180,
-                  height: isUserInTop3 ? 170 : 180,
+                  width: isUserInTop3 ? 150 : 150,
+                  height: isUserInTop3 ? 150 : 150,
                   objectFit: 'contain',
                   pointerEvents: 'none',
                 }}
               />
 
-            <div style={{ position: 'relative', marginLeft: isUserInTop3 ? 160 : 165 }}>
+            <div style={{ position: 'relative', marginLeft: isUserInTop3 ? 130 : 135 }}>
               {/* Заголовок */}
               <CustomText
                 weight="1"
