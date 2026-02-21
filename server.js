@@ -329,42 +329,55 @@ app.post(
     const { userId, answer } = req.body;
 
     db.get('SELECT * FROM tasks WHERE id = ?', [taskId], async (err, task) => {
-      if (!task) return res.status(404).json({ error: 'Task not found' });
+      db.get(
+        'SELECT file_path FROM task_answers WHERE task_id = ? AND user_id = ?',
+        [taskId, userId],
+        async (err, oldAnswer) => {
 
-      let filePath = null;
+          if (oldAnswer && oldAnswer.file_path) {
+            const oldPath = path.join(__dirname, oldAnswer.file_path);
+            if (fs.existsSync(oldPath)) {
+              fs.unlinkSync(oldPath);
+            }
+          }
+          if (!task) return res.status(404).json({ error: 'Task not found' });
 
-      if (task.require_file) {
-        if (!req.file) {
-          return res.status(400).json({ error: 'File required' });
-        }
+          let filePath = null;
 
-        const safeName = path
-          .basename(req.file.originalname)
-          .replace(/[^a-zA-Z0-9._-]/g, '_');
+          if (task.require_file) {
+            if (!req.file) {
+              return res.status(400).json({ error: 'File required' });
+            }
 
-        const fileName = `task_${taskId}_${userId}_${Date.now()}_${safeName}`;
-        const outputPath = path.join(__dirname, 'uploads', 'task-answers', fileName);
+            const safeName = path
+              .basename(req.file.originalname)
+              .replace(/[^a-zA-Z0-9._-]/g, '_');
 
-        await fs.promises.writeFile(outputPath, req.file.buffer);
+            const fileName = `task_${taskId}_${userId}_${Date.now()}_${safeName}`;
+            const outputPath = path.join(__dirname, 'uploads', 'task-answers', fileName);
 
-        filePath = `/uploads/task-answers/${fileName}`;
-      }
+            await fs.promises.writeFile(outputPath, req.file.buffer);
 
-      db.run(
-        `
-        INSERT INTO task_answers (task_id, user_id, answer, file_path, status)
-        VALUES (?, ?, ?, ?, 'pending')
-        ON CONFLICT(task_id, user_id)
-        DO UPDATE SET
-          answer = excluded.answer,
-          file_path = excluded.file_path,
-          status = 'pending',
-          created_at = CURRENT_TIMESTAMP
-        `,
-        [taskId, userId, answer || '', filePath],
-        function (err) {
-          if (err) return res.status(500).json({ error: err.message });
-          res.json({ success: true });
+            filePath = `/uploads/task-answers/${fileName}`;
+          }
+
+          db.run(
+            `
+            INSERT INTO task_answers (task_id, user_id, answer, file_path, status)
+            VALUES (?, ?, ?, ?, 'pending')
+            ON CONFLICT(task_id, user_id)
+            DO UPDATE SET
+              answer = excluded.answer,
+              file_path = excluded.file_path,
+              status = 'pending',
+              created_at = CURRENT_TIMESTAMP
+            `,
+            [taskId, userId, answer || '', filePath],
+            function (err) {
+              if (err) return res.status(500).json({ error: err.message });
+              res.json({ success: true });
+            }
+          );
         }
       );
     });
@@ -477,6 +490,14 @@ app.post('/api/admin/answers/:answerId', (req, res) => {
         'UPDATE task_answers SET status = ? WHERE id = ?',
         [newStatus, answerId],
         () => {
+
+          if (answer.file_path) {
+            const fullPath = path.join(__dirname, answer.file_path);
+            if (fs.existsSync(fullPath)) {
+              fs.unlinkSync(fullPath);
+            }
+          }
+
           if (newStatus === 'accepted') {
             db.run(`
               UPDATE users
@@ -484,6 +505,7 @@ app.post('/api/admin/answers/:answerId', (req, res) => {
                   totalEarned = totalEarned + ?
               WHERE id = ?
             `, [answer.reward, answer.reward, answer.user_id]);
+
             addTransaction(answer.user_id, 'income', answer.reward, 'Награда за задание');
           }
 
@@ -803,7 +825,7 @@ app.put('/api/admin/tasks/:id', (req, res) => {
 
 // Для админа - удалить задание
 app.delete('/api/admin/tasks/:id', (req, res) => {
-  const { userId } = req.body; // userId приходит в body
+  const { userId } = req.body;
   const taskId = req.params.id;
 
   db.get('SELECT role FROM users WHERE id = ?', [userId], (err, user) => {
@@ -811,10 +833,35 @@ app.delete('/api/admin/tasks/:id', (req, res) => {
       return res.status(403).json({ error: 'Forbidden' });
     }
 
-    db.run('DELETE FROM tasks WHERE id = ?', [taskId], function(err) {
-      if (err) return res.status(500).json({ error: err.message });
-      res.json({ success: true });
-    });
+    // 1. Получаем все файлы задания
+    db.all(
+      'SELECT file_path FROM task_answers WHERE task_id = ?',
+      [taskId],
+      (err, answers) => {
+        if (err) return res.status(500).json({ error: err.message });
+
+        // 2. Удаляем файлы
+        answers.forEach(a => {
+          if (a.file_path) {
+            const fullPath = path.join(__dirname, a.file_path);
+            if (fs.existsSync(fullPath)) {
+              fs.unlinkSync(fullPath);
+            }
+          }
+        });
+
+        // 3. Удаляем ответы
+        db.run('DELETE FROM task_answers WHERE task_id = ?', [taskId], (err) => {
+          if (err) return res.status(500).json({ error: err.message });
+
+          // 4. Удаляем само задание
+          db.run('DELETE FROM tasks WHERE id = ?', [taskId], function(err) {
+            if (err) return res.status(500).json({ error: err.message });
+            res.json({ success: true });
+          });
+        });
+      }
+    );
   });
 });
 
