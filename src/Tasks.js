@@ -10,6 +10,7 @@ export default function Tasks({ id, goBack, balance, goToBalance, user }) {
     const [tasks, setTasks] = useState([]);
     const [activeTask, setActiveTask] = useState(null);
     const [answer, setAnswer] = useState('');
+    const [selectedFile, setSelectedFile] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [searchOpen, setSearchOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
@@ -51,7 +52,11 @@ export default function Tasks({ id, goBack, balance, goToBalance, user }) {
             <ModalRoot activeModal={activeTask ? 'task' : null}>
                 <ModalCard
                     id="task"
-                    onClose={() => { setActiveTask(null); setAnswer(''); }}
+                    onClose={() => {
+                        setActiveTask(null);
+                        setAnswer('');
+                        setSelectedFile(null);
+                    }}
                     actions={
                         <Button
                             size="l"
@@ -61,26 +66,58 @@ export default function Tasks({ id, goBack, balance, goToBalance, user }) {
                                 if (isSubmitting) return;
                                 if (!answer.trim()) return;
 
+                                // если требуется файл, но он не выбран
+                                if (activeTask.require_file === 1 && !selectedFile) {
+                                    alert('Необходимо загрузить файл');
+                                    return;
+                                }
+
                                 setIsSubmitting(true);
 
-                                await fetch(`http://localhost:3001/api/tasks/${activeTask.id}/answer`, {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({
-                                    userId: user.id,
-                                    answer
-                                })
-                            });
+                                try {
+                                    if (activeTask.require_file === 1) {
+                                        const formData = new FormData();
+                                        formData.append('userId', user.id);
+                                        formData.append('answer', answer);
+                                        formData.append('file', selectedFile);
 
-                            setIsSubmitting(false);
-                            setActiveTask(null);
+                                        await fetch(
+                                            `http://localhost:3001/api/tasks/${activeTask.id}/answer-with-file`,
+                                            {
+                                                method: 'POST',
+                                                body: formData
+                                            }
+                                        );
+                                    } else {
+                                        await fetch(
+                                            `http://localhost:3001/api/tasks/${activeTask.id}/answer`,
+                                            {
+                                                method: 'POST',
+                                                headers: { 'Content-Type': 'application/json' },
+                                                body: JSON.stringify({
+                                                    userId: user.id,
+                                                    answer
+                                                })
+                                            }
+                                        );
+                                    }
 
-                            fetch(`http://localhost:3001/api/tasks/${user.id}`)
-                            .then(res => res.json())
-                            .then(setTasks);
-                        }}
-                    >
-                        Отправить
+                                    setActiveTask(null);
+                                    setAnswer('');
+                                    setSelectedFile(null);
+
+                                    const res = await fetch(`http://localhost:3001/api/tasks/${user.id}`);
+                                    const data = await res.json();
+                                    setTasks(data);
+
+                                } catch (err) {
+                                    console.error('Ошибка отправки', err);
+                                }
+
+                                setIsSubmitting(false);
+                            }}
+                        >
+                            Отправить
                         </Button>
                     }
                     >
@@ -93,6 +130,22 @@ export default function Tasks({ id, goBack, balance, goToBalance, user }) {
                             value={answer}
                             onChange={e => setAnswer(e.target.value)}
                         />
+
+                        {activeTask?.require_file === 1 && (
+                            <div style={{ marginTop: 12 }}>
+                                <input
+                                    type="file"
+                                    accept=".jpg,.jpeg,.png,.pdf"
+                                    onChange={(e) => setSelectedFile(e.target.files[0])}
+                                />
+
+                                {selectedFile && (
+                                    <div style={{ marginTop: 6, fontSize: 12, color: '#8c64d7' }}>
+                                        Выбран файл: {selectedFile.name}
+                                    </div>
+                                )}
+                            </div>
+                        )}
                     </Div>
                     </ModalCard>
             </ModalRoot>
@@ -272,7 +325,7 @@ export default function Tasks({ id, goBack, balance, goToBalance, user }) {
                                 }}
                             >
                                 <CustomText weight="2" style={{ fontSize: 10, color: '#000' }}>
-                                    {task.title}
+                                    {task.title} {task.require_file === 1 && '📎'}
                                 </CustomText>
 
                                 <CustomText style={{ fontSize: 16, color: '#8c64d7', display: 'flex', alignItems: 'center', gap: 4, fontWeight: 1000 }}>
