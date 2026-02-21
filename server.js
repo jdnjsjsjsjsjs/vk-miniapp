@@ -44,6 +44,25 @@ const upload = multer({
   },
 });
 
+const answerUpload = multer({
+  limits: {
+    fileSize: 10 * 1024 * 1024,
+  },
+  fileFilter(req, file, cb) {
+    const allowed = [
+      'image/jpeg',
+      'image/png',
+      'application/pdf'
+    ];
+
+    if (!allowed.includes(file.mimetype)) {
+      return cb(new Error('Разрешены только jpg, png, pdf'));
+    }
+
+    cb(null, true);
+  }
+});
+
 // Создаем таблицу пользователей, если её нет
 db.run(`
   CREATE TABLE IF NOT EXISTS users (
@@ -78,10 +97,10 @@ const adminId = 382210259;
 db.run(`
   INSERT INTO users (id, role)
   VALUES (?, 'admin')
-  ON CONFLICT(id) DO UPDATE SET role = 'user'
+  ON CONFLICT(id) DO UPDATE SET role = 'admin'
 `, [adminId], (err) => {
   if (err) return console.error('Ошибка при присвоении админки:', err.message);
-  console.log(`Пользователь ${adminId} назначен user`);
+  console.log(`Пользователь ${adminId} назначен admin`);
 });
 
 db.run(`
@@ -91,6 +110,7 @@ db.run(`
     question TEXT NOT NULL,
     reward INTEGER NOT NULL,
     expires_at TEXT,
+    require_file INTEGER DEFAULT 0,
     created_at TEXT DEFAULT CURRENT_TIMESTAMP
   )
 `);
@@ -100,10 +120,10 @@ db.run(`
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     task_id INTEGER NOT NULL,
     user_id INTEGER NOT NULL,
-    answer TEXT NOT NULL,
+    answer TEXT,
+    file_path TEXT,
     status TEXT DEFAULT 'pending',
     created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-
     UNIQUE(task_id, user_id)
   )
 `);
@@ -264,6 +284,7 @@ app.get('/api/tasks/:userId', (req, res) => {
       t.question,
       t.reward,
       t.expires_at,
+      t.require_file,
       a.status
     FROM tasks t
     LEFT JOIN task_answers a 
@@ -300,6 +321,56 @@ app.post('/api/tasks/:taskId/answer', (req, res) => {
   );
 });
 
+app.post(
+  '/api/tasks/:taskId/answer-with-file',
+  answerUpload.single('file'),
+  async (req, res) => {
+    const taskId = req.params.taskId;
+    const { userId, answer } = req.body;
+
+    db.get('SELECT * FROM tasks WHERE id = ?', [taskId], async (err, task) => {
+      if (!task) return res.status(404).json({ error: 'Task not found' });
+
+      let filePath = null;
+
+      if (task.require_file) {
+        if (!req.file) {
+          return res.status(400).json({ error: 'File required' });
+        }
+
+        const safeName = path
+          .basename(req.file.originalname)
+          .replace(/[^a-zA-Z0-9._-]/g, '_');
+
+        const fileName = `task_${taskId}_${userId}_${Date.now()}_${safeName}`;
+        const outputPath = path.join(__dirname, 'uploads', 'task-answers', fileName);
+
+        await fs.promises.writeFile(outputPath, req.file.buffer);
+
+        filePath = `/uploads/task-answers/${fileName}`;
+      }
+
+      db.run(
+        `
+        INSERT INTO task_answers (task_id, user_id, answer, file_path, status)
+        VALUES (?, ?, ?, ?, 'pending')
+        ON CONFLICT(task_id, user_id)
+        DO UPDATE SET
+          answer = excluded.answer,
+          file_path = excluded.file_path,
+          status = 'pending',
+          created_at = CURRENT_TIMESTAMP
+        `,
+        [taskId, userId, answer || '', filePath],
+        function (err) {
+          if (err) return res.status(500).json({ error: err.message });
+          res.json({ success: true });
+        }
+      );
+    });
+  }
+);
+
 // Проверка роли пользователя
 app.get('/api/admin/tasks', (req, res) => {
   const { userId } = req.query;
@@ -329,7 +400,7 @@ app.get('/api/admin/tasks', (req, res) => {
 
 // Для админа - создать задание
 app.post('/api/admin/tasks', (req, res) => {
-  const { userId, title, question, reward, expires_at } = req.body;
+  const { userId, title, question, reward, expires_at, require_file } = req.body;
 
   db.get('SELECT role FROM users WHERE id = ?', [userId], (err, user) => {
     if (!user || user.role !== 'admin') {
@@ -337,9 +408,9 @@ app.post('/api/admin/tasks', (req, res) => {
     }
 
     db.run(
-      `INSERT INTO tasks (title, question, reward, expires_at)
-       VALUES (?, ?, ?, ?)`,
-      [title, question, reward, expires_at || null],
+      `INSERT INTO tasks (title, question, reward, expires_at, require_file)
+       VALUES (?, ?, ?, ?, ?)`,
+      [title, question, reward, expires_at || null, require_file || 0],
       function (err) {
         if (err) return res.status(500).json({ error: err.message });
         res.json({ id: this.lastID });
@@ -359,11 +430,12 @@ app.get('/api/admin/tasks/:taskId/answers', (req, res) => {
     }
 
     db.all(`
-      SELECT 
+      SELECT
         a.id,
         a.answer,
         a.status,
         a.user_id,
+        a.file_path,
         u.first_name,
         u.last_name
       FROM task_answers a
@@ -708,7 +780,7 @@ app.post('/api/admin/delete-temp-image', (req, res) => {
 
 // Для админа - редактировать задание
 app.put('/api/admin/tasks/:id', (req, res) => {
-  const { userId, title, question, reward, expires_at } = req.body;
+  const { userId, title, question, reward, expires_at, require_file } = req.body;
   const taskId = req.params.id;
 
   db.get('SELECT role FROM users WHERE id = ?', [userId], (err, user) => {
@@ -718,9 +790,9 @@ app.put('/api/admin/tasks/:id', (req, res) => {
 
     db.run(
       `UPDATE tasks
-       SET title = ?, question = ?, reward = ?, expires_at = ?
+       SET title = ?, question = ?, reward = ?, expires_at = ?, require_file = ?
        WHERE id = ?`,
-      [title, question, reward, expires_at || null, taskId],
+      [title, question, reward, expires_at || null, require_file || 0, taskId],
       function(err) {
         if (err) return res.status(500).json({ error: err.message });
         res.json({ success: true });

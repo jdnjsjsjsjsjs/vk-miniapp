@@ -1,6 +1,6 @@
 // AdminTasks.js
 import { useState, useEffect } from 'react';
-import { Panel, Div, Button, ModalRoot, ModalCard, Input, Textarea } from '@vkontakte/vkui';
+import { Panel, Div, Button, ModalRoot, ModalCard, Input, Textarea, Checkbox } from '@vkontakte/vkui';
 import { Icon28ChevronBack } from '@vkontakte/icons'
 import { CustomText } from './CustomTypography';
 
@@ -13,6 +13,7 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
   const [question, setQuestion] = useState('');
   const [reward, setReward] = useState('');
   const [expiresAt, setExpiresAt] = useState('');
+  const [requireFile, setRequireFile] = useState(false);
   const [activeTask, setActiveTask] = useState(null);
   const [answers, setAnswers] = useState([]);
   const [activeAnswer, setActiveAnswer] = useState(null);
@@ -82,7 +83,8 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
           title: editTask.title,
           question: editTask.question,
           reward: Number(editTask.reward),
-          expires_at: editTask.expires_at || null
+          expires_at: editTask.expires_at || null,
+          require_file: editTask.require_file ? 1 : 0
         }),
       });
 
@@ -136,7 +138,8 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
                       title,
                       question,
                       reward: Number(reward),
-                      expires_at: expiresAt || null
+                      expires_at: expiresAt || null,
+                      require_file: requireFile ? 1 : 0
                     })
                   });
 
@@ -184,6 +187,14 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
             value={expiresAt}
             onChange={e => setExpiresAt(e.target.value)}
           />
+
+          <Checkbox
+            checked={requireFile}
+            onChange={e => setRequireFile(e.target.checked)}
+            style={{ marginTop: 12 }}
+          >
+            Требуется загрузка файла
+          </Checkbox>
         </ModalCard>
 
         <ModalCard
@@ -274,6 +285,29 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
           }
         >
           <CustomText>{activeAnswer?.answer}</CustomText>
+          {activeAnswer?.file_path && (
+            <Div style={{ marginTop: 12 }}>
+              {activeAnswer.file_path.endsWith('.pdf') ? (
+                <a
+                  href={`http://localhost:3001${activeAnswer.file_path}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  📄 Открыть PDF
+                </a>
+              ) : (
+                <img
+                  src={`http://localhost:3001${activeAnswer.file_path}`}
+                  alt="Ответ"
+                  style={{
+                    width: '100%',
+                    borderRadius: 12,
+                    marginTop: 8
+                  }}
+                />
+              )}
+            </Div>
+          )}
         </ModalCard>
 
         <ModalCard
@@ -346,6 +380,18 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
             value={editTask?.expires_at || ''}
             onChange={e => setEditTask({ ...editTask, expires_at: e.target.value })}
           />
+          <Checkbox
+            checked={!!editTask?.require_file}
+            onChange={e =>
+              setEditTask({
+                ...editTask,
+                require_file: e.target.checked ? 1 : 0
+              })
+            }
+            style={{ marginTop: 12 }}
+          >
+            Требуется загрузка файла
+          </Checkbox>
           <Div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
             <Button mode="primary" stretched onClick={saveEditTask}>
               Сохранить
@@ -446,6 +492,7 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
                 setQuestion('');
                 setReward('');
                 setExpiresAt('');
+                setRequireFile(false);
                 setActiveModal('createTask');
               }}
             >
@@ -526,7 +573,9 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
                     {task.pendingCount}
                   </div>
 
-                  <CustomText weight="medium" style={{ fontSize: 16, color: '#8c64d7' }}>{task.title}</CustomText>
+                  <CustomText weight="medium" style={{ fontSize: 16, color: '#8c64d7' }}>
+                    {task.title} {task.require_file ? '📎' : ''}
+                  </CustomText>
                   <CustomText weight="medium" style={{ fontSize: 12, color: '#8c64d7' }}>{task.question}</CustomText>
                   <CustomText style={{ fontSize: 14, color: '#666', marginTop: 4, display: 'flex', alignItems: 'center', gap: 4 }}>
                     <img src={coinIcon} alt="coins" style={{ height: 25, width: 25 }} /> {task.reward}
