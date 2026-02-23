@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import bridge from '@vkontakte/vk-bridge';
 import { Panel, Div, Button, Card } from '@vkontakte/vkui';
 import { CustomText } from './CustomTypography';
-import { Icon28ChevronBack, Icon28CheckCircleOutline } from '@vkontakte/icons';
+import { Icon28ChevronBack } from '@vkontakte/icons';
 
 import coinIcon from './imgs/coin.png'
 
@@ -248,7 +248,18 @@ export default function Gift({ id, goBack, balance, goToBalance}) {
                                 marginTop: 2,
                             }}
                             >
-                            <Icon28CheckCircleOutline style={{ color: isFifth ? '#8c64d7' : '#fff' }} />
+                                <svg
+                                    width="12"
+                                    height="12"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke={isFifth ? '#8c64d7' : '#ffffff'}
+                                    strokeWidth="3"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                >
+                                    <polyline points="20 6 9 17 4 12" />
+                                </svg>
                             </div>
                         ) : isCurrent && canClaim ? (
                             <div
@@ -263,7 +274,7 @@ export default function Gift({ id, goBack, balance, goToBalance}) {
                             }}
                             >
                             <CustomText weight="1" style={{ fontSize: 8 }}>
-                                Получить
+                                получить
                             </CustomText>
                             </div>
                         ) : (
@@ -278,7 +289,7 @@ export default function Gift({ id, goBack, balance, goToBalance}) {
                             }}
                             >
                             <CustomText weight="1" style={{ fontSize: 8, color: isFifth ? '#8c64d7' : '#fff' }}>
-                                Получить
+                                получить
                             </CustomText>
                             </div>
                         )}
