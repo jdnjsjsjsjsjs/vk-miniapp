@@ -2,7 +2,7 @@ import { Panel, Div, Button, Card } from '@vkontakte/vkui';
 import { CustomText } from './CustomTypography';
 import { Icon28ChevronBack, Icon28ChevronRightOutline } from '@vkontakte/icons';
 
-export default function Profile({ id, goBack, user, balance, goToSettings, goToGuide }) {
+export default function Profile({ id, goBack, user, balance, goToSettings, goToGuide, goToAchievements, goToBalance }) {
 
   return (
     <Panel id={id} style={{ backgroundColor: '#ceaeff', minHeight: '100vh' }}>
@@ -87,7 +87,7 @@ export default function Profile({ id, goBack, user, balance, goToSettings, goToG
                   <CustomText weight="1" style={{ fontSize: 9 }}>
                     Баланс капиталов
                   </CustomText>
-                  <CustomText weight="1" style={{ fontSize: 26, color: '#8c64d7', fontWeight: 1000 }}>
+                  <CustomText weight="1" style={{ fontSize: 26, color: '#8c64d7', fontWeight: 1000 }} onClick={goToBalance} >
                     {balance}
                   </CustomText>
                 </div>
@@ -97,7 +97,7 @@ export default function Profile({ id, goBack, user, balance, goToSettings, goToG
                   <CustomText weight="1" style={{ fontSize: 9 }}>
                     Достижения
                   </CustomText>
-                  <CustomText weight="1"  style={{ fontSize: 26, color: '#8c64d7', fontWeight: 1000 }}>
+                  <CustomText weight="1"  style={{ fontSize: 26, color: '#8c64d7', fontWeight: 1000 }} onClick={goToAchievements} >
                     12
                   </CustomText>
                 </div>

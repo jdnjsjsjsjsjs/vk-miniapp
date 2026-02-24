@@ -53,7 +53,7 @@ export default function Guide({ id, goBack }) {
                 boxSizing: 'border-box',
                 padding: '5px 10px',
                 margin: '12px auto 0 auto',
-                borderRadius: 8,
+                borderRadius: 999,
                 border: '1px solid #e0e0e0',
                 outline: 'none',
                 fontSize: 12,
