@@ -1,212 +1,142 @@
 import { Panel, Div, Button, Card } from '@vkontakte/vkui';
 import { CustomText } from './CustomTypography';
-import { Icon28ChevronBack } from '@vkontakte/icons';
-
-import coinsIcon from './imgs/coins.png'
-import coinIcon from './imgs/coin.png'
-import box1icon from './imgs/box1.png'
-import cupsIcon from './imgs/cups.png'
-import awardsIcon from './imgs/awards.png'
-import lockIcon from './imgs/lock.png'
+import { Icon28ChevronBack, Icon28ChevronRightOutline } from '@vkontakte/icons';
 
 export default function Profile({ id, goBack, user, balance, totalEarned, goToBalance }) {
-  const achievements = [
-    {
-      id: 1,
-      title: 'Первый вход',
-      icon: <img src={box1icon} alt="box1" style={{ height: 80, width: 80 }} />,
-      unlocked: true,
-    },
-    {
-      id: 2,
-      title: '10 очков',
-      icon: <img src={coinsIcon} alt="coins" style={{ height: 80, width: 80 }} />,
-      unlocked: totalEarned >= 10,
-    },
-    {
-      id: 3,
-      title: '100 очков',
-      icon: <img src={cupsIcon} alt="cups" style={{ height: 80, width: 80 }} />,
-      unlocked: totalEarned >= 100,
-    },
-    {
-      id: 4,
-      title: '1000 очков',
-      icon: <img src={awardsIcon} alt="awards" style={{ height: 80, width: 80 }} />,
-      unlocked: totalEarned >= 1000,
-    },
-  ];
 
   return (
-    <Panel id={id}>
-    <Div style={{ height: 32, backgroundColor: '#ffffff' }} />
+    <Panel id={id} style={{ backgroundColor: '#ceaeff', minHeight: '100vh' }}>
 
-    {/* Кастомный хедер */}
-    <Div
-        style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            height: 56,
-            backgroundColor: '#fff',
-            display: 'flex',
-            alignItems: 'center',
-            padding: '0 4px',
-            zIndex: 1000,
-        }}
-    >
-      {/* Кнопка назад */}
-      <Button
-        mode="tertiary"
-        size="l"
-        before={<Icon28ChevronBack />}
-         onClick={goBack}
-        style={{
-          paddingLeft: 0,
-          paddingRight: 8,
-          marginRight: 4,
-          color: '#ceaeff',
-        }}
-      >
-        Назад
-      </Button>
+      {/* HEADER */}
+      <Div style={{ height: 32, backgroundColor: '#ceaeff' }} />
 
-      {/* Баланс-капсула */}
-      <div
-        onClick={goToBalance}
+      <Div
         style={{
-          marginLeft: 'auto',
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: 56,
+          backgroundColor: '#fff',
           display: 'flex',
           alignItems: 'center',
-          gap: 6,
-          padding: '2px 18px 2px 2px',
-          backgroundColor: '#f2f2f2',
-          borderRadius: 999,
-          cursor: 'pointer',
+          padding: '0 4px',
+          zIndex: 1000,
         }}
       >
-        <img src={coinIcon} alt="coins" style={{ height: 25, width: 25 }} />
-        <CustomText
-          weight="1"
-          style={{
-            fontSize: 14,
-            color: '#8c64d7',
-            lineHeight: '18px',
-          }}
+        <Button
+          mode="tertiary"
+          size="l"
+          before={<Icon28ChevronBack />}
+          onClick={goBack}
+          style={{ color: '#ceaeff' }}
         >
-          {balance}
-        </CustomText>
-      </div>
-    </Div>
+          Назад
+        </Button>
+      </Div>
 
-      <Div style={{ paddingTop: '20px', textAlign: 'center', backgroundColor: '#ceaeff', minHeight: '100vh', }}>
-        {user?.photo_200 && (
-          <img
-            src={user.photo_200}
-            alt="avatar"
-            style={{
-              width: 96,
-              height: 96,
-              borderRadius: '50%',
-              objectFit: 'cover',
-              marginBottom: 12,
-            }}
-          />
-        )}
+      <Div style={{ backgroundColor: '#ceaeff' }}>
+        {/* ПРОФИЛЬ КАРТОЧКА */}
+        <Card mode="shadow" style={{ marginBottom: 16, borderRadius: 16, padding: 0 }}>
+          <Div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
 
-        <CustomText weight="1" style={{ fontSize: 18, color: '#000' }}>
-          {user?.first_name} {user?.last_name}
-        </CustomText>
-
-        <Div 
-            style={{
-                backgroundColor: '#ceaeff',
-                color: '#fff',
-            }}
-        >
-            <CustomText
-              weight="3"
-              style={{
-                marginBottom: 12,
-                fontSize: 16,
-                color: '#000',
-                textAlign: 'center',
-                paddingBottom: '12px',
-              }}
-            >
-              Достижения
-            </CustomText>
-
+            {/* Аватар */}
             <Div
               style={{
-                display: 'grid',
-                gridTemplateColumns: window.innerWidth < 768 ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)',
-                gap: '10px',
+                width: 80,
+                height: 80,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
                 padding: 0,
               }}
             >
-              {achievements.map((ach) => (
-                <Card
-                  key={ach.id}
-                  mode="shadow"
+              {user?.photo_200 && (
+                <img
+                  src={user.photo_200}
+                  alt=""
                   style={{
-                    aspectRatio: '1 / 1',
-                    borderRadius: 12,
-                    backgroundColor: '#ffffff',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    position: 'relative',
+                    width: 80,
+                    height: 80,
+                    borderRadius: '50%',
                   }}
-                >
-                  <Div
-                    style={{
-                      padding: 0,
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      filter: ach.unlocked ? 'none' : 'blur(1px)',
-                      opacity: ach.unlocked ? 1 : 0.5,
-                      transition: '0.2s ease',
-                    }}
-                  >
-                    <div>
-                      {ach.icon}
-                    </div>
-
-                    <CustomText
-                      style={{
-                        fontSize: 14,
-                        color: '#000',
-                        textAlign: 'center',
-                      }}
-                    >
-                      {ach.title}
-                    </CustomText>
-                  </Div>
-
-                  {!ach.unlocked && (
-                    <div
-                      style={{
-                        position: 'absolute',
-                        inset: 0,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        backgroundColor: 'rgba(255,255,255,0.6)',
-                        borderRadius: 12,
-                        zIndex: 2,
-                      }}
-                    >
-                      <img src={lockIcon} alt="lock" style={{ height: 120, width: 120 }} />
-                    </div>
-                  )}
-                </Card>
-              ))}
+                />
+              )}
             </Div>
-        </Div>
+
+            {/* Инфа */}
+            <Div style={{ padding: 4 }}>
+              <div>
+                <CustomText weight="1" style={{ fontSize: 15, lineHeight: 1 }}>
+                  {user?.first_name}
+                </CustomText>
+
+                <CustomText weight="1" style={{ fontSize: 15, marginBottom: 5 }}>
+                  {user?.last_name}
+                </CustomText>
+              </div>
+
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'flex',
+                }}
+              >
+                {/* Баланс */}
+                <div style={{ padding: 0 }}>
+                  <CustomText weight="1" style={{ fontSize: 9 }}>
+                    Баланс капиталов
+                  </CustomText>
+                  <CustomText weight="1" style={{ fontSize: 26, color: '#8c64d7', fontWeight: 1000 }}>
+                    {balance}
+                  </CustomText>
+                </div>
+
+                {/* Достижения */}
+                <div style={{ padding: 0, marginLeft: 15 }}>
+                  <CustomText weight="1" style={{ fontSize: 9 }}>
+                    Достижения
+                  </CustomText>
+                  <CustomText weight="1"  style={{ fontSize: 26, color: '#8c64d7', fontWeight: 1000 }}>
+                    12
+                  </CustomText>
+                </div>
+              </div>
+            </Div>
+          </Div>
+        </Card>
+
+        {/* МЕНЮ КАРТОЧКА */}
+        <Card mode="shadow" style={{ marginBottom: 16, borderRadius: 16, padding: 10 }}>
+          {['Настройки', 'Справочник', 'Сообщество ВКонтакте'].map((item, index) => (
+            <div
+              key={index}
+              style={{
+                marginTop: 5,
+                width: '100%',
+                backgroundColor: '#fff',
+                borderRadius: 999,
+                padding: '2px 0',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                cursor: 'pointer',
+                border: '1px solid #f2f2f2'
+              }}
+            >
+              <CustomText
+                style={{
+                  color: '#000',
+                  fontSize: 10,
+                  marginLeft: 10
+                }}
+              >
+                {item}
+              </CustomText>
+              <Icon28ChevronRightOutline style={{ color: '#ceaeff', width: 22, height: 22 }} />
+            </div>
+          ))}
+        </Card>
       </Div>
     </Panel>
   );
