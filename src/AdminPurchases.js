@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Div, Button } from '@vkontakte/vkui';
+import { Div, Button, Panel } from '@vkontakte/vkui';
+import { Icon28ChevronBack } from '@vkontakte/icons';
 import { CustomText } from './CustomTypography';
 
-export default function AdminPurchases({ user, goBack }) {
+import coinIcon from './imgs/coin.png'
+
+export default function AdminPurchases({ id, goBack, user, balance }) {
   const [purchases, setPurchases] = useState([]);
 
   useEffect(() => {
@@ -32,32 +35,89 @@ export default function AdminPurchases({ user, goBack }) {
   };
 
   return (
-    <Div>
-      <Button onClick={goBack} style={{ marginBottom: 12 }}>
-        Назад
-      </Button>
+    <Panel id={id}>
+      <Div style={{ height: 32, backgroundColor: '#ffffff' }} />
+          <Div
+              style={{
+                  position: 'fixed',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: 56,
+                  backgroundColor: '#ceaeff',
+                  display: 'flex',
+                  alignItems: 'center',
+                  padding: '0 16px',
+                  zIndex: 1000,
+              }}
+          >
+              {/* Кнопка назад */}
+              <Button
+                  mode="tertiary"
+                  size="l"
+                  before={<Icon28ChevronBack />}
+                  onClick={goBack}
+                  style={{
+                      paddingLeft: 0,
+                      paddingRight: 8,
+                      marginRight: 4,
+                      color: '#ffffff',
+                  }}
+              >
+                  Назад
+              </Button>
 
-      {purchases.map(p => (
-        <Div key={`${p.user_id}-${p.item_id}`} style={{ marginBottom: 12 }}>
-          <CustomText>
-            {p.first_name} {p.last_name} — {p.title} ({p.quantity})
-          </CustomText>
+              {/* Баланс-капсула */}
+              <div
+                  onClick={() => {}}
+                  style={{
+                      marginLeft: 'auto',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 6,
+                      padding: '2px 18px 2px 2px',
+                      backgroundColor: '#f2f2f2',
+                      borderRadius: 999,
+                      cursor: 'pointer',
+                  }}
+              >
+                  <img src={coinIcon} alt="coins" style={{ height: 25, width: 25 }} />
+                  <CustomText
+                      weight="3"
+                      style={{
+                          fontSize: 14,
+                          color: '#8c64d7',
+                          lineHeight: '18px',
+                      }}
+                  >
+                      {balance}
+                  </CustomText>
+              </div>
+          </Div>
 
-          {!p.received ? (
-            <Button
-              size="s"
-              style={{ marginTop: 6 }}
-              onClick={() => markReceived(p.user_id, p.item_id)}
-            >
-              Получено
-            </Button>
-          ) : (
-            <CustomText style={{ color: 'green', marginTop: 6 }}>
-              ✔ Выдано
+      <Div>
+        {purchases.map(p => (
+          <Div key={`${p.user_id}-${p.item_id}`} style={{ marginBottom: 12 }}>
+            <CustomText>
+              {p.first_name} {p.last_name} — {p.title} ({p.quantity})
             </CustomText>
-          )}
-        </Div>
-      ))}
-    </Div>
+
+            {!p.received ? (
+              <Button
+                size="s"
+                style={{ marginTop: 6 }}
+                onClick={() => markReceived(p.user_id, p.item_id)}
+              >
+                Получено
+              </Button>
+            ) : (
+              <CustomText style={{ color: 'green', marginTop: 6 }}>
+                ✔ Выдано
+              </CustomText>
+            )}
+          </Div>
+        ))}
+      </Div>
+    </Panel>
   );
 }

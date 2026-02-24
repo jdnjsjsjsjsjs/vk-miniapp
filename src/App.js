@@ -950,7 +950,7 @@ export default function App() {
       <Profile id="profile" goBack={goBack} user={user} balance={balance} totalEarned={totalEarned} goToBalance={goToBalance} />
 
       {/* Панель админ-получения */}
-      <AdminPurchases id="adminPurchases" goBack={goBack} user={user} />
+      <AdminPurchases id="adminPurchases" goBack={goBack} user={user} balance={balance} />
     </View>
     </div>
   )
