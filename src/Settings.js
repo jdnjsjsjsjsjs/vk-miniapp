@@ -2,7 +2,7 @@ import { Panel, Div, Button, Card } from '@vkontakte/vkui';
 import { CustomText } from './CustomTypography';
 import { Icon28ChevronBack } from '@vkontakte/icons';
 
-export default function Profile({ id, goBack, user, balance, totalEarned, goToBalance }) {
+export default function Settings({ id, goBack }) {
 
   return (
     <Panel id={id} style={{ backgroundColor: '#ceaeff', minHeight: '100vh' }}>

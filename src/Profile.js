@@ -2,7 +2,7 @@ import { Panel, Div, Button, Card } from '@vkontakte/vkui';
 import { CustomText } from './CustomTypography';
 import { Icon28ChevronBack, Icon28ChevronRightOutline } from '@vkontakte/icons';
 
-export default function Profile({ id, goBack, user, balance, totalEarned, goToBalance, goToSettings }) {
+export default function Profile({ id, goBack, user, balance, goToSettings, goToGuide }) {
 
   return (
     <Panel id={id} style={{ backgroundColor: '#ceaeff', minHeight: '100vh' }}>
@@ -107,35 +107,35 @@ export default function Profile({ id, goBack, user, balance, totalEarned, goToBa
         </Card>
 
         {/* МЕНЮ КАРТОЧКА */}
-        <Card mode="shadow" style={{ marginBottom: 16, borderRadius: 10, padding: 10 }} onClick={goToSettings}>
-          {['Настройки', 'Справочник', 'Сообщество ВКонтакте'].map((item, index) => (
-            <div
-              key={index}
-              style={{
-                marginTop: 5,
-                width: '100%',
-                backgroundColor: '#fff',
-                borderRadius: 999,
-                padding: '2px 0',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                cursor: 'pointer',
-                border: '1px solid #f2f2f2'
-              }}
-            >
-              <CustomText
+        <Card mode="shadow" style={{ marginBottom: 16, borderRadius: 10, padding: 10 }}>
+          {['Настройки', 'Справочник', 'Сообщество ВКонтакте'].map((item, index) => {
+            let handleClick;
+            if (item === 'Настройки') handleClick = goToSettings;
+            else if (item === 'Справочник') handleClick = goToGuide;
+            else if (item === 'Сообщество ВКонтакте') handleClick = () => window.open('https://vk.com/', '_blank');
+
+            return (
+              <div
+                key={index}
+                onClick={handleClick}
                 style={{
-                  color: '#000',
-                  fontSize: 10,
-                  marginLeft: 10
+                  marginTop: 5,
+                  width: '100%',
+                  backgroundColor: '#fff',
+                  borderRadius: 999,
+                  padding: '2px 0',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  cursor: 'pointer',
+                  border: '1px solid #f2f2f2'
                 }}
               >
-                {item}
-              </CustomText>
-              <Icon28ChevronRightOutline style={{ color: '#ceaeff', width: 22, height: 22 }} />
-            </div>
-          ))}
+                <CustomText style={{ color: '#000', fontSize: 10, marginLeft: 10 }}>{item}</CustomText>
+                <Icon28ChevronRightOutline style={{ color: '#ceaeff', width: 22, height: 22 }} />
+              </div>
+            );
+          })}
         </Card>
       </Div>
     </Panel>

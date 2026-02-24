@@ -18,6 +18,7 @@ import Profile from './Profile';
 import AdminTasks from './AdminTasks';
 import AdminPurchases from './AdminPurchases';
 import Settings from './Settings';
+import Guide from './Guide';
 
 import image1 from './imgs/1.png'
 import coinsIcon from './imgs/coins.png'
@@ -216,6 +217,7 @@ export default function App() {
     }
   }
   const goToSettings = () => setActivePanel('settings');
+  const goToGuide = () => setActivePanel('guide');
 
   useEffect(() => {
     if (user) {
@@ -949,13 +951,16 @@ export default function App() {
       <Shop id="shop" goBack={goBack} go={go} balance={balance} goToBalance={goToBalance} user={user} initialFilter={shopFilter} />
 
       {/* Панель профиля */}
-      <Profile id="profile" goBack={goBack} user={user} balance={balance} totalEarned={totalEarned} goToBalance={goToBalance} goToSettings={goToSettings} />
+      <Profile id="profile" goBack={goBack} user={user} balance={balance} goToSettings={goToSettings} goToGuide={goToGuide}/>
 
       {/* Панель админ-получения */}
       <AdminPurchases id="adminPurchases" goBack={goBack} user={user} balance={balance} />
 
       {/* Панель настроек */}
       <Settings id="settings" goBack={goBack}/>
+
+      {/* Панель Справочника */}
+      <Guide id="guide" goBack={goBack}/>
     </View>
     </div>
   )
