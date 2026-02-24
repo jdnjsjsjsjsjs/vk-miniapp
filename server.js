@@ -622,14 +622,12 @@ app.get('/api/shop', (req, res) => {
     }
 
     db.all(
-      'SELECT item_id, quantity FROM user_items WHERE user_id = ?',
+      'SELECT item_id, quantity, received FROM user_items WHERE user_id = ?',
       [userId],
       (err, rows) => {
-        if (err) return res.status(500).json({ error: err.message });
-
         res.json({ items, ownedItems: rows });
       }
-    );
+    )
   });
 });
 
