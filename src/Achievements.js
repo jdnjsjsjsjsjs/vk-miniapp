@@ -4,13 +4,49 @@ import { Icon28ChevronBack } from '@vkontakte/icons';
 
 import coinIcon from './imgs/coin.png'
 import medalIcon from './imgs/awards.png'
+import coinsIcon from './imgs/coins.png'
+import box1icon from './imgs/box1.png'
+import cupsIcon from './imgs/cups.png'
+import awardsIcon from './imgs/awards.png'
+import lockIcon from './imgs/lock.png'
 
-export default function Balance({ id, goBack, balance, goToBalance, user }) {
+export default function Achievements({ id, goBack, balance, goToBalance, user, totalEarned }) {
+    const achievements = [
+        {
+            id: 1,
+            title: 'Первый вход',
+            icon: <img src={box1icon} alt="" style={{ height: 70, width: 70 }} />,
+            unlocked: true,
+        },
+        {
+            id: 2,
+            title: '10 очков',
+            icon: <img src={coinsIcon} alt="" style={{ height: 70, width: 70 }} />,
+            unlocked: totalEarned >= 10,
+        },
+        {
+            id: 3,
+            title: '100 очков',
+            icon: <img src={cupsIcon} alt="" style={{ height: 70, width: 70 }} />,
+            unlocked: totalEarned >= 100,
+        },
+        {
+            id: 4,
+            title: '1000 очков',
+            icon: <img src={awardsIcon} alt="" style={{ height: 70, width: 70 }} />,
+            unlocked: totalEarned >= 1000,
+        },
+        {
+            id: 5,
+            title: '5000 очков',
+            icon: <img src={awardsIcon} alt="" style={{ height: 70, width: 70 }} />,
+            unlocked: totalEarned >= 5000,
+        },
+        ];
     return (
         <Panel id={id} style={{backgroundColor: '#ceaeff', minHeight: '100vh'}}>
             <Div style={{ height: 32, backgroundColor: '#ceaeff' }} />
-                        
-            {/* Кастомный хедер */}
+
             <Div
                 style={{
                 position: 'fixed',
@@ -25,7 +61,6 @@ export default function Balance({ id, goBack, balance, goToBalance, user }) {
                 zIndex: 1000,
                 }}
             >
-                {/* Кнопка назад */}
                 <Button
                     mode="tertiary"
                     size="l"
@@ -41,7 +76,6 @@ export default function Balance({ id, goBack, balance, goToBalance, user }) {
                     Назад
                 </Button>
                 
-                {/* Баланс-капсула */}
                 <div
                     onClick={goToBalance}
                     style={{
@@ -83,7 +117,6 @@ export default function Balance({ id, goBack, balance, goToBalance, user }) {
                         marginBottom: 15,
                     }}
                 >
-                    {/* Текст */}
                     <CustomText
                         weight="1"
                         style={{
@@ -94,7 +127,6 @@ export default function Balance({ id, goBack, balance, goToBalance, user }) {
                         Достижения
                     </CustomText>
 
-                    {/* Картинка справа */}
                     <img
                         src={medalIcon}
                         alt="trophy"
@@ -109,17 +141,106 @@ export default function Balance({ id, goBack, balance, goToBalance, user }) {
                     />
                 </Card>
                 
-                <Card
-                    mode="shadow"
+                <Div style={{ marginTop: 20, padding: 0 }}>
+                <Div
                     style={{
-                        borderRadius: 10,
-                        padding: '12px',
-                        backgroundColor: '#ffffff',
-                        paddingTop: 15,
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(3, 1fr)',
+                        gap: 10,
+                        width: '100%',
+                        boxSizing: 'border-box',
                     }}
                 >
-                    <CustomText>Здесь будет контент сейчас</CustomText>
-                </Card>
+                    {achievements.map((ach) => {
+                        const targetPoints = [0,10,100,1000,5000][ach.id - 1]; // цель для прогресса
+                        const progress = Math.min(1, totalEarned / targetPoints);
+
+                        return (
+                            <Card
+                            key={ach.id}
+                            mode="shadow"
+                            style={{
+                                borderRadius: 14,
+                                aspectRatio: '1 / 1',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                position: 'relative',
+                                backgroundColor: '#ffffff',
+                                height: '100%',
+                                width: '100%',
+                            }}
+                            >
+                            <div
+                                style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: 4,
+                                }}
+                            >
+                                <div
+                                style={{
+                                    opacity: ach.unlocked ? 1 : 0,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                }}
+                                >
+                                {ach.icon}
+                                </div>
+
+                                <CustomText
+                                style={{
+                                    fontSize: 10,
+                                    textAlign: 'center',
+                                    lineHeight: '12px',
+                                }}
+                                >
+                                {ach.title}
+                                </CustomText>
+
+                                {!ach.unlocked && (
+                                <div
+                                    style={{
+                                    width: 60,
+                                    height: 5,
+                                    borderRadius: 3,
+                                    backgroundColor: '#e0e0e0',
+                                    overflow: 'hidden',
+                                    marginTop: 2,
+                                    }}
+                                >
+                                    <div
+                                    style={{
+                                        width: `${progress * 100}%`,
+                                        height: '100%',
+                                        backgroundColor: '#8c64d7',
+                                        borderRadius: 3,
+                                        transition: 'width 0.3s',
+                                    }}
+                                    />
+                                </div>
+                                )}
+                            </div>
+
+                            {!ach.unlocked && (
+                                <img
+                                src={lockIcon}
+                                alt=""
+                                style={{
+                                    position: 'absolute',
+                                    width: 80,
+                                    height: 80,
+                                }}
+                                />
+                            )}
+                            </Card>
+                        );
+                        })}
+                </Div>
+                </Div>
             </Div>
         </Panel>
     );

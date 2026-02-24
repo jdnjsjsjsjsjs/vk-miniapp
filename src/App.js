@@ -965,7 +965,7 @@ export default function App() {
       <Guide id="guide" goBack={goBack}/>
 
       {/* Панель достижения */}
-      <Achievements id="achievements" goBack={goBack} balance={balance} goToBalance={goToBalance} user={user} />
+      <Achievements id="achievements" goBack={goBack} balance={balance} goToBalance={goToBalance} user={user} totalEarned={totalEarned} />
     </View>
     </div>
   )
