@@ -2,7 +2,7 @@ import { Panel, Div, Button, Card } from '@vkontakte/vkui';
 import { CustomText } from './CustomTypography';
 import { Icon28ChevronBack, Icon28ChevronRightOutline } from '@vkontakte/icons';
 
-export default function Profile({ id, goBack, user, balance, totalEarned, goToBalance }) {
+export default function Profile({ id, goBack, user, balance, totalEarned, goToBalance, goToSettings }) {
 
   return (
     <Panel id={id} style={{ backgroundColor: '#ceaeff', minHeight: '100vh' }}>
@@ -37,7 +37,7 @@ export default function Profile({ id, goBack, user, balance, totalEarned, goToBa
 
       <Div style={{ backgroundColor: '#ceaeff' }}>
         {/* ПРОФИЛЬ КАРТОЧКА */}
-        <Card mode="shadow" style={{ marginBottom: 16, borderRadius: 16, padding: 0 }}>
+        <Card mode="shadow" style={{ marginBottom: 16, borderRadius: 10, padding: 0 }}>
           <Div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
 
             {/* Аватар */}
@@ -107,7 +107,7 @@ export default function Profile({ id, goBack, user, balance, totalEarned, goToBa
         </Card>
 
         {/* МЕНЮ КАРТОЧКА */}
-        <Card mode="shadow" style={{ marginBottom: 16, borderRadius: 16, padding: 10 }}>
+        <Card mode="shadow" style={{ marginBottom: 16, borderRadius: 10, padding: 10 }} onClick={goToSettings}>
           {['Настройки', 'Справочник', 'Сообщество ВКонтакте'].map((item, index) => (
             <div
               key={index}
