@@ -16,6 +16,7 @@ import Rating from './Rating';
 import Shop from './Shop';
 import Profile from './Profile';
 import AdminTasks from './AdminTasks';
+import AdminPurchases from './AdminPurchases';
 
 import image1 from './imgs/1.png'
 import coinsIcon from './imgs/coins.png'
@@ -57,6 +58,8 @@ export default function App() {
         return { backgroundColor: '#f2f2f2', color: '#000' };
     }
   };
+
+  const go = (panel) => setActivePanel(panel);
 
   useEffect(() => {
     const onScroll = () => {
@@ -941,10 +944,13 @@ export default function App() {
       <Rating id="rating" goBack={goBack} balance={balance} goToBalance={goToBalance} />
 
       {/* Панель Магазина */}
-      <Shop id="shop" goBack={goBack} balance={balance} goToBalance={goToBalance} user={user} initialFilter={shopFilter} />
+      <Shop id="shop" goBack={goBack} go={go} balance={balance} goToBalance={goToBalance} user={user} initialFilter={shopFilter} />
 
       {/* Панель профиля */}
       <Profile id="profile" goBack={goBack} user={user} balance={balance} totalEarned={totalEarned} goToBalance={goToBalance} />
+
+      {/* Панель админ-получения */}
+      <AdminPurchases id="adminPurchases" goBack={goBack} user={user} />
     </View>
     </div>
   )

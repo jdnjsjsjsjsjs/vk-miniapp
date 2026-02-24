@@ -14,7 +14,7 @@ const inputStyle = {
     fontSize: 14,
 };
 
-export default function Shop({ id, goBack, balance, goToBalance, user, initialFilter }) {
+export default function Shop({ id, goBack, go, balance, goToBalance, user, initialFilter }) {
     const [items, setItems] = useState([]);
     const [ownedItems, setOwnedItems] = useState({});
     const [activeItem, setActiveItem] = useState(null);
@@ -27,6 +27,8 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
     const [tempImage, setTempImage] = useState(null);
     const [cart, setCart] = useState({});
     const [cartItemsFull, setCartItemsFull] = useState([]);
+    const [checkoutConfirm, setCheckoutConfirm] = useState(false);
+    const [checkoutSuccess, setCheckoutSuccess] = useState(false);
 
     const [newItem, setNewItem] = useState({
         title: '',
@@ -51,7 +53,10 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
         if (!isAdmin) {
             const owned = {};
             data.ownedItems?.forEach(item => {
-                owned[String(item.item_id)] = item.quantity;
+                owned[String(item.item_id)] = {
+                    quantity: item.quantity,
+                    received: item.received
+                };
             });
             setOwnedItems(owned);
         }
@@ -218,6 +223,8 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ userId: user.id, itemId, quantity: 1 }),
         });
+
+        await loadCart();
     };
 
     const removeFromCart = async (itemId) => {
@@ -226,6 +233,8 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ userId: user.id, itemId }),
         });
+
+        await loadCart();
     };
 
     const loadCart = async () => {
@@ -265,7 +274,11 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
 
     return (
         <>
-            <ModalRoot activeModal={activeModal}>
+            <ModalRoot activeModal={
+                checkoutConfirm ? 'checkoutConfirm' :
+                checkoutSuccess ? 'checkoutSuccess' :
+                activeModal
+            }>
                 {/* Модалка товара */}
                 <ModalCard
                     id="item"
@@ -581,12 +594,77 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
                                 mode="primary"
                                 stretched
                                 style={{ marginTop: 12 }}
-                                onClick={checkout}
+                                onClick={() => setCheckoutConfirm(true)}
                             >
                                 Оплатить
                             </Button>
                         </>
                     )}
+                </ModalCard>
+
+                <ModalCard
+                    id="checkoutConfirm"
+                    header="Подтвердить покупку?"
+                    onClose={() => setCheckoutConfirm(false)}
+                >
+                    <CustomText style={{ marginBottom: 16 }}>
+                        Вы подтверждаете покупку товаров?
+                    </CustomText>
+
+                    <Div style={{ display: 'flex', gap: 8 }}>
+                        <Button
+                            mode="primary"
+                            stretched
+                            onClick={async () => {
+                                await checkout();
+                                setCheckoutConfirm(false);
+                                setCheckoutSuccess(true);
+                            }}
+                        >
+                            Да
+                        </Button>
+
+                        <Button
+                            mode="secondary"
+                            stretched
+                            onClick={() => setCheckoutConfirm(false)}
+                        >
+                            Отмена
+                        </Button>
+                    </Div>
+                </ModalCard>
+
+                <ModalCard
+                    id="checkoutSuccess"
+                    header="Покупка оформлена"
+                    onClose={() => setCheckoutSuccess(false)}
+                >
+                    <CustomText>
+                        🎉 Поздравляем тебя с приобретением!
+                    </CustomText>
+
+                    <CustomText style={{ marginTop: 12 }}>
+                        Забрать покупку можно:
+                        <br />
+                        Пн–Чт: 9:00–18:00
+                        <br />
+                        Пт: 9:00–16:45
+                        <br /><br />
+                        Комитет Ивановской области по молодежной политике
+                        <br />
+                        Шереметьевский пр., 11
+                        <br />
+                        Центральная библиотека, каб. 6
+                    </CustomText>
+
+                    <Button
+                        mode="primary"
+                        stretched
+                        style={{ marginTop: 16 }}
+                        onClick={() => setCheckoutSuccess(false)}
+                    >
+                        Понятно
+                    </Button>
                 </ModalCard>
             </ModalRoot>
 
@@ -594,14 +672,25 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
                 <Div style={{ height: 32, backgroundColor: '#ffffff' }} />
 
                 {isAdmin && (
-                    <Button
-                        size="s"
-                        mode="secondary"
-                        style={{ margin: 12, backgroundColor: '#fff', color: '#000' }}
-                        onClick={() => setActiveModal('add')}
-                    >
-                        ➕ Добавить
-                    </Button>
+                    <Div>
+                        <Button
+                            size="s"
+                            mode="secondary"
+                            style={{ margin: 12, backgroundColor: '#fff', color: '#000' }}
+                            onClick={() => setActiveModal('add')}
+                        >
+                            ➕ Добавить
+                        </Button>
+
+                        <Button
+                            size="s"
+                            mode="secondary"
+                            style={{ margin: 12 }}
+                            onClick={() => go('adminPurchases')}
+                        >
+                            📦 Купленные
+                        </Button>
+                    </Div>
                 )}
                             
                 {/* Кастомный хедер */}
@@ -745,7 +834,7 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
                                     <Div
                                         key={itemId}
                                         style={{
-                                            backgroundColor: '#e8f5e9',
+                                            backgroundColor: ownedItems[item.id]?.received ? '#e8f5e9' : '#fff8e1',
                                             borderRadius: 12,
                                             padding: 8,
                                             opacity: 0.8,
@@ -759,9 +848,15 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
                                             style={{ width: '100%', borderRadius: 8, marginBottom: 8 }}
                                         />
                                         <CustomText weight="medium">{item.title}</CustomText>
-                                        <CustomText style={{ color: '#4caf50', fontWeight: 600 }}>
-                                            ✔ Куплено {ownedItems[item.id] || 0} шт.
+                                        {ownedItems[item.id]?.received ? (
+                                        <CustomText style={{ color: '#2e7d32', fontWeight: 600 }}>
+                                            ✔ Получено
                                         </CustomText>
+                                        ) : (
+                                        <CustomText style={{ color: '#ff9800', fontWeight: 600 }}>
+                                            ⏳ Куплено {ownedItems[item.id]?.quantity} шт.
+                                        </CustomText>
+                                        )}
                                     </Div>
                                 );
                             })}
@@ -810,7 +905,10 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
 
                                     {(cart[String(item.id)] || 0) === 0 ? (
                                         <div
-                                            onClick={() => addToCart(item.id)}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                addToCart(item.id);
+                                            }}
                                             style={{
                                                 backgroundColor: '#4000ff',
                                                 color: '#fff',
@@ -826,7 +924,10 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
                                     ) : (
                                         <Div style={{ display: 'flex', gap: 4, justifyContent: 'center', alignItems: 'center' }}>
                                             <div
-                                                onClick={() => removeFromCart(item.id)}
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    removeFromCart(item.id);
+                                                }}
                                                 style={{
                                                     width: 32, height: 32, borderRadius: 8,
                                                     backgroundColor: '#eee', textAlign: 'center', lineHeight: '32px',
@@ -839,7 +940,10 @@ export default function Shop({ id, goBack, balance, goToBalance, user, initialFi
                                                 {cart[String(item.id)]}
                                             </CustomText>
                                             <div
-                                                onClick={() => addToCart(item.id)}
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    addToCart(item.id);
+                                                }}
                                                 style={{
                                                     width: 32, height: 32, borderRadius: 8,
                                                     backgroundColor: '#eee', textAlign: 'center', lineHeight: '32px',
