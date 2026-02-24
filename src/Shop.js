@@ -264,8 +264,6 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user, initi
             return;
         }
 
-        alert('Покупка успешна!');
-
         await loadCart();
         await loadShop();
 
