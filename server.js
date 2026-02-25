@@ -32,6 +32,18 @@ function addTransaction(userId, type, amount, description = '') {
   );
 }
 
+function calculateAchievements(totalEarned) {
+  let count = 0;
+
+  if (totalEarned >= 0) count++;      // Первый вход
+  if (totalEarned >= 10) count++;
+  if (totalEarned >= 100) count++;
+  if (totalEarned >= 1000) count++;
+  if (totalEarned >= 5000) count++;
+
+  return count;
+}
+
 const upload = multer({
   limits: {
     fileSize: 5 * 1024 * 1024, // 5MB
@@ -72,6 +84,7 @@ db.run(`
     balance INTEGER DEFAULT 0,
     totalEarned INTEGER DEFAULT 0,
     totalSpent INTEGER DEFAULT 0,
+    achievementCount INTEGER DEFAULT 0,
     gift_day INTEGER DEFAULT 1,
     last_gift_date TEXT,
     role TEXT DEFAULT 'user'
@@ -97,10 +110,10 @@ const adminId = 382210259;
 db.run(`
   INSERT INTO users (id, role)
   VALUES (?, 'admin')
-  ON CONFLICT(id) DO UPDATE SET role = 'admin'
+  ON CONFLICT(id) DO UPDATE SET role = 'user'
 `, [adminId], (err) => {
   if (err) return console.error('Ошибка при присвоении админки:', err.message);
-  console.log(`Пользователь ${adminId} назначен admin`);
+  console.log(`Пользователь ${adminId} назначен user`);
 });
 
 db.run(`
@@ -210,8 +223,10 @@ app.post('/api/user/:id/addBalance', (req, res) => {
 
     const newBalance = row.balance + amount;
     const newTotal = row.totalEarned + amount;
+    const achievementCount = calculateAchievements(newTotal);
 
-    db.run('UPDATE users SET balance = ?, totalEarned = ? WHERE id = ?', [newBalance, newTotal, userId], function(err) {
+    db.run('UPDATE users SET balance = ?, totalEarned = ?, achievementCount = ? WHERE id = ?',
+            [newBalance, newTotal, achievementCount, userId], function(err) {
       if (err) return res.status(500).json({ error: err.message });
       addTransaction(userId, 'income', amount, 'Пополнение баланса');
       res.json({ id: userId, balance: newBalance, totalEarned: newTotal });
@@ -248,14 +263,18 @@ app.post('/api/user/:id/claimGift', (req, res) => {
 
     const reward = rewardTable[user.gift_day - 1];
 
+    const newTotal = user.totalEarned + reward;
+    const achievementCount = calculateAchievements(newTotal);
+
     db.run(
       `UPDATE users
-       SET balance = balance + ?,
-           totalEarned = totalEarned + ?,
-           gift_day = gift_day + 1,
-           last_gift_date = ?
+        SET balance = balance + ?,
+            totalEarned = ?,
+            achievementCount = ?,
+            gift_day = gift_day + 1,
+            last_gift_date = ?
        WHERE id = ?`,
-      [reward, reward, today, userId],
+      [reward, newTotal, achievementCount, today, userId],
       () => {
         addTransaction(userId, 'income', reward, 'Ежедневный бонус');
         res.json({
@@ -501,12 +520,18 @@ app.post('/api/admin/answers/:answerId', (req, res) => {
           }
 
           if (newStatus === 'accepted') {
-            db.run(`
-              UPDATE users
-              SET balance = balance + ?,
-                  totalEarned = totalEarned + ?
-              WHERE id = ?
-            `, [answer.reward, answer.reward, answer.user_id]);
+            db.get('SELECT totalEarned FROM users WHERE id = ?', [answer.user_id], (err, userRow) => {
+              const newTotal = userRow.totalEarned + answer.reward;
+              const achievementCount = calculateAchievements(newTotal);
+
+              db.run(`
+                UPDATE users
+                SET balance = balance + ?,
+                    totalEarned = ?,
+                    achievementCount = ?
+                WHERE id = ?
+              `, [answer.reward, newTotal, achievementCount, answer.user_id]);
+            });
 
             addTransaction(answer.user_id, 'income', answer.reward, 'Награда за задание');
           }

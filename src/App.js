@@ -113,7 +113,8 @@ export default function App() {
       setUser(prev => (
         {
           ...prev,
-          role: data.role
+          role: data.role,
+          achievementCount: data.achievementCount
         }
       ));
 

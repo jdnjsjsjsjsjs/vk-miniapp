@@ -98,7 +98,7 @@ export default function Profile({ id, goBack, user, balance, goToSettings, goToG
                     Достижения
                   </CustomText>
                   <CustomText weight="1"  style={{ fontSize: 26, color: '#8c64d7', fontWeight: 1000 }} onClick={goToAchievements} >
-                    12
+                    {user?.achievementCount}
                   </CustomText>
                 </div>
               </div>
