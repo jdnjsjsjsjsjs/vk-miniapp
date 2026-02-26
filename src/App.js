@@ -965,7 +965,7 @@ export default function App() {
       <AdminPurchases id="adminPurchases" goBack={goBack} user={user} balance={balance} />
 
       {/* Панель настроек */}
-      <Purchases id="purchases" goBack={goBack} user={user}/>
+      <Purchases id="purchases" goBack={goBack} user={user} balance={balance} goToBalance={goToBalance}/>
 
       {/* Панель Справочника */}
       <Guide id="guide" goBack={goBack}/>

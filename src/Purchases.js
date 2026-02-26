@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Panel, Div, CustomScrollView } from '@vkontakte/vkui';
+import { Panel, Div, Card, Button } from '@vkontakte/vkui';
 import { CustomText } from './CustomTypography';
 import { Icon28ChevronBack } from '@vkontakte/icons';
 
-export default function Purchases({ id, goBack, user }) {
+import coinIcon from './imgs/coin.png'
+
+export default function Purchases({ id, goBack, user, balance, goToBalance }) {
     const [purchases, setPurchases] = useState([]);
     const [items, setItems] = useState([]);
 
@@ -48,42 +50,99 @@ export default function Purchases({ id, goBack, user }) {
     });
 
     return (
-        <Panel id={id} style={{ backgroundColor: '#f5f5f5', minHeight: '100vh' }}>
-            {/* Хедер */}
+        <Panel id={id} style={{backgroundColor: '#ceaeff', minHeight: '100vh'}}>
+            <Div style={{ height: 32, backgroundColor: '#ceaeff' }} />
+            {/* Кастомный хедер */}
             <Div
                 style={{
-                    position: 'fixed',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    height: 56,
-                    backgroundColor: '#fff',
-                    display: 'flex',
-                    alignItems: 'center',
-                    padding: '0 12px',
-                    zIndex: 1000,
-                    borderBottom: '1px solid #ddd'
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                right: 0,
+                height: 56,
+                backgroundColor: '#fff',
+                display: 'flex',
+                alignItems: 'center',
+                padding: '0 4px',
+                zIndex: 1000,
                 }}
             >
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <Icon28ChevronBack style={{ cursor: 'pointer' }} onClick={goBack} />
-                    <CustomText weight="3" style={{ fontSize: 16 }}>Мои покупки</CustomText>
+                {/* Кнопка назад */}
+                <Button
+                    mode="tertiary"
+                    size="l"
+                    before={<Icon28ChevronBack />}
+                    onClick={goBack}
+                    style={{
+                        paddingLeft: 0,
+                        paddingRight: 8,
+                        marginRight: 4,
+                        color: '#ceaeff',
+                    }}
+                >
+                    Назад
+                </Button>
+                
+                {/* Баланс-капсула */}
+                <div
+                    onClick={goToBalance}
+                    style={{
+                        marginLeft: 'auto',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 6,
+                        padding: '2px 18px 2px 2px',
+                        backgroundColor: '#f2f2f2',
+                        borderRadius: 999,
+                        cursor: 'pointer',
+                    }}
+                >
+                    <img src={coinIcon} alt="coins" style={{ height: 25, width: 25 }} />
+                    <CustomText
+                        weight="1"
+                        style={{
+                            fontSize: 14,
+                            color: '#8c64d7',
+                            lineHeight: '18px',
+                        }}
+                    >
+                        {balance}
+                    </CustomText>
                 </div>
             </Div>
 
-            <CustomScrollView style={{ paddingTop: 56 }}>
-                <Div style={{ padding: 16 }}>
+            <Div style={{ backgroundColor: '#ceaeff', padding: 0 }}>
+                <Div style={{ padding: 0 }}>
                     {/* Куплено, но не получено */}
                     {Object.values(mergedNotReceived).length > 0 && (
                         <>
-                            <CustomText weight="medium" style={{ marginBottom: 8, color: '#311f68', fontSize: 15 }}>
-                                Куплено
-                            </CustomText>
+                            <Card
+                                mode="shadow"
+                                style={{
+                                    borderRadius: 10,
+                                    padding: '10px 15px',
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    backgroundColor: '#ffffff',
+                                    margin: '10px 16px 0px 16px',
+                                }}
+                            >
+                                <CustomText
+                                    weight="1"
+                                    style={{
+                                        fontSize: 16,
+                                        color: '#000',
+                                    }}
+                                >
+                                    Куплено
+                                </CustomText>
+                            </Card>
                             <Div style={{
                                 display: 'grid',
-                                gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))',
-                                gap: 12,
-                                marginBottom: 24
+                                gridTemplateColumns: 'repeat(auto-fill, minmax(90px, 1fr))',
+                                gap: 8,
                             }}>
                                 {Object.values(mergedNotReceived).map(p => {
                                     const item = items.find(i => i.id === p.item_id);
@@ -92,13 +151,13 @@ export default function Purchases({ id, goBack, user }) {
                                         <Div
                                             key={p.item_id}
                                             style={{
-                                                backgroundColor: '#fff8e1',
+                                                backgroundColor: '#ffffff',
                                                 borderRadius: 12,
                                                 padding: 8,
-                                                border: '1px solid #e0e0e0',
                                                 display: 'flex',
                                                 flexDirection: 'column',
                                                 alignItems: 'center',
+                                                textAlign: 'center',
                                             }}
                                         >
                                             <img
@@ -106,12 +165,39 @@ export default function Purchases({ id, goBack, user }) {
                                                 alt={item.title}
                                                 style={{ width: '100%', borderRadius: 8, marginBottom: 8 }}
                                             />
-                                            <CustomText weight="medium" style={{ textAlign: 'center' }}>
-                                                {item.title} {p.quantity > 1 && `(x${p.quantity})`}
+                                            <CustomText weight="3" style={{ fontSize: 12, paddingTop: 3 }}>
+                                                {item.title}
                                             </CustomText>
-                                            <CustomText style={{ color: '#ff9800', fontWeight: 600, textAlign: 'center' }}>
-                                                ⏳ Ожидает выдачи
+                                            <CustomText
+                                                weight="1"
+                                                style={{
+                                                    fontSize: 14,
+                                                    color: '#8c64d7',
+                                                    lineHeight: '18px',
+                                                }}
+                                            >
+                                                {p.quantity >= 1 && `${p.quantity} шт.`}
                                             </CustomText>
+                                            <div
+                                                style={{
+                                                    marginTop: 8,
+                                                    width: '100%',
+                                                    backgroundColor: '#ceaeff',
+                                                    borderRadius: 999,
+                                                    padding: '2px 0',
+                                                    textAlign: 'center',
+                                                }}
+                                            >
+                                                <CustomText
+                                                    weight="1"
+                                                    style={{
+                                                        color: '#ffffff',
+                                                        fontSize: 10,
+                                                    }}
+                                                >
+                                                    куплено
+                                                </CustomText>
+                                            </div>
                                         </Div>
                                     );
                                 })}
@@ -122,14 +208,33 @@ export default function Purchases({ id, goBack, user }) {
                     {/* Получено */}
                     {Object.values(mergedReceived).length > 0 && (
                         <>
-                            <CustomText weight="medium" style={{ marginBottom: 8, color: '#311f68', fontSize: 15 }}>
-                                Получено
-                            </CustomText>
+                            <Card
+                                mode="shadow"
+                                style={{
+                                    borderRadius: 10,
+                                    padding: '10px 15px',
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    backgroundColor: '#ffffff',
+                                    margin: '10px 16px 0px 16px',
+                                }}
+                            >
+                                <CustomText
+                                    weight="1"
+                                    style={{
+                                        fontSize: 16,
+                                        color: '#000',
+                                    }}
+                                >
+                                    Получено
+                                </CustomText>
+                            </Card>
                             <Div style={{
                                 display: 'grid',
-                                gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))',
-                                gap: 12,
-                                marginBottom: 24
+                                gridTemplateColumns: 'repeat(auto-fill, minmax(90px, 1fr))',
+                                gap: 8,
                             }}>
                                 {Object.values(mergedReceived).map(p => {
                                     const item = items.find(i => i.id === p.item_id);
@@ -138,13 +243,13 @@ export default function Purchases({ id, goBack, user }) {
                                         <Div
                                             key={p.item_id}
                                             style={{
-                                                backgroundColor: '#e0f7fa',
+                                                backgroundColor: '#ffffff',
                                                 borderRadius: 12,
                                                 padding: 8,
-                                                border: '1px solid #b2ebf2',
                                                 display: 'flex',
                                                 flexDirection: 'column',
                                                 alignItems: 'center',
+                                                textAlign: 'center',
                                             }}
                                         >
                                             <img
@@ -152,12 +257,40 @@ export default function Purchases({ id, goBack, user }) {
                                                 alt={item.title}
                                                 style={{ width: '100%', borderRadius: 8, marginBottom: 8 }}
                                             />
-                                            <CustomText weight="medium" style={{ textAlign: 'center' }}>
-                                                {item.title} {p.quantity > 1 && `(x${p.quantity})`}
+                                            <CustomText weight="3" style={{ fontSize: 12, paddingTop: 3 }}>
+                                                {item.title}
                                             </CustomText>
-                                            <CustomText weight="medium" style={{ textAlign: 'center', color: '#388e3c' }}>
-                                                Получено!
+                                            <CustomText
+                                                weight="1"
+                                                style={{
+                                                    fontSize: 14,
+                                                    color: '#8c64d7',
+                                                    lineHeight: '18px',
+                                                }}
+                                            >
+                                                {p.quantity >= 1 && `${p.quantity} шт.`}
                                             </CustomText>
+                                            <div
+                                                style={{
+                                                    marginTop: 8,
+                                                    width: '100%',
+                                                    backgroundColor: '#fff',
+                                                    borderRadius: 999,
+                                                    padding: '2px 0',
+                                                    textAlign: 'center',
+                                                    border: '1px solid #f2f2f2'
+                                                }}
+                                            >
+                                                <CustomText
+                                                    weight="3"
+                                                    style={{
+                                                        color: '#000',
+                                                        fontSize: 10,
+                                                    }}
+                                                >
+                                                    получено
+                                                </CustomText>
+                                            </div>
                                         </Div>
                                     );
                                 })}
@@ -171,7 +304,7 @@ export default function Purchases({ id, goBack, user }) {
                         </CustomText>
                     )}
                 </Div>
-            </CustomScrollView>
+            </Div>
         </Panel>
     );
 }
