@@ -2,7 +2,7 @@ import { Panel, Div, Button, Card } from '@vkontakte/vkui';
 import { CustomText } from './CustomTypography';
 import { Icon28ChevronBack, Icon28ChevronRightOutline } from '@vkontakte/icons';
 
-export default function Profile({ id, goBack, user, balance, goToSettings, goToGuide, goToAchievements, goToBalance }) {
+export default function Profile({ id, goBack, user, balance, goToPurchases, goToGuide, goToAchievements, goToBalance }) {
 
   return (
     <Panel id={id} style={{ backgroundColor: '#ceaeff', minHeight: '100vh' }}>
@@ -108,9 +108,9 @@ export default function Profile({ id, goBack, user, balance, goToSettings, goToG
 
         {/* МЕНЮ КАРТОЧКА */}
         <Card mode="shadow" style={{ marginBottom: 16, borderRadius: 10, padding: 10 }}>
-          {['Настройки', 'Справочник', 'Сообщество ВКонтакте'].map((item, index) => {
+          {['Купленные артефакты', 'Справочник', 'Сообщество ВКонтакте'].map((item, index) => {
             let handleClick;
-            if (item === 'Настройки') handleClick = goToSettings;
+            if (item === 'Купленные артефакты') handleClick = goToPurchases;
             else if (item === 'Справочник') handleClick = goToGuide;
             else if (item === 'Сообщество ВКонтакте') handleClick = () => window.open('https://vk.com/', '_blank');
 

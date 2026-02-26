@@ -17,7 +17,7 @@ import Shop from './Shop';
 import Profile from './Profile';
 import AdminTasks from './AdminTasks';
 import AdminPurchases from './AdminPurchases';
-import Settings from './Settings';
+import Purchases from './Purchases';
 import Guide from './Guide';
 import Achievements from './Achievements';
 
@@ -218,7 +218,7 @@ export default function App() {
       setActivePanel('tasks');
     }
   }
-  const goToSettings = () => setActivePanel('settings');
+  const goToPurchases = () => setActivePanel('purchases');
   const goToGuide = () => setActivePanel('guide');
   const goToAchievements = () => setActivePanel('achievements');
 
@@ -954,13 +954,13 @@ export default function App() {
       <Shop id="shop" goBack={goBack} go={go} balance={balance} goToBalance={goToBalance} user={user} initialFilter={shopFilter} />
 
       {/* Панель профиля */}
-      <Profile id="profile" goBack={goBack} user={user} balance={balance} goToSettings={goToSettings} goToGuide={goToGuide} goToAchievements={goToAchievements} goToBalance={goToBalance} />
+      <Profile id="profile" goBack={goBack} user={user} balance={balance} goToPurchases={goToPurchases} goToGuide={goToGuide} goToAchievements={goToAchievements} goToBalance={goToBalance} />
 
       {/* Панель админ-получения */}
       <AdminPurchases id="adminPurchases" goBack={goBack} user={user} balance={balance} />
 
       {/* Панель настроек */}
-      <Settings id="settings" goBack={goBack}/>
+      <Purchases id="purchases" goBack={goBack} user={user}/>
 
       {/* Панель Справочника */}
       <Guide id="guide" goBack={goBack}/>
