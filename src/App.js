@@ -788,7 +788,7 @@ export default function App() {
                   pointerEvents: 'none',
                 }}
               />
-              <CustomText weight='1' style={{fontSize: window.innerWidth < 768 ? 10 : 14, color: '#000', lineHeight: window.innerWidth < 768 ? '11px' : '14px' }} >до 100</CustomText>
+              <CustomText weight='1' style={{fontSize: window.innerWidth < 768 ? 10 : 14, color: '#000', lineHeight: window.innerWidth < 768 ? '11px' : '14px' }} >от 100</CustomText>
               <CustomText style={{fontSize: window.innerWidth < 768 ? 9 : 12, color: '#000', lineHeight: window.innerWidth < 768 ? '11px' : '14px' }}>капиталов</CustomText>
             </Card>
 
@@ -816,7 +816,7 @@ export default function App() {
                   pointerEvents: 'none',
                 }}
               />
-              <CustomText weight='1' style={{fontSize: window.innerWidth < 768 ? 10 : 14, color: '#000', lineHeight: window.innerWidth < 768 ? '11px' : '14px' }} >от 100</CustomText>
+              <CustomText weight='1' style={{fontSize: window.innerWidth < 768 ? 10 : 14, color: '#000', lineHeight: window.innerWidth < 768 ? '11px' : '14px' }} >от 500</CustomText>
               <CustomText style={{fontSize: window.innerWidth < 768 ? 9 : 12, color: '#000', lineHeight: window.innerWidth < 768 ? '11px' : '14px' }}>капиталов</CustomText>
             </Card>
 
@@ -844,7 +844,7 @@ export default function App() {
                   pointerEvents: 'none',
                 }}
               />
-              <CustomText weight='1' style={{fontSize: window.innerWidth < 768 ? 10 : 14, color: '#000', lineHeight: window.innerWidth < 768 ? '11px' : '14px' }} >от 500</CustomText>
+              <CustomText weight='1' style={{fontSize: window.innerWidth < 768 ? 10 : 14, color: '#000', lineHeight: window.innerWidth < 768 ? '11px' : '14px' }} >от 1000</CustomText>
               <CustomText style={{fontSize: window.innerWidth < 768 ? 10 : 12, color: '#000', lineHeight: window.innerWidth < 768 ? '11px' : '14px' }}>капиталов</CustomText>
             </Card>
           </Div>

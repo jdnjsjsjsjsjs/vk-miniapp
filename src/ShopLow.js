@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'; 
-import { Panel, Div, Button, ModalCard, ModalRoot, Badge } from '@vkontakte/vkui';
+import { Panel, Div, Button, ModalCard, ModalRoot, Badge, Card } from '@vkontakte/vkui';
 import { CustomText } from './CustomTypography';
 import { Icon28ChevronBack, Icon28ShoppingCartOutline } from '@vkontakte/icons';
 
 import coinIcon from './imgs/coin.png'
+import boxIcon from './imgs/box1.png'
 
 const inputStyle = {
     padding: 10,
@@ -240,6 +241,14 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
 
         setActiveModal(null);
     };
+
+    const total = cartItemsFull.reduce(
+        (sum, i) => sum + i.price * i.quantity,
+        0
+    );
+
+    const notEnough = total > balance;
+    const deficit = total - balance;
 
     return (
         <>
@@ -562,10 +571,21 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
                             <Button
                                 mode="primary"
                                 stretched
-                                style={{ marginTop: 12 }}
-                                onClick={() => setCheckoutConfirm(true)}
+                                disabled={notEnough}
+                                style={{
+                                    marginTop: 12,
+                                    backgroundColor: notEnough ? '#ccc' : '#8c64d7',
+                                    color: '#fff'
+                                }}
+                                onClick={() => {
+                                    if (!notEnough) {
+                                        setCheckoutConfirm(true);
+                                    }
+                                }}
                             >
-                                Оплатить
+                                {notEnough
+                                    ? `Не хватает ${deficit}`
+                                    : 'Оплатить'}
                             </Button>
                         </>
                     )}
@@ -637,15 +657,15 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
                 </ModalCard>
             </ModalRoot>
 
-            <Panel id={id}>
-                <Div style={{ height: 32, backgroundColor: '#ffffff' }} />
+            <Panel id={id} style={{backgroundColor: '#ceaeff', minHeight: '100vh'}}>
+                <Div style={{ height: 32, backgroundColor: '#ceaeff' }} />
 
                 {isAdmin && (
-                    <Div>
+                    <Div style={{ backgroundColor: '#ceaeff' }}>
                         <Button
                             size="s"
                             mode="secondary"
-                            style={{ margin: 12, backgroundColor: '#fff', color: '#000' }}
+                            style={{ margin: 1, backgroundColor: '#fff', color: '#000' }}
                             onClick={() => setActiveModal('add')}
                         >
                             ➕ Добавить
@@ -654,7 +674,7 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
                         <Button
                             size="s"
                             mode="secondary"
-                            style={{ margin: 12 }}
+                            style={{ margin: 1, backgroundColor: '#fff', color: '#000' }}
                             onClick={() => go('adminPurchases')}
                         >
                             📦 Купленные
@@ -662,7 +682,6 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
                     </Div>
                 )}
                             
-                {/* Кастомный хедер */}
                 <Div
                     style={{
                     position: 'fixed',
@@ -670,14 +689,13 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
                     left: 0,
                     right: 0,
                     height: 56,
-                    backgroundColor: '#ceaeff',
+                    backgroundColor: '#fff',
                     display: 'flex',
                     alignItems: 'center',
-                    padding: '0 16px',
+                    padding: '0 4px',
                     zIndex: 1000,
                     }}
                 >
-                    {/* Кнопка назад */}
                     <Button
                         mode="tertiary"
                         size="l"
@@ -687,35 +705,41 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
                             paddingLeft: 0,
                             paddingRight: 8,
                             marginRight: 4,
-                            color: '#fff',
+                            color: '#ceaeff',
                         }}
                     >
                         Назад
                     </Button>
-
+                    
                     {/* Контейнер для корзины и баланса */}
                     <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 12 }}>
-                        {/* Кнопка корзины */}
-                        <div style={{ position: 'relative' }}>
-                            <Button
-                                mode="tertiary"
-                                size="l"
-                                onClick={async () => {
-                                    await loadCart();
-                                    setActiveModal('cart');
-                                }}
-                                style={{ color: '#fff' }}
-                            >
-                                <Icon28ShoppingCartOutline />
-                            </Button>
+                        {/* Корзина */}
+                        <div
+                            onClick={async () => {
+                                await loadCart();
+                                setActiveModal('cart');
+                            }}
+                            style={{
+                                position: 'relative',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                width: 40,
+                                height: 28,
+                                borderRadius: 999,
+                                backgroundColor: '#f2f2f2',
+                                cursor: 'pointer',
+                            }}
+                        >
+                            <Icon28ShoppingCartOutline width={20} height={20} style={{ color: '#8c64d7' }} />
 
-                            {Object.values(cart).reduce((a, b) => a + b, 0) > 0 && (
-                                <Badge
-                                    style={{ position: 'absolute', top: -4, right: -4 }}
-                                    mode="prominent"
-                                >
-                                    {Object.values(cart).reduce((a, b) => a + b, 0)}
-                                </Badge>
+                            {Object.values(cart).reduce((a, b) => a + b, 0) > 0 && ( 
+                                <Badge 
+                                    style={{ position: 'absolute', top: 0, right: 0 }} 
+                                    mode="prominent" 
+                                > 
+                                    {Object.values(cart).reduce((a, b) => a + b, 0)} 
+                                </Badge> 
                             )}
                         </div>
 
@@ -723,6 +747,7 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
                         <div
                             onClick={goToBalance}
                             style={{
+                                marginLeft: 'auto',
                                 display: 'flex',
                                 alignItems: 'center',
                                 gap: 6,
@@ -734,10 +759,10 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
                         >
                             <img src={coinIcon} alt="coins" style={{ height: 25, width: 25 }} />
                             <CustomText
-                                weight="3"
+                                weight="1"
                                 style={{
                                     fontSize: 14,
-                                    color: '#4000ff',
+                                    color: '#8c64d7',
                                     lineHeight: '18px',
                                 }}
                             >
@@ -748,19 +773,52 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
                 </Div>
 
                 {/* МАГАЗИН */}
-                <Div style={{ padding: 16 }}>
-                    <CustomText weight="medium" style={{ marginBottom: 8, color: '#311f68' }}>
-                        Магазин
-                    </CustomText>
+                <Div style={{ backgroundColor: '#ceaeff', padding: 0 }}>
+                    <Card
+                        mode="shadow"
+                        style={{
+                            borderRadius: 10,
+                            padding: '20px 15px',
+                            display: 'flex',
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            backgroundColor: '#ffffff',
+                            margin: '10px 16px 0px 16px',
+                        }}
+                    >
+                        <CustomText
+                            weight="1"
+                            style={{
+                                fontSize: 16,
+                                color: '#000',
+                            }}
+                        >
+                            Артефакты от 100 капиталов
+                        </CustomText>
+
+                        <img
+                            src={boxIcon}
+                            alt="gift"
+                            style={{
+                                width: 75,
+                                height: 75,
+                                objectFit: 'contain',
+                                position: 'absolute',
+                                right: -2,
+                            }}
+                        />
+                    </Card>
+
                     <Div
                         style={{
                             display: 'grid',
-                            gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))',
-                            gap: 12,
+                            gridTemplateColumns: 'repeat(auto-fill, minmax(90px, 1fr))',
+                            gap: 8,
                         }}
                     >
                         {items
-                        .filter(item => item.price >= 0 && item.price <= 500)
+                        .filter(item => item.price >= 0 && item.price < 500)
                         .map(item => {
                             return (
                                 <Div key={item.id} style={{
@@ -769,7 +827,10 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
                                     padding: 8,
                                     transition: 'transform 0.15s ease, box-shadow 0.15s ease',
                                     cursor: 'pointer',
-                                    border: '1px solid #e0e0e0',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                    textAlign: 'center',
                                 }}
                                 onClick={() => {
                                     setActiveItem(item);
@@ -779,12 +840,26 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
                                     <img
                                         src={`http://localhost:3001${item.image}`}
                                         alt=""
-                                        style={{ width: '100%', borderRadius: 8, marginBottom: 8 }}
+                                        style={{ width: '100%', borderRadius: 8 }}
                                     />
-                                    <CustomText weight="medium">{item.title}</CustomText>
-                                    <CustomText weight="3" style={{ fontSize: 16, color: '#4000ff', marginBottom: 6 }}>
-                                        {item.price}
-                                    </CustomText>
+                                    <CustomText weight="3" style={{ fontSize: 12, paddingTop: 3 }}>{item.title}</CustomText>
+                                    <div
+                                        style={{                                            display: 'flex',
+                                            alignItems: 'center',
+                                        }}
+                                    >
+                                        <CustomText
+                                            weight="1"
+                                            style={{
+                                                fontSize: 14,
+                                                color: '#8c64d7',
+                                                lineHeight: '18px',
+                                            }}
+                                        >
+                                            {item.price}
+                                        </CustomText>
+                                        <img src={coinIcon} alt="coins" style={{ height: 25, width: 25 }} />
+                                    </div>
 
                                     {(cart[String(item.id)] || 0) === 0 ? (
                                         <div
@@ -793,33 +868,41 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
                                                 addToCart(item.id);
                                             }}
                                             style={{
-                                                backgroundColor: '#4000ff',
-                                                color: '#fff',
-                                                padding: '6px 0',
-                                                borderRadius: 8,
+                                                marginTop: 8,
+                                                width: '100%',
+                                                backgroundColor: '#8c64d7',
+                                                borderRadius: 999,
+                                                padding: '2px 0',
                                                 textAlign: 'center',
-                                                fontWeight: 600,
                                                 cursor: 'pointer',
                                             }}
                                         >
-                                            В корзину
+                                            <CustomText
+                                                weight="1"
+                                                style={{
+                                                    color: '#ffffff',
+                                                    fontSize: 10,
+                                                }}
+                                            >
+                                                купить
+                                            </CustomText>
                                         </div>
                                     ) : (
-                                        <Div style={{ display: 'flex', gap: 4, justifyContent: 'center', alignItems: 'center' }}>
+                                        <Div style={{ display: 'flex', gap: 0, justifyContent: 'center', alignItems: 'center', padding: '9px 0px 0px 0px' }}>
                                             <div
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                     removeFromCart(item.id);
                                                 }}
                                                 style={{
-                                                    width: 32, height: 32, borderRadius: 8,
-                                                    backgroundColor: '#eee', textAlign: 'center', lineHeight: '32px',
+                                                    width: 20, height: 20, borderRadius: 999,
+                                                    backgroundColor: '#eee', textAlign: 'center', lineHeight: '20px',
                                                     cursor: 'pointer', fontWeight: 600
                                                 }}
                                             >
                                                 -
                                             </div>
-                                            <CustomText style={{ width: 32, textAlign: 'center', fontWeight: 600 }}>
+                                            <CustomText style={{ width: 32, textAlign: 'center', fontWeight: 600, fontSize: 14 }}>
                                                 {cart[String(item.id)]}
                                             </CustomText>
                                             <div
@@ -828,8 +911,8 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
                                                     addToCart(item.id);
                                                 }}
                                                 style={{
-                                                    width: 32, height: 32, borderRadius: 8,
-                                                    backgroundColor: '#eee', textAlign: 'center', lineHeight: '32px',
+                                                    width: 20, height: 20, borderRadius: 999,
+                                                    backgroundColor: '#eee', textAlign: 'center', lineHeight: '20px',
                                                     cursor: 'pointer', fontWeight: 600
                                                 }}
                                             >
