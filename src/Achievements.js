@@ -5,7 +5,7 @@ import { Icon28ChevronBack } from '@vkontakte/icons';
 import coinIcon from './imgs/coin.png'
 import medalIcon from './imgs/awards.png'
 import coinsIcon from './imgs/coins.png'
-import box1icon from './imgs/box1.png'
+import boxcalicon from './imgs/boxcalendar.png'
 import cupsIcon from './imgs/cups.png'
 import awardsIcon from './imgs/awards.png'
 import lockIcon from './imgs/lock.png'
@@ -15,32 +15,26 @@ export default function Achievements({ id, goBack, balance, goToBalance, user, t
         {
             id: 1,
             title: 'Первый вход',
-            icon: <img src={box1icon} alt="" style={{ height: 70, width: 70 }} />,
+            icon: <img src={boxcalicon} alt="" style={{ height: 70, width: 70 }} />,
             unlocked: true,
         },
         {
             id: 2,
             title: '10 очков',
-            icon: <img src={coinsIcon} alt="" style={{ height: 70, width: 70 }} />,
+            icon: <img src={coinsIcon} alt="" style={{ height: 60, width: 60 }} />,
             unlocked: totalEarned >= 10,
         },
         {
             id: 3,
             title: '100 очков',
-            icon: <img src={cupsIcon} alt="" style={{ height: 70, width: 70 }} />,
+            icon: <img src={cupsIcon} alt="" style={{ height: 60, width: 60 }} />,
             unlocked: totalEarned >= 100,
         },
         {
             id: 4,
             title: '1000 очков',
-            icon: <img src={awardsIcon} alt="" style={{ height: 70, width: 70 }} />,
+            icon: <img src={awardsIcon} alt="" style={{ height: 60, width: 60 }} />,
             unlocked: totalEarned >= 1000,
-        },
-        {
-            id: 5,
-            title: '5000 очков',
-            icon: <img src={awardsIcon} alt="" style={{ height: 70, width: 70 }} />,
-            unlocked: totalEarned >= 5000,
         },
         ];
     return (
@@ -103,7 +97,7 @@ export default function Achievements({ id, goBack, balance, goToBalance, user, t
                 </div>
             </Div>
 
-            <Div style={{ padding: '10px', backgroundColor: '#ceaeff' }}>
+            <Div style={{ backgroundColor: '#ceaeff', padding: 0 }}>
                 <Card
                     mode="shadow"
                     style={{
@@ -114,7 +108,7 @@ export default function Achievements({ id, goBack, balance, goToBalance, user, t
                         alignItems: 'center',
                         justifyContent: 'space-between',
                         backgroundColor: '#ffffff',
-                        marginBottom: 15,
+                        margin: '10px 16px 8px 16px'
                     }}
                 >
                     <CustomText
@@ -141,102 +135,104 @@ export default function Achievements({ id, goBack, balance, goToBalance, user, t
                     />
                 </Card>
                 
-                <Div style={{ marginTop: 20, padding: 0 }}>
+                <Div style={{ padding: 0 }}>
                 <Div
                     style={{
                         display: 'grid',
-                        gridTemplateColumns: 'repeat(3, 1fr)',
+                        gridTemplateColumns: 'repeat(4, 1fr)',
                         gap: 10,
                         width: '100%',
                         boxSizing: 'border-box',
                     }}
                 >
                     {achievements.map((ach) => {
-                        const targetPoints = [0,10,100,1000,5000][ach.id - 1]; // цель для прогресса
+                        const targetPoints = [0,10,100,1000][ach.id - 1];
                         const progress = Math.min(1, totalEarned / targetPoints);
 
                         return (
                             <Card
-                            key={ach.id}
-                            mode="shadow"
-                            style={{
-                                borderRadius: 14,
-                                aspectRatio: '1 / 1',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                position: 'relative',
-                                backgroundColor: '#ffffff',
-                                height: '100%',
-                                width: '100%',
-                            }}
-                            >
-                            <div
+                                key={ach.id}
+                                mode="shadow"
                                 style={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                gap: 4,
-                                }}
-                            >
-                                <div
-                                style={{
-                                    opacity: ach.unlocked ? 1 : 0,
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
+                                    borderRadius: 14,
+                                    aspectRatio: '1 / 1',
+                                    position: 'relative',
+                                    backgroundColor: '#ffffff',
+                                    overflow: 'hidden',
                                 }}
                                 >
-                                {ach.icon}
-                                </div>
 
-                                <CustomText
-                                style={{
-                                    fontSize: 10,
-                                    textAlign: 'center',
-                                    lineHeight: '12px',
-                                }}
-                                >
-                                {ach.title}
-                                </CustomText>
-
-                                {!ach.unlocked && (
+                                {/* ИКОНКА ПО ЦЕНТРУ */}
                                 <div
                                     style={{
-                                    width: 60,
-                                    height: 5,
-                                    borderRadius: 3,
-                                    backgroundColor: '#e0e0e0',
-                                    overflow: 'hidden',
-                                    marginTop: 2,
+                                    position: 'absolute',
+                                    top: '50%',
+                                    left: '50%',
+                                    transform: 'translate(-50%, -60%)',
+                                    opacity: ach.unlocked ? 1 : 0,
+                                    transition: 'opacity 0.3s'
                                     }}
                                 >
+                                    {ach.icon}
+                                </div>
+
+                                {/* НАЗВАНИЕ ВНИЗУ */}
+                                <CustomText
+                                    style={{
+                                    position: 'absolute',
+                                    bottom: 6,
+                                    width: '100%',
+                                    fontSize: 10,
+                                    textAlign: 'center',
+                                    }}
+                                >
+                                    {ach.title}
+                                </CustomText>
+
+                                {/* ПРОГРЕСС БАР */}
+                                {!ach.unlocked && (
                                     <div
                                     style={{
+                                        position: 'absolute',
+                                        bottom: 4,
+                                        left: '50%',
+                                        transform: 'translateX(-50%)',
+                                        width: 50,
+                                        height: 5,
+                                        borderRadius: 3,
+                                        backgroundColor: '#e0e0e0',
+                                        overflow: 'hidden',
+                                    }}
+                                    >
+                                    <div
+                                        style={{
                                         width: `${progress * 100}%`,
                                         height: '100%',
                                         backgroundColor: '#8c64d7',
                                         borderRadius: 3,
                                         transition: 'width 0.3s',
+                                        }}
+                                    />
+                                    </div>
+                                )}
+
+                                {/* ЗАМОК */}
+                                {!ach.unlocked && (
+                                    <img
+                                    src={lockIcon}
+                                    alt=""
+                                    style={{
+                                        position: 'absolute',
+                                        width: 60,
+                                        height: 60,
+                                        top: '50%',
+                                        left: '50%',
+                                        transform: 'translate(-50%, -60%)',
                                     }}
                                     />
-                                </div>
                                 )}
-                            </div>
 
-                            {!ach.unlocked && (
-                                <img
-                                src={lockIcon}
-                                alt=""
-                                style={{
-                                    position: 'absolute',
-                                    width: 80,
-                                    height: 80,
-                                }}
-                                />
-                            )}
-                            </Card>
+                                </Card>
                         );
                         })}
                 </Div>
