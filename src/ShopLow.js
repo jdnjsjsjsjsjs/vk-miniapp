@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'; 
-import { Panel, Div, Button, ModalCard, ModalRoot, Slider, Input, Badge } from '@vkontakte/vkui';
+import { Panel, Div, Button, ModalCard, ModalRoot, Badge } from '@vkontakte/vkui';
 import { CustomText } from './CustomTypography';
 import { Icon28ChevronBack, Icon28ShoppingCartOutline } from '@vkontakte/icons';
 
@@ -14,14 +14,11 @@ const inputStyle = {
     fontSize: 14,
 };
 
-export default function Shop({ id, goBack, go, balance, goToBalance, user, initialFilter }) {
+export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
     const [items, setItems] = useState([]);
     const [activeItem, setActiveItem] = useState(null);
     const [activeModal, setActiveModal] = useState(null);
     const [editItem, setEditItem] = useState(null);
-    const [filteredItems, setFilteredItems] = useState([]);
-    const [priceBounds, setPriceBounds] = useState([0, 0]);
-    const [priceRange, setPriceRange] = useState([0, 0]);
     const [uploading, setUploading] = useState(false);
     const [tempImage, setTempImage] = useState(null);
     const [cart, setCart] = useState({});
@@ -48,14 +45,6 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user, initi
 
         const loadedItems = isAdmin ? data : data.items;
         setItems(loadedItems);
-
-        if (loadedItems.length) {
-            const prices = loadedItems.map(i => i.price);
-            const min = Math.min(...prices);
-            const max = Math.max(...prices);
-            setPriceBounds([min, max]);
-            setPriceRange([min, max]);
-        }
     };
 
     useEffect(() => {
@@ -65,16 +54,6 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user, initi
     useEffect(() => {
         loadCart();
     }, [user.id]);
-
-    useEffect(() => {
-        const [min, max] = priceRange;
-
-        const filtered = items.filter(
-            item => item.price >= min && item.price <= max
-        );
-
-        setFilteredItems(filtered);
-    }, [priceRange, items]);
 
     const saveNewItem = async () => {
         if (!newItem.title || !newItem.price) {
@@ -768,41 +747,6 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user, initi
                     </div>
                 </Div>
 
-                <Div style={{ backgroundColor: '#fff', borderRadius: 12, padding: 16, margin: '16px' }}>
-                    <CustomText weight="medium" style={{ marginBottom: 8, color: '#311f68' }}>
-                        Фильтр по цене
-                    </CustomText>
-
-                    <Slider
-                        min={priceBounds[0]}
-                        max={priceBounds[1]}
-                        value={priceRange}
-                        onChange={setPriceRange}
-                        step={1}
-                        multiple
-                    />
-
-                    <Div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
-                        <Input
-                            type="number"
-                            value={priceRange[0]}
-                            onChange={e =>
-                                setPriceRange([Number(e.target.value), priceRange[1]])
-                            }
-                            placeholder="От"
-                        />
-
-                        <Input
-                            type="number"
-                            value={priceRange[1]}
-                            onChange={e =>
-                                setPriceRange([priceRange[0], Number(e.target.value)])
-                            }
-                            placeholder="До"
-                        />
-                    </Div>
-                </Div>
-
                 {/* МАГАЗИН */}
                 <Div style={{ padding: 16 }}>
                     <CustomText weight="medium" style={{ marginBottom: 8, color: '#311f68' }}>
@@ -815,7 +759,9 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user, initi
                             gap: 12,
                         }}
                     >
-                        {filteredItems.map(item => {
+                        {items
+                        .filter(item => item.price >= 0 && item.price <= 500)
+                        .map(item => {
                             return (
                                 <Div key={item.id} style={{
                                     backgroundColor: '#ffffff',

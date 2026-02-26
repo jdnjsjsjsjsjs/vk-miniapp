@@ -13,7 +13,9 @@ import Balance from './Balance';
 import Gift from './Gift';
 import Tasks from './Tasks';
 import Rating from './Rating';
-import Shop from './Shop';
+import ShopLow from './ShopLow';
+import ShopMedium from './ShopMedium';
+import ShopHigh from './ShopHigh';
 import Profile from './Profile';
 import AdminTasks from './AdminTasks';
 import AdminPurchases from './AdminPurchases';
@@ -47,7 +49,6 @@ export default function App() {
   const [giftTimeLeft, setGiftTimeLeft] = useState('00:00:00');
   const [usersList, setUsersList] = useState([]);
   const [lastTasks, setLastTasks] = useState([]);
-  const [shopFilter, setShopFilter] = useState(null);
 
   const getPlaceStyles = (place) => {
     switch (place) {
@@ -200,16 +201,14 @@ export default function App() {
   }
 
   const goBack = () => {
-    setShopFilter(null);
     setActivePanel('main');
   };
   const goToBalance = () => setActivePanel('balance');
   const goToGift = () => setActivePanel('gift');
   const goToRating = () => setActivePanel('rating');
-  const goToShopWithFilter = (filter) => {
-    setShopFilter(filter);
-    setActivePanel('shop');
-  };
+  const goToShopLow = () => setActivePanel('shoplow');
+  const goToShopMedium = () => setActivePanel('shopmedium');
+  const goToShopHigh = () => setActivePanel('shophigh');
   const goToProfile = () => setActivePanel('profile');
   const goToTasks = () => {
     if (user?.role === 'admin') {
@@ -774,7 +773,7 @@ export default function App() {
                 overflow: 'hidden',
                 height: window.innerWidth < 768 ? '100px' : '120px',
               }} 
-              onClick={() => goToShopWithFilter({ min: 0, max: 100 })}
+              onClick={() => goToShopLow()}
             >
               <img
                 src={box1icon}
@@ -802,7 +801,7 @@ export default function App() {
                 cursor: 'pointer', 
                 overflow: 'hidden',
                 height: window.innerWidth < 768 ? '100px' : '120px', }} 
-              onClick={() => goToShopWithFilter({ min: 100, max: 500 })}
+              onClick={() => goToShopMedium()}
             >
               <img
                 src={box2icon}
@@ -830,7 +829,7 @@ export default function App() {
                 cursor: 'pointer', 
                 overflow: 'hidden',
                 height: window.innerWidth < 768 ? '100px' : '120px', }} 
-              onClick={() => goToShopWithFilter({ min: 500, max: 1000 })}
+              onClick={() => goToShopHigh()}
             >
               <img
                 src={box3icon}
@@ -950,8 +949,14 @@ export default function App() {
       {/* Панель Рейтинг */}
       <Rating id="rating" goBack={goBack} balance={balance} goToBalance={goToBalance} />
 
-      {/* Панель Магазина */}
-      <Shop id="shop" goBack={goBack} go={go} balance={balance} goToBalance={goToBalance} user={user} initialFilter={shopFilter} />
+      {/* Панель Магазина от 100 до 500*/}
+      <ShopLow id="shoplow" goBack={goBack} go={go} balance={balance} goToBalance={goToBalance} user={user} />
+
+      {/* Панель Магазина от 500 до 1000*/}
+      <ShopMedium id="shopmedium" goBack={goBack} go={go} balance={balance} goToBalance={goToBalance} user={user} />
+
+      {/* Панель Магазина от 1000*/}
+      <ShopHigh id="shophigh" goBack={goBack} go={go} balance={balance} goToBalance={goToBalance} user={user} />
 
       {/* Панель профиля */}
       <Profile id="profile" goBack={goBack} user={user} balance={balance} goToPurchases={goToPurchases} goToGuide={goToGuide} goToAchievements={goToAchievements} goToBalance={goToBalance} />
