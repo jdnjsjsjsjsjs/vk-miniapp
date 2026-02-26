@@ -16,7 +16,7 @@ const inputStyle = {
 
 export default function Shop({ id, goBack, go, balance, goToBalance, user, initialFilter }) {
     const [items, setItems] = useState([]);
-    const [ownedItems, setOwnedItems] = useState({});
+    const [purchases, setPurchases] = useState([]);
     const [activeItem, setActiveItem] = useState(null);
     const [activeModal, setActiveModal] = useState(null);
     const [editItem, setEditItem] = useState(null);
@@ -51,14 +51,11 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user, initi
         setItems(loadedItems);
 
         if (!isAdmin) {
-            const owned = {};
-            data.ownedItems?.forEach(item => {
-                owned[String(item.item_id)] = {
-                    quantity: item.quantity,
-                    received: item.received
-                };
-            });
-            setOwnedItems(owned);
+            const resPurchases = await fetch(
+                `http://localhost:3001/api/user/${user.id}/purchases`
+            );
+            const purchasesData = await resPurchases.json();
+            setPurchases(purchasesData);
         }
 
         if (loadedItems.length) {
@@ -73,6 +70,10 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user, initi
     useEffect(() => {
         loadShop();
     }, [user.id, isAdmin]);
+
+    useEffect(() => {
+        loadCart();
+    }, [user.id]);
 
     useEffect(() => {
         const [min, max] = priceRange;
@@ -269,6 +270,34 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user, initi
 
         setActiveModal(null);
     };
+
+    const notReceived = purchases.filter(p => !p.received);
+    const received = purchases.filter(p => p.received);
+
+    // Группировка полученных покупок по order_id
+    const receivedGroupedByOrder = {};
+
+    received.forEach(p => {
+        if (!receivedGroupedByOrder[p.order_id]) {
+            receivedGroupedByOrder[p.order_id] = {
+                items: [{ ...p }],
+                received: p.received,
+            };
+        } else {
+            receivedGroupedByOrder[p.order_id].items.push(p);
+        }
+    });
+
+    const allReceived = received;
+    const mergedReceived = {};
+
+    allReceived.forEach(p => {
+        if (!mergedReceived[p.item_id]) {
+            mergedReceived[p.item_id] = { ...p, quantity: 1 };
+        } else {
+            mergedReceived[p.item_id].quantity += 1;
+        }
+    });
 
     return (
         <>
@@ -811,32 +840,29 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user, initi
                     </Div>
                 </Div>
 
-                {/* КУПЛЕННОЕ */}
-                {Object.keys(ownedItems).length > 0 && (
-                    <Div style={{ padding: 16 }}>
+                {/* 🔵 Куплено (не получено) */}
+                {notReceived.length > 0 && (
+                    <Div style={{ padding: '16px' }}>
                         <CustomText weight="medium" style={{ marginBottom: 8, color: '#311f68' }}>
-                            Купленное
+                            Куплено
                         </CustomText>
 
-                        <Div
-                            style={{
-                                display: 'grid',
-                                gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))',
-                                gap: 12,
-                            }}
-                        >
-                            {Object.entries(ownedItems).map(([itemId, qty]) => {
-                                const item = items.find(i => i.id === Number(itemId));
+                        <Div style={{
+                            display: 'grid',
+                            gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))',
+                            gap: 12,
+                        }}>
+                            {notReceived.map(purchase => {
+                                const item = items.find(i => i.id === purchase.item_id);
                                 if (!item) return null;
+
                                 return (
                                     <Div
-                                        key={itemId}
+                                        key={purchase.id}
                                         style={{
-                                            backgroundColor: ownedItems[item.id]?.received ? '#e8f5e9' : '#fff8e1',
+                                            backgroundColor: '#fff8e1',
                                             borderRadius: 12,
                                             padding: 8,
-                                            opacity: 0.8,
-                                            cursor: 'default',
                                             border: '1px solid #e0e0e0',
                                         }}
                                     >
@@ -846,15 +872,55 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user, initi
                                             style={{ width: '100%', borderRadius: 8, marginBottom: 8 }}
                                         />
                                         <CustomText weight="medium">{item.title}</CustomText>
-                                        {ownedItems[item.id]?.received ? (
-                                        <CustomText style={{ color: '#2e7d32', fontWeight: 600 }}>
-                                            ✔ Получено
-                                        </CustomText>
-                                        ) : (
                                         <CustomText style={{ color: '#ff9800', fontWeight: 600 }}>
-                                            ⏳ Куплено {ownedItems[item.id]?.quantity} шт.
+                                            ⏳ Ожидает выдачи
                                         </CustomText>
-                                        )}
+                                    </Div>
+                                );
+                            })}
+                        </Div>
+                    </Div>
+                )}
+
+                {Object.values(mergedReceived).length > 0 && (
+                    <Div style={{ padding: 16 }}>
+                        <CustomText weight="medium" style={{ marginBottom: 8, color: '#311f68' }}>
+                            Получено
+                        </CustomText>
+
+                        <Div style={{
+                            display: 'grid',
+                            gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))',
+                            gap: 12,
+                        }}>
+                            {Object.values(mergedReceived).map(p => {
+                                const item = items.find(i => i.id === p.item_id);
+                                if (!item) return null;
+
+                                return (
+                                    <Div
+                                        key={p.item_id}
+                                        style={{
+                                            backgroundColor: '#e0f7fa',
+                                            borderRadius: 12,
+                                            padding: 8,
+                                            border: '1px solid #b2ebf2',
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            alignItems: 'center',
+                                        }}
+                                    >
+                                        <img
+                                            src={`http://localhost:3001${item.image}`}
+                                            alt=""
+                                            style={{ width: '100%', borderRadius: 8, marginBottom: 8 }}
+                                        />
+                                        <CustomText weight="medium" style={{ textAlign: 'center' }}>
+                                            {item.title} {p.quantity > 1 && `(x${p.quantity})`}
+                                        </CustomText>
+                                        <CustomText weight="medium" style={{ textAlign: 'center' }}>
+                                            Получено!
+                                        </CustomText>
                                     </Div>
                                 );
                             })}
@@ -875,7 +941,7 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user, initi
                         }}
                     >
                         {filteredItems.map(item => {
-                            const isOwned = !!ownedItems[item.id]; 
+                            const isOwned = purchases.some(p => p.item_id === item.id);
 
                             return (
                                 <Div key={item.id} style={{

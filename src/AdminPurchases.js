@@ -14,25 +14,38 @@ export default function AdminPurchases({ id, goBack, user, balance }) {
       .then(setPurchases);
   }, [user.id]);
 
-  const markReceived = async (targetUserId, itemId) => {
-    await fetch('http://localhost:3001/api/admin/purchases/mark-received', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        userId: user.id,
-        targetUserId,
-        itemId,
-      }),
-    });
+  const markReceived = async (orderId) => {
+    try {
+      // Отмечаем заказ полученным на сервере
+      await fetch('http://localhost:3001/api/admin/purchases/mark-received', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: user.id, orderId }),
+      });
 
-    setPurchases(prev =>
-      prev.map(p =>
-        p.user_id === targetUserId && p.item_id === itemId
-          ? { ...p, received: 1 }
-          : p
-      )
-    );
+      // Обновляем локальный стейт — все позиции заказа получают received = 1
+      setPurchases(prev =>
+        prev.map(p =>
+          p.order_id === orderId ? { ...p, received: 1 } : p
+        )
+      );
+    } catch (err) {
+      console.error('Ошибка при отметке "Получено":', err);
+    }
   };
+
+  const groupedByOrder = {};
+    purchases.forEach(p => {
+      if (!groupedByOrder[p.order_id]) {
+        groupedByOrder[p.order_id] = { 
+          items: [p], 
+          received: p.received, 
+          purchasedAt: p.purchased_at // сохраняем дату
+        };
+      } else {
+        groupedByOrder[p.order_id].items.push(p);
+      }
+    });
 
   return (
     <Panel id={id}>
@@ -96,24 +109,33 @@ export default function AdminPurchases({ id, goBack, user, balance }) {
           </Div>
 
       <Div>
-        {purchases.map(p => (
-          <Div key={`${p.user_id}-${p.item_id}`} style={{ marginBottom: 12 }}>
-            <CustomText>
-              {p.first_name} {p.last_name} — {p.title} ({p.quantity})
+        {Object.values(groupedByOrder).map(group => (
+          <Div key={group.items[0].order_id} style={{ borderBottom: '1px solid #eee', marginBottom: 12, paddingBottom: 8 }}>
+            
+            {/* ID и время заказа */}
+            <CustomText weight="3">
+              <strong>Заказ ID:</strong> {group.items[0].order_id}
+            </CustomText>
+            <CustomText weight="2" style={{ fontSize: 12, color: '#666', marginBottom: 6 }}>
+              <strong>Время заказа:</strong> {new Date(group.purchasedAt).toLocaleString()}
             </CustomText>
 
-            {!p.received ? (
+            {group.items.map(p => (
+              <CustomText key={p.item_id} style={{ marginLeft: 8 }}>
+                {p.first_name} {p.last_name} — {p.title}
+              </CustomText>
+            ))}
+
+            {!group.items.every(item => item.received) ? (
               <Button
                 size="s"
                 style={{ marginTop: 6 }}
-                onClick={() => markReceived(p.user_id, p.item_id)}
+                onClick={() => markReceived(group.items[0].order_id)}
               >
                 Получено
               </Button>
             ) : (
-              <CustomText style={{ color: 'green', marginTop: 6 }}>
-                ✔ Выдано
-              </CustomText>
+              <CustomText style={{ color: 'green', marginTop: 6 }}>✔ Выдано</CustomText>
             )}
           </Div>
         ))}

@@ -154,12 +154,14 @@ db.run(`
 
 db.run(`
   CREATE TABLE IF NOT EXISTS user_items (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER NOT NULL,
     item_id INTEGER NOT NULL,
-    quantity INTEGER DEFAULT 1,
+    order_id INTEGER NOT NULL,
     received INTEGER DEFAULT 0,
     purchased_at TEXT DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (user_id, item_id)
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (item_id) REFERENCES shop_items(id)
   )
 `);
 
@@ -647,7 +649,7 @@ app.get('/api/shop', (req, res) => {
     }
 
     db.all(
-      'SELECT item_id, quantity, received FROM user_items WHERE user_id = ?',
+      'SELECT item_id, received FROM user_items WHERE user_id = ?',
       [userId],
       (err, rows) => {
         res.json({ items, ownedItems: rows });
@@ -661,27 +663,15 @@ app.post('/api/shop/buy/:itemId', (req, res) => {
   const { userId } = req.body;
   const itemId = req.params.itemId;
 
-  db.get(
-    'SELECT * FROM user_items WHERE user_id = ? AND item_id = ?',
-    [userId, itemId],
-    (err, row) => {
-      if (err) return res.status(500).json({ error: err.message });
+  const orderId = Date.now();
 
-      if (row) {
-        // Увеличиваем количество
-        const newQty = row.quantity + 1;
-        db.run(
-          'UPDATE user_items SET quantity = ? WHERE user_id = ? AND item_id = ?',
-          [newQty, userId, itemId],
-          () => res.json({ success: true, itemId, quantity: newQty })
-        );
-      } else {
-        db.run(
-          'INSERT INTO user_items (user_id, item_id, quantity) VALUES (?, ?, 1)',
-          [userId, itemId],
-          () => res.json({ success: true, itemId, quantity: 1 })
-        );
-      }
+  db.run(
+    `INSERT INTO user_items (user_id, item_id, order_id, received)
+     VALUES (?, ?, ?, 0)`,
+    [userId, itemId, orderId],
+    function(err) {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ success: true, purchaseId: this.lastID });
     }
   );
 });
@@ -1007,6 +997,7 @@ app.post('/api/cart/checkout', (req, res) => {
 
       db.serialize(() => {
         db.run('BEGIN TRANSACTION');
+        const orderId = Date.now();
         let totalPrice = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
         if (user.balance < totalPrice) {
@@ -1015,14 +1006,12 @@ app.post('/api/cart/checkout', (req, res) => {
         }
 
         cartItems.forEach(item => {
-          db.run(`
-            INSERT INTO user_items (user_id, item_id, quantity, received, purchased_at)
-            VALUES (?, ?, ?, 0, CURRENT_TIMESTAMP)
-            ON CONFLICT(user_id, item_id)
-            DO UPDATE SET 
-              quantity = quantity + excluded.quantity,
-              received = 0
-          `, [userId, item.item_id, item.quantity]);
+          for (let i = 0; i < item.quantity; i++) {
+            db.run(`
+              INSERT INTO user_items (user_id, item_id, order_id, received)
+              VALUES (?, ?, ?, 0)
+            `, [userId, item.item_id, orderId]);
+          }
         });
 
         db.run('UPDATE users SET balance = balance - ?, totalSpent = totalSpent + ? WHERE id = ?', [totalPrice, totalPrice, userId]);
@@ -1062,12 +1051,14 @@ app.get('/api/admin/purchases', (req, res) => {
 
     db.all(`
       SELECT 
+        ui.id,
+        ui.order_id,
         u.id as user_id,
         u.first_name,
         u.last_name,
         s.title,
+        s.image,
         ui.item_id,
-        ui.quantity,
         ui.received,
         ui.purchased_at
       FROM user_items ui
@@ -1082,7 +1073,7 @@ app.get('/api/admin/purchases', (req, res) => {
 });
 
 app.post('/api/admin/purchases/mark-received', (req, res) => {
-  const { userId, targetUserId, itemId } = req.body;
+  const { userId, orderId } = req.body;
 
   db.get('SELECT role FROM users WHERE id = ?', [userId], (err, admin) => {
     if (!admin || admin.role !== 'admin') {
@@ -1090,13 +1081,34 @@ app.post('/api/admin/purchases/mark-received', (req, res) => {
     }
 
     db.run(
-      'UPDATE user_items SET received = 1 WHERE user_id = ? AND item_id = ?',
-      [targetUserId, itemId],
+      'UPDATE user_items SET received = 1 WHERE order_id = ?',
+      [orderId],
       function(err) {
         if (err) return res.status(500).json({ error: err.message });
         res.json({ success: true });
       }
     );
+  });
+});
+
+app.get('/api/user/:id/purchases', (req, res) => {
+  const userId = req.params.id;
+
+  db.all(`
+    SELECT ui.id,
+           ui.item_id,
+           ui.received,
+           ui.purchased_at,
+           ui.order_id,
+           s.title,
+           s.image
+    FROM user_items ui
+    JOIN shop_items s ON s.id = ui.item_id
+    WHERE ui.user_id = ?
+    ORDER BY ui.purchased_at DESC
+  `, [userId], (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(rows);
   });
 });
 
