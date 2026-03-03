@@ -4,6 +4,7 @@ import { CustomText } from './CustomTypography';
 import { Icon28ChevronBack } from '@vkontakte/icons';
 
 import coinIcon from './imgs/coin.png'
+import shopIcon from './imgs/shop1.png'
 
 export default function Purchases({ id, goBack, user, balance, goToBalance }) {
     const [purchases, setPurchases] = useState([]);
@@ -120,7 +121,7 @@ export default function Purchases({ id, goBack, user, balance, goToBalance }) {
                                 mode="shadow"
                                 style={{
                                     borderRadius: 10,
-                                    padding: '10px 15px',
+                                    padding: '20px 15px',
                                     display: 'flex',
                                     flexDirection: 'row',
                                     alignItems: 'center',
@@ -136,8 +137,20 @@ export default function Purchases({ id, goBack, user, balance, goToBalance }) {
                                         color: '#000',
                                     }}
                                 >
-                                    Куплено
+                                    Купленные артефакты
                                 </CustomText>
+
+                                <img
+                                    src={shopIcon}
+                                    alt="gift"
+                                    style={{
+                                        width: 75,
+                                        height: 75,
+                                        objectFit: 'contain',
+                                        position: 'absolute',
+                                        right: 5,
+                                    }}
+                                />
                             </Card>
                             <Div style={{
                                 display: 'grid',
@@ -180,24 +193,22 @@ export default function Purchases({ id, goBack, user, balance, goToBalance }) {
                                             </CustomText>
                                             <div
                                                 style={{
-                                                    marginTop: 8,
-                                                    width: '100%',
-                                                    backgroundColor: '#ceaeff',
-                                                    borderRadius: 999,
-                                                    padding: '2px 0',
-                                                    textAlign: 'center',
+                                                    width: '95%',
+                                                    height: 1,
+                                                    backgroundColor: '#969696',
+                                                    margin: '2px auto 2px auto',
+                                                    borderRadius: 1,
+                                                }}
+                                            />
+                                            <CustomText
+                                                weight="1"
+                                                style={{
+                                                    color: '#ceaeff',
+                                                    fontSize: 14,
                                                 }}
                                             >
-                                                <CustomText
-                                                    weight="1"
-                                                    style={{
-                                                        color: '#ffffff',
-                                                        fontSize: 10,
-                                                    }}
-                                                >
-                                                    куплено
-                                                </CustomText>
-                                            </div>
+                                                ожидает
+                                            </CustomText>
                                         </Div>
                                     );
                                 })}
@@ -212,7 +223,7 @@ export default function Purchases({ id, goBack, user, balance, goToBalance }) {
                                 mode="shadow"
                                 style={{
                                     borderRadius: 10,
-                                    padding: '10px 15px',
+                                    padding: '20px 15px',
                                     display: 'flex',
                                     flexDirection: 'row',
                                     alignItems: 'center',
@@ -228,8 +239,20 @@ export default function Purchases({ id, goBack, user, balance, goToBalance }) {
                                         color: '#000',
                                     }}
                                 >
-                                    Получено
+                                    Полученные артефакты
                                 </CustomText>
+
+                                <img
+                                    src={shopIcon}
+                                    alt="gift"
+                                    style={{
+                                        width: 75,
+                                        height: 75,
+                                        objectFit: 'contain',
+                                        position: 'absolute',
+                                        right: 5,
+                                    }}
+                                />
                             </Card>
                             <Div style={{
                                 display: 'grid',
@@ -272,25 +295,22 @@ export default function Purchases({ id, goBack, user, balance, goToBalance }) {
                                             </CustomText>
                                             <div
                                                 style={{
-                                                    marginTop: 8,
-                                                    width: '100%',
-                                                    backgroundColor: '#fff',
-                                                    borderRadius: 999,
-                                                    padding: '2px 0',
-                                                    textAlign: 'center',
-                                                    border: '1px solid #f2f2f2'
+                                                    width: '95%',
+                                                    height: 1,
+                                                    backgroundColor: '#969696',
+                                                    margin: '2px auto 2px auto',
+                                                    borderRadius: 1,
+                                                }}
+                                            />
+                                            <CustomText
+                                                weight="1"
+                                                style={{
+                                                    color: '#8c64d7',
+                                                    fontSize: 14,
                                                 }}
                                             >
-                                                <CustomText
-                                                    weight="3"
-                                                    style={{
-                                                        color: '#000',
-                                                        fontSize: 10,
-                                                    }}
-                                                >
-                                                    получено
-                                                </CustomText>
-                                            </div>
+                                                получено
+                                            </CustomText>
                                         </Div>
                                     );
                                 })}
