@@ -817,8 +817,9 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
                             gap: 8,
                         }}
                     >
-                        {items
+                        {[...items]
                         .filter(item => item.price >= 1000)
+                        .sort((a, b) => a.price - b.price)
                         .map(item => {
                             return (
                                 <Div key={item.id} style={{
