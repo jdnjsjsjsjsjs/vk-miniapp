@@ -250,6 +250,20 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
     const notEnough = total > balance;
     const deficit = total - balance;
 
+    const activeItemInCart = activeItem ? (cart[String(activeItem.id)] || 0) : 0;
+
+    const totalWithActiveItem = activeItem
+        ? total + (activeItem.price * (activeItemInCart === 0 ? 1 : 0))
+        : total;
+
+    const notEnoughForActive = activeItem
+        ? totalWithActiveItem > balance
+        : false;
+
+    const lackAmountForActive = activeItem
+        ? totalWithActiveItem - balance
+        : 0;
+
     return (
         <>
             <ModalRoot activeModal={
@@ -257,57 +271,194 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
                 checkoutSuccess ? 'checkoutSuccess' :
                 activeModal
             }>
-                {/* Модалка товара */}
                 <ModalCard
                     id="item"
                     onClose={() => {
                         setActiveModal(null);
                         setActiveItem(null);
                     }}
-                    header={activeItem?.title}
                 >
-                    <img
-                        src={`http://localhost:3001${activeItem?.image}`}
+                    {/* Фото */}
+                    {activeItem?.image ? (
+                        <img
+                        src={`http://localhost:3001${activeItem.image}`}
                         alt=""
                         style={{
                             width: '100%',
-                            borderRadius: 8,
+                            borderRadius: 12,
+                            marginBottom: 12,
+                        }}
+                        />
+                    ) : (
+                        <div
+                        style={{
+                            width: '100%',
+                            aspectRatio: '1 / 1',
+                            backgroundColor: '#e5e5e5',
+                            borderRadius: 12,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            marginBottom: 12,
+                        }}
+                        >
+                        <CustomText
+                            weight="1"
+                            style={{
+                            fontSize: 12,
+                            color: '#ffffff',
+                            textAlign: 'center',
+                            lineHeight: '14px',
+                            }}
+                        >
+                            фото<br />появится<br />позже
+                        </CustomText>
+                        </div>
+                    )}
+
+                    {/* Верхняя строка: название — кнопки — цена */}
+                    <div
+                        style={{
+                            display: 'flex',
+                            alignItems: 'flex-start',
+                            justifyContent: 'space-between',
+                            gap: 8,
                             marginBottom: 8,
                         }}
-                    />
-                    <CustomText style={{ marginBottom: 12 }}>
-                        {activeItem?.description}
-                    </CustomText>
-                    <CustomText weight="3"
-                        style={{
-                            fontSize: 18,
-                            color: '#4000ff',
-                            marginTop: 8,
-                        }}    
                     >
-                        Цена: {activeItem?.price}
-                    </CustomText>
-
-                    {isAdmin && (
-                        <Div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
-                            <Button
-                                mode="secondary"
-                                onClick={() => {
-                                    setEditItem(activeItem);
-                                    setTempImage(activeItem.image);
-                                    setActiveModal('edit');
+                        {/* Левая часть: название + описание */}
+                        <div style={{ flex: 1 }}>
+                            <CustomText
+                                weight="3"
+                                style={{
+                                    fontSize: 14,
+                                    marginBottom: 4,
+                                    lineHeight: '20px',
                                 }}
                             >
-                                ✏️ Редактировать
-                            </Button>
+                                {activeItem?.title}
+                            </CustomText>
 
-                            <Button
-                                mode="destructive"
-                                onClick={() => setActiveModal('delete')}
+                            <CustomText
+                                style={{
+                                    color: '#6f6f6f',
+                                    fontSize: 14,
+                                    lineHeight: '18px',
+                                }}
                             >
-                                🗑 Удалить
-                            </Button>
-                        </Div>
+                                {activeItem?.description}
+                            </CustomText>
+                        </div>
+
+                        {/* Цена + монетка */}
+                        <div
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 2,
+                                marginLeft: 4,
+                            }}
+                        >
+                            <CustomText
+                                weight="1"
+                                style={{
+                                    fontSize: 18,
+                                    color: '#8c64d7',
+                                }}
+                            >
+                                {activeItem?.price}
+                            </CustomText>
+
+                            <img
+                                src={coinIcon}
+                                alt=""
+                                style={{ width: 24, height: 24 }}
+                            />
+                        </div>
+                    </div>
+
+                    {/* КНОПКА */}
+                    {cart[String(activeItem?.id)] ? (
+                        <div
+                            onClick={async () => {
+                                await loadCart();
+                                setActiveModal('cart');
+                            }}
+                            style={{
+                                width: '100%',
+                                backgroundColor: '#ffffff',
+                                borderRadius: 999,
+                                padding: '6px 0',
+                                textAlign: 'center',
+                                cursor: 'pointer',
+                                border: '1px solid #8c64d7',
+                            }}
+                        >
+                            <CustomText
+                                weight="1"
+                                style={{
+                                    color: '#8c64d7',
+                                    fontSize: 12,
+                                }}
+                            >
+                                перейти в корзину
+                            </CustomText>
+                        </div>
+                    ) : notEnoughForActive ? (
+                        <div
+                            style={{
+                                width: '100%',
+                                backgroundColor: '#ceaeff',
+                                borderRadius: 999,
+                                padding: '6px 0',
+                                textAlign: 'center',
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                gap: 4,
+                                cursor: 'not-allowed',
+                                opacity: 0.9,
+                            }}
+                        >
+                            <CustomText
+                                weight="1"
+                                style={{
+                                    color: '#ffffff',
+                                    fontSize: 12,
+                                }}
+                            >
+                                не хватает {lackAmountForActive}
+                            </CustomText>
+                            <img
+                                src={coinIcon}
+                                alt=""
+                                style={{ width: 18, height: 18 }}
+                            />
+                        </div>
+                    ) : (
+                        <div
+                            onClick={async () => {
+                                await addToCart(activeItem.id);
+                            }}
+                            style={{
+                                width: '100%',
+                                backgroundColor: '#8c64d7',
+                                borderRadius: 999,
+                                padding: '6px 0',
+                                textAlign: 'center',
+                                cursor: 'pointer',
+                            }}
+                        >
+                            <CustomText
+                                weight="1"
+                                style={{
+                                    color: '#ffffff',
+                                    fontSize: 12,
+                                }}
+                            >
+                                добавить в корзину
+                            </CustomText>
+                        </div>
                     )}
                 </ModalCard>
 
