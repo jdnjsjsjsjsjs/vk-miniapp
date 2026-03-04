@@ -922,10 +922,10 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
                                         style={{
                                             position: 'absolute',
                                             top: -4,
-                                            right: -4,
+                                            right: -7,
                                             backgroundColor: '#ff3b30',
                                             color: '#fff',
-                                            fontSize: 9,
+                                            fontSize: 7,
                                             borderRadius: 999,
                                             padding: '1px 5px',
                                             fontWeight: 600
@@ -1010,10 +1010,18 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
                                                 weight="1"
                                                 style={{
                                                     fontSize: 10,
-                                                    color: '#fff',
+                                                    color: '#ffffff',
+                                                    textAlign: 'center',
+                                                    lineHeight: '10px',
+                                                    display: 'flex',
+                                                    flexDirection: 'column',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
                                                 }}
                                             >
-                                                фото появится позже
+                                                <span>фото</span>
+                                                <span>появится</span>
+                                                <span>позже</span>
                                             </CustomText>
                                         </div>
                                     )}
@@ -1104,7 +1112,7 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
                                                 }}
                                                 style={{
                                                     width: 20, height: 20, borderRadius: 999,
-                                                    backgroundColor: '#eee', textAlign: 'center', lineHeight: '20px',
+                                                    backgroundColor: '#ceaeff', textAlign: 'center', lineHeight: '20px',
                                                     cursor: 'pointer', fontWeight: 600
                                                 }}
                                             >
@@ -1120,7 +1128,7 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
                                                 }}
                                                 style={{
                                                     width: 20, height: 20, borderRadius: 999,
-                                                    backgroundColor: '#eee', textAlign: 'center', lineHeight: '20px',
+                                                    backgroundColor: '#ceaeff', textAlign: 'center', lineHeight: '20px',
                                                     cursor: 'pointer', fontWeight: 600
                                                 }}
                                             >
