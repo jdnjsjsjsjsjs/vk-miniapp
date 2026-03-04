@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'; 
-import { Panel, Div, Button, ModalCard, ModalRoot, Badge, Card } from '@vkontakte/vkui';
+import { Panel, Div, Button, ModalCard, ModalRoot, Card } from '@vkontakte/vkui';
 import { CustomText } from './CustomTypography';
 import { Icon28ChevronBack, Icon28ShoppingCartOutline } from '@vkontakte/icons';
 
@@ -713,36 +713,6 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
                     
                     {/* Контейнер для корзины и баланса */}
                     <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 12 }}>
-                        {/* Корзина */}
-                        <div
-                            onClick={async () => {
-                                await loadCart();
-                                setActiveModal('cart');
-                            }}
-                            style={{
-                                position: 'relative',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                width: 40,
-                                height: 28,
-                                borderRadius: 999,
-                                backgroundColor: '#f2f2f2',
-                                cursor: 'pointer',
-                            }}
-                        >
-                            <Icon28ShoppingCartOutline width={20} height={20} style={{ color: '#8c64d7' }} />
-
-                            {Object.values(cart).reduce((a, b) => a + b, 0) > 0 && ( 
-                                <Badge 
-                                    style={{ position: 'absolute', top: 0, right: 0 }} 
-                                    mode="prominent" 
-                                > 
-                                    {Object.values(cart).reduce((a, b) => a + b, 0)} 
-                                </Badge> 
-                            )}
-                        </div>
-
                         {/* Баланс-капсула */}
                         <div
                             onClick={goToBalance}
@@ -780,22 +750,61 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
                             borderRadius: 10,
                             padding: '20px 15px',
                             display: 'flex',
-                            flexDirection: 'row',
                             alignItems: 'center',
                             justifyContent: 'space-between',
                             backgroundColor: '#ffffff',
                             margin: '10px 16px 0px 16px',
                         }}
                     >
-                        <CustomText
-                            weight="1"
-                            style={{
-                                fontSize: 16,
-                                color: '#000',
-                            }}
-                        >
-                            Артефакты от 100 капиталов
-                        </CustomText>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                            <CustomText
+                                weight="1"
+                                style={{
+                                    fontSize: 14,
+                                    color: '#000',
+                                }}
+                            >
+                                Артефакты от 100 капиталов
+                            </CustomText>
+
+                            <div
+                                onClick={async () => {
+                                    await loadCart();
+                                    setActiveModal('cart');
+                                }}
+                                style={{
+                                    width: 22,
+                                    height: 22,
+                                    backgroundColor: '#8c64d7',
+                                    borderRadius: 7,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    cursor: 'pointer',
+                                    position: 'relative'
+                                }}
+                            >
+                                <Icon28ShoppingCartOutline width={16} height={16} fill="#ffffff" />
+
+                                {Object.values(cart).reduce((a, b) => a + b, 0) > 0 && (
+                                    <div
+                                        style={{
+                                            position: 'absolute',
+                                            top: -4,
+                                            right: -4,
+                                            backgroundColor: '#ff3b30',
+                                            color: '#fff',
+                                            fontSize: 9,
+                                            borderRadius: 999,
+                                            padding: '1px 5px',
+                                            fontWeight: 600
+                                        }}
+                                    >
+                                        {Object.values(cart).reduce((a, b) => a + b, 0)}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
 
                         <img
                             src={boxIcon}
@@ -821,6 +830,10 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
                         .filter(item => item.price >= 0 && item.price < 500)
                         .sort((a, b) => a.price - b.price)
                         .map(item => {
+                            const itemInCart = cart[String(item.id)] || 0;
+                            const totalWithThisItem = total + item.price;
+                            const notEnoughForThis = totalWithThisItem > balance;
+                            const lackAmount = totalWithThisItem - balance;
                             return (
                                 <Div key={item.id} style={{
                                     backgroundColor: '#ffffff',
@@ -838,11 +851,41 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
                                     setActiveModal('item');
                                 }}
                                 >
-                                    <img
-                                        src={`http://localhost:3001${item.image}`}
-                                        alt=""
-                                        style={{ width: '100%', borderRadius: 8 }}
-                                    />
+                                    {item.image ? (
+                                        <img
+                                            src={`http://localhost:3001${item.image}`}
+                                            alt=""
+                                            style={{
+                                                width: '100%',
+                                                aspectRatio: '1 / 1',
+                                                objectFit: 'cover',
+                                                borderRadius: 8,
+                                            }}
+                                        />
+                                    ) : (
+                                        <div
+                                            style={{
+                                                width: '100%',
+                                                aspectRatio: '1 / 1',
+                                                backgroundColor: '#e5e5e5',
+                                                borderRadius: 8,
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                textAlign: 'center',
+                                            }}
+                                        >
+                                            <CustomText
+                                                weight="1"
+                                                style={{
+                                                    fontSize: 10,
+                                                    color: '#fff',
+                                                }}
+                                            >
+                                                фото появится позже
+                                            </CustomText>
+                                        </div>
+                                    )}
                                     <CustomText weight="3" style={{ fontSize: 12, paddingTop: 3 }}>{item.title}</CustomText>
                                     <div
                                         style={{                                            display: 'flex',
@@ -862,32 +905,65 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
                                         <img src={coinIcon} alt="coins" style={{ height: 25, width: 25 }} />
                                     </div>
 
-                                    {(cart[String(item.id)] || 0) === 0 ? (
-                                        <div
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                addToCart(item.id);
-                                            }}
-                                            style={{
-                                                marginTop: 8,
-                                                width: '100%',
-                                                backgroundColor: '#8c64d7',
-                                                borderRadius: 999,
-                                                padding: '2px 0',
-                                                textAlign: 'center',
-                                                cursor: 'pointer',
-                                            }}
-                                        >
-                                            <CustomText
-                                                weight="1"
+                                    {itemInCart === 0 ? (
+                                        notEnoughForThis ? (
+                                            <div
                                                 style={{
-                                                    color: '#ffffff',
-                                                    fontSize: 10,
+                                                    marginTop: 8,
+                                                    width: '100%',
+                                                    backgroundColor: '#ceaeff',
+                                                    borderRadius: 999,
+                                                    padding: '2px 2px',
+                                                    textAlign: 'center',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    cursor: 'not-allowed',
+                                                    opacity: 0.9,
                                                 }}
                                             >
-                                                купить
-                                            </CustomText>
-                                        </div>
+                                                <CustomText
+                                                    weight="1"
+                                                    style={{
+                                                        color: '#ffffff',
+                                                        fontSize: 10,
+                                                    }}
+                                                >
+                                                    ещё {lackAmount}
+                                                </CustomText>
+                                                <img
+                                                    src={coinIcon}
+                                                    alt=""
+                                                    style={{ height: 16, width: 16 }}
+                                                />
+                                            </div>
+                                        ) : (
+                                            <div
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    addToCart(item.id);
+                                                }}
+                                                style={{
+                                                    marginTop: 8,
+                                                    width: '100%',
+                                                    backgroundColor: '#8c64d7',
+                                                    borderRadius: 999,
+                                                    padding: '2px 0',
+                                                    textAlign: 'center',
+                                                    cursor: 'pointer',
+                                                }}
+                                            >
+                                                <CustomText
+                                                    weight="1"
+                                                    style={{
+                                                        color: '#ffffff',
+                                                        fontSize: 10,
+                                                    }}
+                                                >
+                                                    купить
+                                                </CustomText>
+                                            </div>
+                                        )
                                     ) : (
                                         <Div style={{ display: 'flex', gap: 0, justifyContent: 'center', alignItems: 'center', padding: '9px 0px 0px 0px' }}>
                                             <div
