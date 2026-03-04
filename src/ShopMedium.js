@@ -495,98 +495,229 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
 
                 <ModalCard
                     id="cart"
-                    header="Корзина"
                     onClose={() => setActiveModal(null)}
                 >
+                    {/* Заголовок */}
+                    <CustomText
+                        weight="1"
+                        style={{
+                            fontSize: 18,
+                            marginBottom: 16,
+                        }}
+                    >
+                        Корзина
+                    </CustomText>
+
                     {cartItemsFull.length === 0 ? (
-                        <CustomText>Корзина пуста</CustomText>
+                        <CustomText style={{ color: '#777' }}>
+                            Корзина пуста
+                        </CustomText>
                     ) : (
                         <>
-                            {cartItemsFull.map(item => (
-                                <Div
-                                    key={item.item_id}
+                            {/* Список товаров */}
+                            <div
+                                className="cart-scroll"
+                                onTouchStart={(e) => e.stopPropagation()}
+                                onTouchMove={(e) => e.stopPropagation()}
+                                onTouchEnd={(e) => e.stopPropagation()}
+                                style={{
+                                    maxHeight: 280,
+                                    overflowY: 'auto',
+                                    paddingRight: 6,
+                                    marginBottom: 12,
+                                }}
+                            >
+                                {cartItemsFull.map(item => (
+                                    <div
+                                        key={item.item_id}
+                                        style={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: 10,
+                                            marginBottom: 14,
+                                        }}
+                                    >
+                                        {/* Фото */}
+                                        {item.image ? (
+                                            <img
+                                                src={`http://localhost:3001${item.image}`}
+                                                alt=""
+                                                style={{
+                                                    width: 50,
+                                                    height: 50,
+                                                    objectFit: 'cover',
+                                                    borderRadius: 10,
+                                                }}
+                                            />
+                                        ) : (
+                                            <div
+                                                style={{
+                                                    width: 50,
+                                                    height: 50,
+                                                    backgroundColor: '#e5e5e5',
+                                                    borderRadius: 10,
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    textAlign: 'center',
+                                                    fontSize: 10,
+                                                    color: '#fff',
+                                                }}
+                                            >
+                                                фото нет
+                                            </div>
+                                        )}
+
+                                        {/* Название + количество */}
+                                        <div style={{ flex: 1 }}>
+                                            <CustomText
+                                                weight="3"
+                                                style={{
+                                                    fontSize: 14,
+                                                    lineHeight: '16px',
+                                                    marginBottom: 6,
+                                                }}
+                                            >
+                                                {item.title}
+                                            </CustomText>
+
+                                            <div
+                                                style={{
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    gap: 8,
+                                                }}
+                                            >
+                                                <div
+                                                    onClick={async () => {
+                                                        await removeFromCart(item.item_id);
+                                                    }}
+                                                    style={{
+                                                        width: 22,
+                                                        height: 22,
+                                                        borderRadius: 999,
+                                                        backgroundColor: '#eee',
+                                                        textAlign: 'center',
+                                                        lineHeight: '22px',
+                                                        cursor: 'pointer',
+                                                        fontWeight: 600
+                                                    }}
+                                                >
+                                                    -
+                                                </div>
+
+                                                <CustomText
+                                                    weight="1"
+                                                    style={{
+                                                        minWidth: 20,
+                                                        textAlign: 'center',
+                                                        fontSize: 14,
+                                                    }}
+                                                >
+                                                    {item.quantity}
+                                                </CustomText>
+
+                                                <div
+                                                    onClick={async () => {
+                                                        await addToCart(item.item_id);
+                                                    }}
+                                                    style={{
+                                                        width: 22,
+                                                        height: 22,
+                                                        borderRadius: 999,
+                                                        backgroundColor: '#eee',
+                                                        textAlign: 'center',
+                                                        lineHeight: '22px',
+                                                        cursor: 'pointer',
+                                                        fontWeight: 600
+                                                    }}
+                                                >
+                                                    +
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Цена */}
+                                        <div
+                                            style={{
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                gap: 1,
+                                            }}
+                                        >
+                                            <CustomText
+                                                weight="1"
+                                                style={{
+                                                    fontSize: 14,
+                                                    color: '#8c64d7',
+                                                }}
+                                            >
+                                                {item.price * item.quantity}
+                                            </CustomText>
+
+                                            <img
+                                                src={coinIcon}
+                                                alt=""
+                                                style={{
+                                                    width: 18,
+                                                    height: 18,
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* ИТОГО */}
+                            <div style={{ marginTop: 8 }}>
+                                <CustomText
+                                    weight="1"
                                     style={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: 8,
+                                        fontSize: 16,
                                         marginBottom: 12,
                                     }}
                                 >
-                                    <img
-                                        src={`http://localhost:3001${item.image}`}
-                                        alt=""
-                                        style={{
-                                            width: 50,
-                                            height: 50,
-                                            objectFit: 'cover',
-                                            borderRadius: 8,
-                                        }}
-                                    />
-
-                                    <div style={{ flex: 1 }}>
-                                        <CustomText weight="medium">
-                                            {item.title}
-                                        </CustomText>
-                                        <CustomText style={{ color: '#4000ff' }}>
-                                            {item.price} × {item.quantity}
-                                        </CustomText>
-                                    </div>
-
-                                    <Div style={{ display: 'flex', gap: 4 }}>
-                                        <Button
-                                            size="s"
-                                            mode="secondary"
-                                            onClick={async () => {
-                                                await removeFromCart(item.item_id);
-                                                await loadCart();
-                                            }}
-                                        >
-                                            -
-                                        </Button>
-
-                                        <Button
-                                            size="s"
-                                            mode="secondary"
-                                            onClick={async () => {
-                                                await addToCart(item.item_id);
-                                                await loadCart();
-                                            }}
-                                        >
-                                            +
-                                        </Button>
-                                    </Div>
-                                </Div>
-                            ))}
-
-                            <Div style={{ marginTop: 16 }}>
-                                <CustomText weight="3" style={{ fontSize: 16 }}>
-                                    Итого:{" "}
-                                    {cartItemsFull.reduce(
-                                        (sum, i) => sum + i.price * i.quantity,
-                                        0
-                                    )}
+                                    Итого: {total}
                                 </CustomText>
-                            </Div>
+                            </div>
 
-                            <Button
-                                mode="primary"
-                                stretched
-                                disabled={notEnough}
-                                style={{
-                                    marginTop: 12,
-                                    backgroundColor: notEnough ? '#ccc' : '#8c64d7',
-                                    color: '#fff'
-                                }}
+                            {/* Кнопка оплаты */}
+                            <div
                                 onClick={() => {
-                                    if (!notEnough) {
-                                        setCheckoutConfirm(true);
-                                    }
+                                    if (!notEnough) setCheckoutConfirm(true);
+                                }}
+                                style={{
+                                    width: '100%',
+                                    backgroundColor: notEnough ? '#ceaeff' : '#8c64d7',
+                                    borderRadius: 999,
+                                    padding: '5px 0',
+                                    textAlign: 'center',
+                                    cursor: notEnough ? 'not-allowed' : 'pointer',
+                                    opacity: notEnough ? 0.9 : 1,
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    gap: 1,
                                 }}
                             >
-                                {notEnough
-                                    ? `Не хватает ${deficit}`
-                                    : 'Оплатить'}
-                            </Button>
+                                <CustomText
+                                    weight="1"
+                                    style={{
+                                        color: '#fff',
+                                        fontSize: 14,
+                                    }}
+                                >
+                                    {notEnough ? `не хватает ${deficit}` : 'купить'}
+                                </CustomText>
+
+                                {notEnough && (
+                                    <img
+                                        src={coinIcon}
+                                        alt="coins"
+                                        style={{ width: 20, height: 20 }}
+                                    />
+                                )}
+                            </div>
                         </>
                     )}
                 </ModalCard>
@@ -1002,6 +1133,38 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
                         })}
                     </Div>
                 </Div>
+
+                <style>
+                    {`
+                    /* ===== КАСТОМНЫЙ ПРЕМИУМ СКРОЛЛ ===== */
+
+                    .cart-scroll {
+                    scrollbar-width: thin;
+                    scrollbar-color: #8c64d7 transparent;
+                    }
+
+                    /* Chrome / Edge / Safari */
+                    .cart-scroll::-webkit-scrollbar {
+                    width: 6px;
+                    }
+
+                    .cart-scroll::-webkit-scrollbar-track {
+                    background: transparent;
+                    }
+
+                    .cart-scroll::-webkit-scrollbar-thumb {
+                    background: linear-gradient(180deg, #ceaeff, #8c64d7);
+                    border-radius: 999px;
+                    box-shadow: 0 0 6px rgba(140, 100, 215, 0.4);
+                    transition: 0.2s ease;
+                    }
+
+                    .cart-scroll::-webkit-scrollbar-thumb:hover {
+                    background: linear-gradient(180deg, #b88cff, #6f3fd6);
+                    box-shadow: 0 0 8px rgba(140, 100, 215, 0.6);
+                    }
+                    `}
+                </style>
             </Panel>
         </>
     );
