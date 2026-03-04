@@ -12,7 +12,6 @@ export default function Tasks({ id, goBack, balance, goToBalance, user }) {
     const [answer, setAnswer] = useState('');
     const [selectedFile, setSelectedFile] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [searchOpen, setSearchOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
 
     useEffect(() => {
@@ -243,40 +242,6 @@ export default function Tasks({ id, goBack, balance, goToBalance, user }) {
                             >
                                 Задания
                             </CustomText>
-
-                            {/* Кнопка / инпут поиска */}
-                            {!searchOpen ? (
-                                <div
-                                    onClick={() => setSearchOpen(true)}
-                                    style={{
-                                        width: 25,
-                                        height: 25,
-                                        backgroundColor: '#8c64d7',
-                                        borderRadius: 10,
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        cursor: 'pointer',
-                                    }}
-                                >
-                                    <Icon16Search fill="#ffffff" style={{ height: 14, width: 14 }} />
-                                </div>
-                            ) : (
-                                <input
-                                    autoFocus
-                                    value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                    onBlur={() => { if(!searchQuery) setSearchOpen(false); }}
-                                    placeholder="..."
-                                    style={{
-                                        width: 150,
-                                        padding: '4px 8px',
-                                        borderRadius: 8,
-                                        border: '1px solid #8c64d7',
-                                        outline: 'none',
-                                    }}
-                                />
-                            )}
                         </div>
 
                         {/* Картинка справа */}
@@ -302,6 +267,36 @@ export default function Tasks({ id, goBack, balance, goToBalance, user }) {
                             paddingTop: 15,
                         }}
                     >
+                        <div style={{ position: 'relative', marginBottom: 12 }}>
+                            <Icon16Search
+                                fill="#8c64d7"
+                                style={{
+                                    position: 'absolute',
+                                    left: 12,
+                                    top: '50%',
+                                    transform: 'translateY(-50%)',
+                                    width: 14,
+                                    height: 14,
+                                    pointerEvents: 'none'
+                                }}
+                            />
+
+                            <input
+                                type="text"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                placeholder="Поиск..."
+                                style={{
+                                    width: '100%',
+                                    boxSizing: 'border-box',
+                                    padding: '6px 12px 6px 34px',
+                                    borderRadius: 999,
+                                    border: '1px solid #e0e0e0',
+                                    outline: 'none',
+                                    fontSize: 12,
+                                }}
+                            />
+                        </div>
                         {tasks.length === 0 && (
                             <CustomText style={{ textAlign: 'center', color: '#000' }}>
                                 Заданий пока нет

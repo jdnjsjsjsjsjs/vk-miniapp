@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Panel, Div, Button, Card, Separator, Accordion } from '@vkontakte/vkui';
 import { CustomText } from './CustomTypography';
-import { Icon28ChevronBack } from '@vkontakte/icons';
+import { Icon28ChevronBack, Icon16Search } from '@vkontakte/icons';
 
 export default function Guide({ id, goBack }) {
   const [openedFaq, setOpenedFaq] = useState(null);
@@ -43,60 +43,61 @@ export default function Guide({ id, goBack }) {
             Справочник
           </CustomText>
 
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Поиск..."
-            style={{
-                width: '95%',
+          <div style={{ position: 'relative', marginTop: 12 }}>
+            <Icon16Search
+              fill="#8c64d7"
+              style={{
+                position: 'absolute',
+                left: 12,
+                top: '50%',
+                transform: 'translateY(-50%)',
+                width: 14,
+                height: 14,
+                pointerEvents: 'none'
+              }}
+            />
+
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Поиск..."
+              style={{
+                width: '100%',
                 boxSizing: 'border-box',
-                padding: '5px 10px',
-                margin: '12px auto 0 auto',
+                padding: '6px 12px 6px 34px',
                 borderRadius: 999,
                 border: '1px solid #e0e0e0',
                 outline: 'none',
                 fontSize: 12,
-                display: 'block',
-            }}
-        />
+              }}
+            />
+          </div>
 
           {[{
               id: 1,
-              question: 'Как получить капиталы?',
-              answer: 'Капиталы начисляются за выполнение заданий и активность в приложении.'
+              question: 'Что такое Ивановский Стиль?',
+              answer: 'Ивановский стиль - это уникальный проект Комитета Ивановской области по молодёжной политике, миссия которого - помогать молодым людям найти и реализовать свои мечти и таланты в Ивановской области.'
             },{
               id: 2,
-              question: 'Где посмотреть мои достижения?',
-              answer: 'Твои достижения в профиле!'
+              question: 'Что такое капиталы?',
+              answer: 'Заглушка текст текст текст'
             },{
               id: 3,
-              question: 'Как обменять капиталы на подарки?',
-              answer: 'Выберите подарок и следуйте инструкции по обмену капиталов.'
+              question: 'Как получить капиталы?',
+              answer: 'Заглушка текст текст текст'
             },{
               id: 4,
-              question: 'Как получить капиталы?',
-              answer: 'Капиталы начисляются за выполнение заданий и активность в приложении.'
+              question: 'Как обменять капиталы на артефакты?',
+              answer: 'Заглушка текст текст текст'
             },{
               id: 5,
-              question: 'Где посмотреть мои достижения?',
-              answer: 'Твои достижения в профиле!'
+              question: 'Почему капиталы не поступили на баланс?',
+              answer: 'Заглушка текст текст текст'
             },{
               id: 6,
-              question: 'Как обменять капиталы на подарки?',
-              answer: 'Выберите подарок и следуйте инструкции по обмену капиталов.'
-            },{
-              id: 7,
-              question: 'Как получить капиталы?',
-              answer: 'Капиталы начисляются за выполнение заданий и активность в приложении.'
-            },{
-              id: 8,
-              question: 'Где посмотреть мои достижения?',
-              answer: 'Твои достижения в профиле!'
-            },{
-              id: 9,
-              question: 'Как обменять капиталы на подарки?',
-              answer: 'Выберите подарок и следуйте инструкции по обмену капиталов.'
+              question: 'Почему кнопка покупки приза неактивна?',
+              answer: 'Заглушка текст текст текст'
             }]
             .filter(faq => faq.question.toLowerCase().includes(searchQuery.toLowerCase()))
             .map(faq => (
@@ -112,7 +113,14 @@ export default function Guide({ id, goBack }) {
                   </Accordion.Summary>
                   <Accordion.Content>
                     <Div>
-                      <CustomText style={{ fontSize: window.innerWidth < 768 ? 9 : 11, color: '#000', lineHeight: '12px' }}>
+                      <CustomText
+                        style={{
+                          fontSize: 9,
+                          color: '#6f6f6f',
+                          lineHeight: '12px',
+                          width: '100%',
+                        }}
+                      >
                         {faq.answer}
                       </CustomText>
                     </Div>
