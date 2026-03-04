@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'; 
-import { Panel, Div, Button, ModalCard, ModalRoot, Badge, Card } from '@vkontakte/vkui';
+import { Panel, Div, Button, ModalCard, ModalRoot, Card } from '@vkontakte/vkui';
 import { CustomText } from './CustomTypography';
 import { Icon28ChevronBack, Icon28ShoppingCartOutline } from '@vkontakte/icons';
 
