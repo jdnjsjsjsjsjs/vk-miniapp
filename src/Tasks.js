@@ -6,7 +6,7 @@ import { Icon28ChevronBack, Icon16Search } from '@vkontakte/icons';
 import coinIcon from './imgs/coin.png'
 import tasksIcon from './imgs/tasks.png'
 
-export default function Tasks({ id, goBack, balance, goToBalance, user }) {
+export default function Tasks({ id, goBack, balance, goToBalance, user, goToTask }) {
     const [tasks, setTasks] = useState([]);
     const [activeTask, setActiveTask] = useState(null);
     const [answer, setAnswer] = useState('');
@@ -30,20 +30,28 @@ export default function Tasks({ id, goBack, balance, goToBalance, user }) {
     function getTimeLeft(expiresAt) {
         if (!expiresAt) return 'бессрочно';
 
-        const now = new Date();
-        const end = new Date(expiresAt);
+        const date = new Date(expiresAt);
 
-        const diffMs = end - now;
+        const day = date.getDate();
 
-        if (diffMs <= 0) return 'Истекло';
+        const months = [
+            'января',
+            'февраля',
+            'марта',
+            'апреля',
+            'мая',
+            'июня',
+            'июля',
+            'августа',
+            'сентября',
+            'октября',
+            'ноября',
+            'декабря'
+        ];
 
-        const minutes = Math.floor(diffMs / 1000 / 60);
-        const hours = Math.floor(minutes / 60);
-        const days = Math.floor(hours / 24);
+        const month = months[date.getMonth()];
 
-        if (days > 0) return `${days} дн.`;
-        if (hours > 0) return `${hours} ч.`;
-        return `${minutes} мин.`;
+        return `до ${day} ${month}`;
     }
 
     const inputStyle = `
@@ -317,6 +325,11 @@ export default function Tasks({ id, goBack, balance, goToBalance, user }) {
 
                         {tasks
                         .filter(task => task.title.toLowerCase().includes(searchQuery.toLowerCase()))
+                        .sort((a, b) => {
+                            if (a.status === 'accepted' && b.status !== 'accepted') return 1;
+                            if (a.status !== 'accepted' && b.status === 'accepted') return -1;
+                            return 0;
+                        })
                         .map(task => (
                             <Card
                                 key={task.id}
@@ -342,7 +355,7 @@ export default function Tasks({ id, goBack, balance, goToBalance, user }) {
 
                                 {task.status === null && (
                                     <div
-                                        onClick={() => { setActiveTask(task); setAnswer(''); }}
+                                        onClick={() => goToTask(task)}
                                         style={{
                                             marginTop: 8,
                                             width: '100%',
@@ -415,7 +428,7 @@ export default function Tasks({ id, goBack, balance, goToBalance, user }) {
 
                                 {task.status === 'rejected' && (
                                     <div
-                                        onClick={() => { setActiveTask(task); setAnswer(''); }}
+                                        onClick={() => goToTask(task)}
                                         style={{
                                             marginTop: 8,
                                             width: '100%',

@@ -22,6 +22,7 @@ import AdminPurchases from './AdminPurchases';
 import Purchases from './Purchases';
 import Guide from './Guide';
 import Achievements from './Achievements';
+import TaskPage from './TaskPage';
 
 import image1 from './imgs/1.png'
 import coinsIcon from './imgs/coins.png'
@@ -49,6 +50,7 @@ export default function App() {
   const [giftTimeLeft, setGiftTimeLeft] = useState('00:00:00');
   const [usersList, setUsersList] = useState([]);
   const [lastTasks, setLastTasks] = useState([]);
+  const [selectedTask, setSelectedTask] = useState(null);
 
   const getPlaceStyles = (place) => {
     switch (place) {
@@ -61,6 +63,11 @@ export default function App() {
       default:
         return { backgroundColor: '#f2f2f2', color: '#000' };
     }
+  };
+
+  const goToTaskPage = (task) => {
+    setSelectedTask(task);
+    setActivePanel('taskpage');
   };
 
   const go = (panel) => setActivePanel(panel);
@@ -972,7 +979,7 @@ export default function App() {
       <Gift id="gift" goBack={goBack} balance={balance} goToBalance={goToBalance} />
 
       {/* Панель Список заданий */}
-      <Tasks id="tasks" goBack={goBack} balance={balance} goToBalance={goToBalance} user={user} />
+      <Tasks id="tasks" goBack={goBack} balance={balance} goToBalance={goToBalance} user={user} goToTask={goToTaskPage} />
 
       {/* Панель Админка заданий */}
       <AdminTasks id="adminTasks" goBack={goBack} user={user} goToBalance={goToBalance} balance={balance} />
@@ -1003,6 +1010,10 @@ export default function App() {
 
       {/* Панель достижения */}
       <Achievements id="achievements" goBack={goBack} balance={balance} goToBalance={goToBalance} user={user} totalEarned={totalEarned} />
+
+      {/* Страница задания */}
+      <TaskPage id="taskpage" task={selectedTask} user={user} goBack={() => setActivePanel('tasks')} balance={balance} goToBalance={goToBalance}
+/>
     </View>
     </div>
   )
