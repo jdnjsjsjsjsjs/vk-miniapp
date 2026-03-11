@@ -747,7 +747,7 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
                                                         width: 22,
                                                         height: 22,
                                                         borderRadius: 999,
-                                                        backgroundColor: '#ceaeff',
+                                                        backgroundColor: '#e0cbff',
                                                         textAlign: 'center',
                                                         lineHeight: '22px',
                                                         cursor: 'pointer',
@@ -776,7 +776,7 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
                                                         width: 22,
                                                         height: 22,
                                                         borderRadius: 999,
-                                                        backgroundColor: '#ceaeff',
+                                                        backgroundColor: '#e0cbff',
                                                         textAlign: 'center',
                                                         lineHeight: '22px',
                                                         cursor: 'pointer',
@@ -1265,7 +1265,7 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
                                                 }}
                                                 style={{
                                                     width: 20, height: 20, borderRadius: 999,
-                                                    backgroundColor: '#ceaeff', textAlign: 'center', lineHeight: '20px',
+                                                    backgroundColor: '#e0cbff', textAlign: 'center', lineHeight: '20px',
                                                     cursor: 'pointer', fontWeight: 600
                                                 }}
                                             >
@@ -1281,7 +1281,7 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
                                                 }}
                                                 style={{
                                                     width: 20, height: 20, borderRadius: 999,
-                                                    backgroundColor: '#ceaeff', textAlign: 'center', lineHeight: '20px',
+                                                    backgroundColor: '#e0cbff', textAlign: 'center', lineHeight: '20px',
                                                     cursor: 'pointer', fontWeight: 600
                                                 }}
                                             >
