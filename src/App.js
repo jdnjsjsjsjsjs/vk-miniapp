@@ -579,7 +579,7 @@ export default function App() {
                         padding: window.innerWidth < 768 ? '0px 7px' : '6px 10px',
                         borderRadius: 999,
                         backgroundColor: '#ffffff',
-                        border: '1px solid #8c64d7',
+                        border: '1px solid #ceaeff',
                         fontSize: window.innerWidth < 768 ? 9 : 12,
                       }}
                     >
