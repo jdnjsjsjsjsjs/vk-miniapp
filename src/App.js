@@ -477,7 +477,7 @@ export default function App() {
             <CustomText
               weight="1"
               style={{
-                fontSize: window.innerWidth < 768 ? 10 : 12,
+                fontSize: window.innerWidth < 768 ? 9 : 12,
                 color: '#000',
                 marginTop: 109,
                 marginLeft: 4,
