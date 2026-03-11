@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'; 
 import { Panel, Div, Button, ModalCard, ModalRoot, Card } from '@vkontakte/vkui';
 import { CustomText } from './CustomTypography';
-import { Icon28ChevronBack, Icon28ShoppingCartOutline } from '@vkontakte/icons';
+import { Icon28ChevronBack, Icon28ShoppingCartOutline, Icon24Cancel } from '@vkontakte/icons';
 
 import coinIcon from './imgs/coin.png'
 import boxIcon from './imgs/box1.png'
@@ -33,6 +33,29 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
         price: '',
         image: '',
     });
+
+    const ModalCloseButton = ({ onClick }) => (
+        <div
+            onClick={onClick}
+            style={{
+                position: 'absolute',
+                top: 10,
+                right: 18,
+                width: 24,
+                height: 24,
+                borderRadius: '50%',
+                border: '1px solid #d9d9d9',
+                backgroundColor: '#fff',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                zIndex: 10,
+            }}
+        >
+            <Icon24Cancel width={16} height={16} fill="#000" />
+        </div>
+    );
 
     const isAdmin = user?.role === 'admin';
 
@@ -279,6 +302,12 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
                         setActiveItem(null);
                     }}
                 >
+                    <ModalCloseButton
+                        onClick={() => {
+                            setActiveModal(null);
+                            setActiveItem(null);
+                        }}
+                    />
                     {/* Фото */}
                     {activeItem?.image ? (
                         <img
@@ -288,6 +317,7 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
                             width: '100%',
                             borderRadius: 12,
                             marginBottom: 12,
+                            marginTop: 27,
                         }}
                         />
                     ) : (
@@ -301,6 +331,7 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
                             alignItems: 'center',
                             justifyContent: 'center',
                             marginBottom: 12,
+                            marginTop: 27,
                         }}
                         >
                         <CustomText
@@ -649,6 +680,12 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
                     id="cart"
                     onClose={() => setActiveModal(null)}
                 >
+                    <ModalCloseButton
+                        onClick={() => {
+                            setActiveModal(null);
+                            setActiveItem(null);
+                        }}
+                    />
                     {/* Заголовок */}
                     <CustomText
                         weight="1"
