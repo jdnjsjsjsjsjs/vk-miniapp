@@ -857,8 +857,39 @@ export default function App() {
               borderRadius: 12,
               backgroundColor: '#ffffff',
               padding: '16px',
+              position: 'relative',
             }}
           >
+            <div
+              onClick={goToGuide}
+              style={{
+                position: 'absolute',
+                top: 14,
+                right: 16,
+
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+
+                height: window.innerWidth < 768 ? 18 : 22,
+                padding: '0 10px',
+
+                backgroundColor: '#8c64d7',
+                borderRadius: 999,
+                cursor: 'pointer',
+              }}
+            >
+              <span
+                style={{
+                  fontSize: window.innerWidth < 768 ? 8 : 10,
+                  color: '#fff',
+                  fontWeight: 600,
+                  lineHeight: 1,
+                }}
+              >
+                справочник
+              </span>
+            </div>
             <CustomText weight="1" style={{ fontSize: window.innerWidth < 768 ? 11 : 14, color: '#000' }}>
               Вопросы и ответы
             </CustomText>
