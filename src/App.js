@@ -295,11 +295,11 @@ export default function App() {
           >
             <img src={coinIcon} alt="coins" style={{ height: 25, width: 25 }} />
             <CustomText
-            weight='1'
               style={{
                 fontSize: 14,
                 color: '#8c64d7',
                 lineHeight: '18px',
+                fontWeight: 1000,
               }}
             >
               {balance}

@@ -95,18 +95,18 @@ export default function Purchases({ id, goBack, user, balance, goToBalance }) {
                         padding: '2px 14px 2px 2px',
                         marginRight: 8,
                         backgroundColor: '#fff',
-                        border: '1px solid #8c64d7',
+                        border: '1px solid #ceaeff',
                         borderRadius: 999,
                         cursor: 'pointer',
                     }}
                 >
                     <img src={coinIcon} alt="coins" style={{ height: 25, width: 25 }} />
                     <CustomText
-                        weight="1"
                         style={{
                             fontSize: 14,
                             color: '#8c64d7',
                             lineHeight: '18px',
+                            fontWeight: 1000,
                         }}
                     >
                         {balance}
