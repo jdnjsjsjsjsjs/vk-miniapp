@@ -7,7 +7,16 @@ export default function Guide({ id, goBack }) {
   const [openedFaq, setOpenedFaq] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
 
+  const inputStyle = `
+    .search-input::placeholder {
+      color: #ceaeff;
+      opacity: 1;
+    }
+  ]`;
+
   return (
+    <>
+    <style>{inputStyle}</style>
     <Panel id={id} style={{ backgroundColor: '#ceaeff', minHeight: '100vh' }}>
       {/* HEADER */}
       <Div style={{ height: 32, backgroundColor: '#ceaeff' }} />
@@ -45,7 +54,7 @@ export default function Guide({ id, goBack }) {
 
           <div style={{ position: 'relative', marginTop: 12 }}>
             <Icon16Search
-              fill="#8c64d7"
+              fill="#ceaeff"
               style={{
                 position: 'absolute',
                 left: 12,
@@ -58,6 +67,7 @@ export default function Guide({ id, goBack }) {
             />
 
             <input
+              className="search-input"
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -67,9 +77,10 @@ export default function Guide({ id, goBack }) {
                 boxSizing: 'border-box',
                 padding: '6px 12px 6px 34px',
                 borderRadius: 999,
-                border: '1px solid #e0e0e0',
+                border: '1px solid #ceaeff',
                 outline: 'none',
                 fontSize: 12,
+                color: '#ceaeff'
               }}
             />
           </div>
@@ -132,5 +143,6 @@ export default function Guide({ id, goBack }) {
         </Card>
       </Div>
     </Panel>
+    </>
   );
 }

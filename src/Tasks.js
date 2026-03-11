@@ -45,9 +45,17 @@ export default function Tasks({ id, goBack, balance, goToBalance, user }) {
         if (hours > 0) return `${hours} ч.`;
         return `${minutes} мин.`;
     }
+
+    const inputStyle = `
+        .search-input::placeholder {
+            color: #ceaeff;
+            opacity: 1;
+        }
+    `;
     
     return (
         <>
+            <style>{inputStyle}</style>
             <ModalRoot activeModal={activeTask ? 'task' : null}>
                 <ModalCard
                     id="task"
@@ -271,7 +279,7 @@ export default function Tasks({ id, goBack, balance, goToBalance, user }) {
                     >
                         <div style={{ position: 'relative', marginBottom: 12 }}>
                             <Icon16Search
-                                fill="#8c64d7"
+                                fill="#ceaeff"
                                 style={{
                                     position: 'absolute',
                                     left: 12,
@@ -284,6 +292,7 @@ export default function Tasks({ id, goBack, balance, goToBalance, user }) {
                             />
 
                             <input
+                                className="search-input"
                                 type="text"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -293,9 +302,10 @@ export default function Tasks({ id, goBack, balance, goToBalance, user }) {
                                     boxSizing: 'border-box',
                                     padding: '6px 12px 6px 34px',
                                     borderRadius: 999,
-                                    border: '1px solid #e0e0e0',
+                                    border: '1px solid #ceaeff',
                                     outline: 'none',
                                     fontSize: 12,
+                                    color: '#ceaeff',
                                 }}
                             />
                         </div>
