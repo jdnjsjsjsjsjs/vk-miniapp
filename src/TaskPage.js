@@ -1,15 +1,35 @@
 import { useState } from 'react';
-import { Panel, Div, Button, Card, Textarea } from '@vkontakte/vkui';
+import { Panel, Div, Button, Textarea, Card } from '@vkontakte/vkui';
 import { Icon28ChevronBack } from '@vkontakte/icons';
 import { CustomText } from './CustomTypography';
 
 import coinIcon from './imgs/coin.png';
+
+function formatDeadline(expiresAt) {
+    if (!expiresAt) return 'бессрочно';
+
+    const date = new Date(expiresAt);
+
+    const day = date.getDate();
+
+    const months = [
+        'января','февраля','марта','апреля','мая','июня',
+        'июля','августа','сентября','октября','ноября','декабря'
+    ];
+
+    return `до ${day} ${months[date.getMonth()]}`;
+}
 
 export default function TaskPage({ id, goBack, task, balance, goToBalance, user }) {
 
     const [answer, setAnswer] = useState('');
     const [selectedFile, setSelectedFile] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const isAnswerEmpty = !answer.trim();
+    const isFileMissing = task.require_file === 1 && !selectedFile;
+
+    const isFormValid = !isAnswerEmpty && !isFileMissing;
 
     if (!task) return null;
 
@@ -70,7 +90,28 @@ export default function TaskPage({ id, goBack, task, balance, goToBalance, user 
         setIsSubmitting(false);
     };
 
+    const inputStyle = `
+        .answer-input {
+            width: 100px;
+            box-sizing: border-box;
+            padding: 4px 6px;
+            border-radius: 999px;
+            border: 1px solid #ceaeff;
+            outline: none;
+            font-size: 12px;
+            color: #ceaeff;
+            background-color: #fff;
+        }
+
+        .answer-input::placeholder {
+            color: #ceaeff;
+            opacity: 1;
+        }
+    `;
+
     return (
+        <>
+        <style>{inputStyle}</style>
         <Panel id={id} style={{ backgroundColor: '#ceaeff', minHeight: '100vh' }}>
             
             <Div style={{ height: 32, backgroundColor: '#ceaeff' }} />
@@ -133,87 +174,199 @@ export default function TaskPage({ id, goBack, task, balance, goToBalance, user 
                     </CustomText>
                 </div>
             </Div>
-
-            {/* Контент */}
-            <Div style={{ padding: 12 }}>
-
+            <Div
+                style={{
+                    padding: '12px',
+                    backgroundColor: '#ceaeff'
+                }}
+            >
+                {/* Контент */}
                 <Card
                     mode="shadow"
                     style={{
-                        borderRadius: 12,
-                        padding: 20,
+                        borderRadius: 10,
+                        padding: '20px 20px',
+                        display: 'flex',
+                        flexDirection: 'column',
                         backgroundColor: '#ffffff',
+                        gap: 12,
                     }}
-                >
-                    <CustomText weight="2" style={{ fontSize: 18 }}>
+                >        
+                    {/* Название задания */}
+                    <CustomText style={{ fontSize: 20, fontWeight: 700 }}>
                         {task.title}
                     </CustomText>
 
-                    <CustomText
-                        style={{
-                            marginTop: 8,
-                            color: '#666',
-                            paddingBottom: 16
-                        }}
-                    >
-                        {task.question}
-                    </CustomText>
+                    {/* Блоки награды и срока */}
+                    <div style={{ display: 'flex', gap: 6 }}>
+                        {/* Награда */}
+                        <div
+                            style={{
+                                background: '#fff',
+                                borderRadius: 12,
+                                border: '1px solid #ceaeff',
+                                padding: '5px 10px 5px 10px',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                minWidth: 70,
+                                maxWidth: 'auto',
+                                alignItems: 'center',
+                            }}
+                        >
+                            <CustomText style={{ fontSize: 12, color: '#000' }}>
+                                Награда
+                            </CustomText>
 
-                    <CustomText
-                        style={{
-                            fontSize: 18,
-                            color: '#8c64d7',
-                            fontWeight: 1000,
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 6,
-                            marginBottom: 16
-                        }}
-                    >
-                        {task.reward}
-                        <img src={coinIcon} alt="" style={{ width: 26 }} />
-                    </CustomText>
-
-                    {/* Ответ */}
-                    <Textarea
-                        placeholder="Введите ответ"
-                        value={answer}
-                        onChange={e => setAnswer(e.target.value)}
-                    />
-
-                    {/* Файл */}
-                    {task.require_file === 1 && (
-                        <div style={{ marginTop: 12 }}>
-
-                            <input
-                                type="file"
-                                accept=".jpg,.jpeg,.png,.pdf"
-                                onChange={(e) => setSelectedFile(e.target.files[0])}
-                            />
-
-                            {selectedFile && (
-                                <div style={{ marginTop: 6, fontSize: 12, color: '#8c64d7' }}>
-                                    Выбран файл: {selectedFile.name}
-                                </div>
-                            )}
-
+                            <div style={{ display: 'flex', alignItems: 'center'}}>
+                                <CustomText style={{ fontSize: 16, color: '#8c64d7', fontWeight: 1000 }}>
+                                    {task.reward}
+                                </CustomText>
+                                <img src={coinIcon} alt="" style={{ width: 24 }} />
+                            </div>
                         </div>
-                    )}
+
+                        {/* Срок */}
+                        <div
+                            style={{
+                                background: '#fff',
+                                borderRadius: 12,
+                                border: '1px solid #ceaeff',
+                                padding: '5px 10px 5px 10px',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                minWidth: 120,
+                                alignItems: 'center',
+                            }}
+                        >
+                            <CustomText style={{ fontSize: 12, color: '#000' }}>
+                                Срок выполнения
+                            </CustomText>
+
+                            <CustomText style={{ fontSize: 12, color: '#8c64d7', fontWeight: 700 }}>
+                                {formatDeadline(task.expires_at)}
+                            </CustomText>
+                        </div>
+                    </div>
+
+                    {/* Блок описания */}
+                    <div
+                        style={{
+                            background: '#fff',
+                            borderRadius: 12,
+                            border: '1px solid #ceaeff',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: 3,
+                            padding: 10,
+                        }}
+                    >
+                        <CustomText style={{ fontSize: 12, fontWeight: 700, color: '#000' }}>
+                            Как выполнить?
+                        </CustomText>
+
+                        <CustomText style={{ fontSize: 12, color: '#000' }}>
+                            {task.question}
+                        </CustomText>
+
+                        {/* Поле ответа */}
+                        <div style={{ position: 'relative', display: 'inline-block' }}>
+                            <input
+                                type="text"
+                                placeholder="напиши..."
+                                value={answer}
+                                onChange={e => setAnswer(e.target.value)}
+                                className="answer-input"
+                            />
+                            {isAnswerEmpty && (
+                                <div
+                                    style={{
+                                        position: 'absolute',
+                                        top: -4,
+                                        right: -4,
+                                        width: 8,
+                                        height: 8,
+                                        borderRadius: '50%',
+                                        background: 'red'
+                                    }}
+                                />
+                            )}
+                        </div>
+
+                        {/* Файл */}
+                        {task.require_file === 1 && (
+                            <div style={{ display: 'inline-block', position: 'relative', marginTop: 8 }}>
+                                <div
+                                    onClick={() => document.getElementById('fileInput').click()}
+                                    style={{
+                                        width: '100px',
+                                        backgroundColor: '#8c64d7',
+                                        borderRadius: 999,
+                                        padding: '2px 0',
+                                        textAlign: 'center',
+                                        cursor: 'pointer',
+                                    }}
+                                >
+                                    <CustomText
+                                        weight="1"
+                                        style={{
+                                            color: '#ffffff',
+                                            fontSize: 10,
+                                        }}
+                                    >
+                                        выбери файл
+                                    </CustomText>
+                                </div>
+
+                                <input
+                                    id="fileInput"
+                                    type="file"
+                                    accept=".jpg,.jpeg,.png,.pdf"
+                                    style={{ display: 'none' }}
+                                    onChange={(e) => setSelectedFile(e.target.files[0])}
+                                />
+                                {selectedFile && (
+                                    <CustomText style={{ fontSize: 12, color: '#8c64d7', marginTop: 4 }}>
+                                        {selectedFile.name}
+                                    </CustomText>
+                                )}
+
+                                {isFileMissing && (
+                                    <div
+                                        style={{
+                                            position: 'absolute',
+                                            top: -4,
+                                            right: -4,
+                                            width: 8,
+                                            height: 8,
+                                            borderRadius: '50%',
+                                            background: 'red'
+                                        }}
+                                    />
+                                )}
+                            </div>
+                        )}
+                    </div>
 
                     {/* Кнопка отправки */}
-                    <Button
-                        size="l"
-                        mode="primary"
-                        loading={isSubmitting}
-                        style={{ marginTop: 16 }}
-                        onClick={submitTask}
+                    <div
+                        onClick={() => {
+                            if (isFormValid) submitTask();
+                        }}
+                        style={{
+                            backgroundColor: isFormValid ? '#8c64d7' : '#ceaeff',
+                            borderRadius: 999,
+                            padding: '2px 0',
+                            textAlign: 'center',
+                            cursor: isFormValid ? 'pointer' : 'default'
+                        }}
                     >
-                        Отправить
-                    </Button>
-
+                        <CustomText style={{ color: '#fff', fontSize: 12, fontWeight: 600 }}>
+                            {isFormValid ? 'выполнить' : 'не всё выполнено'}
+                        </CustomText>
+                    </div>
                 </Card>
-
             </Div>
         </Panel>
+        </>
     );
 }
