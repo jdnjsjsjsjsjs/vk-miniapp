@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Panel, Div, Button, Textarea, Card } from '@vkontakte/vkui';
+import { Panel, Div, Button, Card } from '@vkontakte/vkui';
 import { Icon28ChevronBack } from '@vkontakte/icons';
 import { CustomText } from './CustomTypography';
 
