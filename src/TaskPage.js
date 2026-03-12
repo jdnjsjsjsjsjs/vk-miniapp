@@ -264,7 +264,7 @@ export default function TaskPage({ id, goBack, task, balance, goToBalance, user 
                             Как выполнить?
                         </CustomText>
 
-                        <CustomText style={{ fontSize: 12, color: '#000' }}>
+                        <CustomText style={{ fontSize: 12, color: '#000', whiteSpace: 'pre-line', wordBreak: 'break-word' }}>
                             {task.question}
                         </CustomText>
 

@@ -204,8 +204,6 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
             setActiveTask(null);
             setAnswers([]);
           }}
-          header={activeTask?.title}
-          subheader={activeTask?.question}
         >
           {answers.length === 0 ? (
             <CustomText style={{ color: '#999' }}>
@@ -576,7 +574,7 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
                   <CustomText weight="medium" style={{ fontSize: 16, color: '#8c64d7' }}>
                     {task.title} {task.require_file ? '📎' : ''}
                   </CustomText>
-                  <CustomText weight="medium" style={{ fontSize: 12, color: '#8c64d7' }}>{task.question}</CustomText>
+                  <CustomText weight="medium" style={{ fontSize: 12, color: '#8c64d7', whiteSpace: 'pre-line' }}>{task.question}</CustomText>
                   <CustomText style={{ fontSize: 14, color: '#666', marginTop: 4, display: 'flex', alignItems: 'center', gap: 4 }}>
                     <img src={coinIcon} alt="coins" style={{ height: 25, width: 25 }} /> {task.reward}
                   </CustomText>
