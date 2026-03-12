@@ -1,44 +1,176 @@
-import { Panel, Div, Button, Card } from '@vkontakte/vkui';
+import { useState } from 'react';
+
+import { Panel, Div, Button, Card, ModalRoot, ModalCard } from '@vkontakte/vkui';
 import { CustomText } from './CustomTypography';
-import { Icon28ChevronBack } from '@vkontakte/icons';
+import { Icon28ChevronBack, Icon24Cancel } from '@vkontakte/icons';
 
 import coinIcon from './imgs/coin.png'
 import medalIcon from './imgs/awards.png'
 import coinsIcon from './imgs/coins.png'
-import boxcalicon from './imgs/boxcalendar.png'
-import cupsIcon from './imgs/cups.png'
 import awardsIcon from './imgs/awards.png'
 import lockIcon from './imgs/lock.png'
 
-export default function Achievements({ id, goBack, balance, goToBalance, user, totalEarned }) {
+export default function Achievements({ id, goBack, balance, goToBalance, user, totalEarned, goToTasks }) {
+    const [activeModal, setActiveModal] = useState(null);
+    const [selectedAchievement, setSelectedAchievement] = useState(null);
+
+    const openAchievement = (ach) => {
+        setSelectedAchievement(ach);
+        setActiveModal('achievement');
+    };
+
+    const closeModal = () => {
+        setActiveModal(null);
+    };
+
     const achievements = [
         {
             id: 1,
-            title: 'Первый вход',
-            icon: <img src={boxcalicon} alt="" style={{ height: 70, width: 70 }} />,
-            unlocked: true,
+            title: <> Срубил <s>капусту</s> щаницу </>,
+            description: 'накопи 5000 капиталов',
+            target: 5000,
+            icon: coinsIcon
         },
         {
             id: 2,
-            title: '10 очков',
-            icon: <img src={coinsIcon} alt="" style={{ height: 60, width: 60 }} />,
-            unlocked: totalEarned >= 10,
-        },
-        {
-            id: 3,
-            title: '100 очков',
-            icon: <img src={cupsIcon} alt="" style={{ height: 60, width: 60 }} />,
-            unlocked: totalEarned >= 100,
-        },
-        {
-            id: 4,
-            title: '1000 очков',
-            icon: <img src={awardsIcon} alt="" style={{ height: 60, width: 60 }} />,
-            unlocked: totalEarned >= 1000,
-        },
+            title: 'Капитальный капитал',
+            description: 'накопи 10000 капиталов',
+            target: 10000,
+            icon: awardsIcon
+        }
         ];
+
+    const ModalCloseButton = ({ onClick }) => (
+        <div
+            onClick={onClick}
+            style={{
+                position: 'absolute',
+                top: 10,
+                right: 18,
+                width: 24,
+                height: 24,
+                borderRadius: '50%',
+                border: '1px solid #d9d9d9',
+                backgroundColor: '#fff',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                zIndex: 10,
+            }}
+        >
+            <Icon24Cancel width={16} height={16} fill="#000" />
+        </div>
+    );
     return (
         <Panel id={id} style={{backgroundColor: '#ceaeff', minHeight: '100vh'}}>
+            <ModalRoot activeModal={activeModal} onClose={closeModal}>
+                {selectedAchievement && (
+                    <ModalCard
+                        id="achievement"
+                        onClose={closeModal}
+                        style={{ padding: 0 }}
+                    >
+                        <ModalCloseButton
+                            onClick={() => {
+                                setActiveModal(null);
+                            }}
+                        />
+                        {(() => {
+                            const unlocked = totalEarned >= selectedAchievement.target;
+                            const progress = Math.min(100, (totalEarned / selectedAchievement.target) * 100);
+
+                            return (
+                                <Div style={{ textAlign: 'center', padding: 20, position: 'relative' }}>
+                                    {/* Картинка */}
+                                    <img
+                                        src={unlocked ? selectedAchievement.icon : lockIcon}
+                                        alt=""
+                                        style={{ width: 130, height: 130, position: 'absolute', top: 0, right: '30%' }}
+                                    />
+
+                                    {/* Название */}
+                                    <CustomText style={{ fontSize: 18, fontWeight: 400, marginBottom: 2, marginTop: 102 }}>
+                                        {selectedAchievement.title}
+                                    </CustomText>
+
+                                    {/* Описание */}
+                                    <CustomText style={{ fontSize: 10, color: '#555', marginBottom: 25 }}>
+                                        {selectedAchievement.description}
+                                    </CustomText>
+
+                                    <CustomText
+                                        style={{
+                                            position: 'absolute',
+                                            left: 22,
+                                            top: '70%',
+                                            transform: 'translateY(-50%)',
+                                            fontSize: 10,
+                                            color: '#000',
+                                            fontWeight: 400
+                                        }}
+                                    >
+                                        Накоплено капиталов
+                                    </CustomText>
+
+                                    <CustomText
+                                        style={{                                                position: 'absolute',
+                                            right: 22,
+                                            top: '70%',
+                                            transform: 'translateY(-50%)',
+                                            fontSize: 10,
+                                            color: '#000',
+                                            fontWeight: 700
+                                        }}
+                                    >
+                                        {totalEarned} из {selectedAchievement.target}
+                                    </CustomText>
+
+                                    <div
+                                        style={{
+                                            position: 'relative',
+                                            height: 8,
+                                            backgroundColor: '#ddd',
+                                            borderRadius: 4,
+                                            overflow: 'hidden',
+                                            marginBottom: 8
+                                        }}
+                                    >
+                                        <div
+                                            style={{
+                                                width: `${progress}%`,
+                                                height: '100%',
+                                                backgroundColor: '#8c64d7',
+                                                transition: 'width 0.3s ease'
+                                            }}
+                                        />
+                                    </div>
+
+                                    <div
+                                        onClick={goToTasks}
+                                        style={{
+                                            marginTop: 18,
+                                            display: 'flex',
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                            padding: '2px 16px',
+                                            backgroundColor: '#8c64d7',
+                                            borderRadius: 999,
+                                            cursor: 'pointer',
+                                            width: '90%',
+                                        }}
+                                    >
+                                        <CustomText weight="1" style={{ fontSize: 10, color: '#fff' }}>
+                                            перейти к заданиям
+                                        </CustomText>
+                                    </div>
+                                </Div>
+                            );
+                        })()}
+                    </ModalCard>
+                )}
+            </ModalRoot>
+
             <Div style={{ height: 32, backgroundColor: '#ceaeff' }} />
 
             <Div
@@ -148,95 +280,74 @@ export default function Achievements({ id, goBack, balance, goToBalance, user, t
                     }}
                 >
                     {achievements.map((ach) => {
-                        const targetPoints = [0,10,100,1000][ach.id - 1];
-                        const progress = Math.min(1, totalEarned / targetPoints);
+                        const unlocked = totalEarned >= ach.target;
+                        const progress = Math.min(100, (totalEarned / ach.target) * 100);
 
                         return (
                             <Card
                                 key={ach.id}
                                 mode="shadow"
+                                onClick={() => openAchievement(ach)}
                                 style={{
                                     borderRadius: 14,
-                                    aspectRatio: '1 / 1',
+                                    aspectRatio: '1 / 1.2',
                                     position: 'relative',
                                     backgroundColor: '#ffffff',
                                     overflow: 'hidden',
+                                    cursor: 'pointer'
                                 }}
-                                >
-
-                                {/* ИКОНКА ПО ЦЕНТРУ */}
+                            >
                                 <div
                                     style={{
-                                    position: 'absolute',
-                                    top: '50%',
-                                    left: '50%',
-                                    transform: 'translate(-50%, -60%)',
-                                    opacity: ach.unlocked ? 1 : 0,
-                                    transition: 'opacity 0.3s'
+                                        position: 'absolute',
+                                        top: '45%',
+                                        left: '50%',
+                                        transform: 'translate(-50%, -60%)'
                                     }}
                                 >
-                                    {ach.icon}
+                                    {unlocked
+                                        ? <img src={ach.icon} alt="" style={{ width: 60, height: 60 }} />
+                                        : <img src={lockIcon} alt="" style={{ width: 65, height: 65 }} />}
                                 </div>
 
-                                {/* НАЗВАНИЕ ВНИЗУ */}
+                                {/* Кастомный прогресс-бар */}
+                                <div
+                                    style={{
+                                        position: 'absolute',
+                                        bottom: 6,
+                                        left: 8,
+                                        right: 8,
+                                        height: 5,
+                                        backgroundColor: '#ddd',
+                                        borderRadius: 3,
+                                        overflow: 'hidden'
+                                    }}
+                                >
+                                    <div
+                                        style={{
+                                            width: `${progress}%`,
+                                            height: '100%',
+                                            backgroundColor: '#8c64d7', 
+                                            transition: 'width 0.3s ease'
+                                        }}
+                                    />
+                                </div>
+
                                 <CustomText
                                     style={{
-                                    position: 'absolute',
-                                    bottom: 6,
-                                    width: '100%',
-                                    fontSize: 10,
-                                    textAlign: 'center',
+                                        position: 'absolute',
+                                        bottom: 15,
+                                        width: '100%',
+                                        fontSize: 9,
+                                        textAlign: 'center',
+                                        lineHeight: 1,
                                     }}
                                 >
                                     {ach.title}
                                 </CustomText>
-
-                                {/* ПРОГРЕСС БАР */}
-                                {!ach.unlocked && (
-                                    <div
-                                    style={{
-                                        position: 'absolute',
-                                        bottom: 4,
-                                        left: '50%',
-                                        transform: 'translateX(-50%)',
-                                        width: 50,
-                                        height: 5,
-                                        borderRadius: 3,
-                                        backgroundColor: '#e0e0e0',
-                                        overflow: 'hidden',
-                                    }}
-                                    >
-                                    <div
-                                        style={{
-                                        width: `${progress * 100}%`,
-                                        height: '100%',
-                                        backgroundColor: '#8c64d7',
-                                        borderRadius: 3,
-                                        transition: 'width 0.3s',
-                                        }}
-                                    />
-                                    </div>
-                                )}
-
-                                {/* ЗАМОК */}
-                                {!ach.unlocked && (
-                                    <img
-                                    src={lockIcon}
-                                    alt=""
-                                    style={{
-                                        position: 'absolute',
-                                        width: 60,
-                                        height: 60,
-                                        top: '50%',
-                                        left: '50%',
-                                        transform: 'translate(-50%, -60%)',
-                                    }}
-                                    />
-                                )}
-
-                                </Card>
+                            </Card>
                         );
-                        })}
+                    })}
                 </Div>
                 </Div>
             </Div>

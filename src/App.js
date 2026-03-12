@@ -1009,7 +1009,7 @@ export default function App() {
       <Guide id="guide" goBack={goBack}/>
 
       {/* Панель достижения */}
-      <Achievements id="achievements" goBack={goBack} balance={balance} goToBalance={goToBalance} user={user} totalEarned={totalEarned} />
+      <Achievements id="achievements" goBack={goBack} balance={balance} goToBalance={goToBalance} user={user} totalEarned={totalEarned} goToTasks={goToTasks} />
 
       {/* Страница задания */}
       <TaskPage id="taskpage" task={selectedTask} user={user} goBack={() => setActivePanel('tasks')} balance={balance} goToBalance={goToBalance}
