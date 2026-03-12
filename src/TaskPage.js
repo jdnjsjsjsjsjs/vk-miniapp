@@ -205,7 +205,7 @@ export default function TaskPage({ id, goBack, task, balance, goToBalance, user 
                                 background: '#fff',
                                 borderRadius: 12,
                                 border: '1px solid #ceaeff',
-                                padding: '5px 10px 5px 10px',
+                                padding: '5px 7px 5px 7px',
                                 display: 'flex',
                                 flexDirection: 'column',
                                 minWidth: 70,
@@ -231,7 +231,7 @@ export default function TaskPage({ id, goBack, task, balance, goToBalance, user 
                                 background: '#fff',
                                 borderRadius: 12,
                                 border: '1px solid #ceaeff',
-                                padding: '5px 10px 5px 10px',
+                                padding: '5px',
                                 display: 'flex',
                                 flexDirection: 'column',
                                 minWidth: 120,
@@ -269,7 +269,7 @@ export default function TaskPage({ id, goBack, task, balance, goToBalance, user 
                         </CustomText>
 
                         {/* Поле ответа */}
-                        <div style={{ position: 'relative', display: 'inline-block' }}>
+                        <div style={{ position: 'relative', width: 'fit-content' }}>
                             <input
                                 type="text"
                                 placeholder="напиши..."
@@ -281,12 +281,13 @@ export default function TaskPage({ id, goBack, task, balance, goToBalance, user 
                                 <div
                                     style={{
                                         position: 'absolute',
-                                        top: -4,
-                                        right: -4,
+                                        top: 2,
+                                        right: 0,
                                         width: 8,
                                         height: 8,
                                         borderRadius: '50%',
-                                        background: 'red'
+                                        background: 'red',
+                                        pointerEvents: 'none'
                                     }}
                                 />
                             )}
@@ -294,7 +295,7 @@ export default function TaskPage({ id, goBack, task, balance, goToBalance, user 
 
                         {/* Файл */}
                         {task.require_file === 1 && (
-                            <div style={{ display: 'inline-block', position: 'relative', marginTop: 8 }}>
+                            <div style={{ display: 'inline-block', position: 'relative', width: 'fit-content', marginTop: 8 }}>
                                 <div
                                     onClick={() => document.getElementById('fileInput').click()}
                                     style={{
@@ -334,8 +335,8 @@ export default function TaskPage({ id, goBack, task, balance, goToBalance, user 
                                     <div
                                         style={{
                                             position: 'absolute',
-                                            top: -4,
-                                            right: -4,
+                                            top: -2,
+                                            right: 0,
                                             width: 8,
                                             height: 8,
                                             borderRadius: '50%',
