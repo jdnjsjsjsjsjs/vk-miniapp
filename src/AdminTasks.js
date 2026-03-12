@@ -168,7 +168,13 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
           />
 
           <Textarea
-            placeholder="Вопрос / условие"
+            placeholder={`
+              Условие задания
+
+              Можно использовать:
+              [answer] — поле ответа
+              [file] — загрузка файла
+            `}
             value={question}
             onChange={e => setQuestion(e.target.value)}
             style={{ marginBottom: 12 }}
@@ -361,7 +367,13 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
             style={{ marginBottom: 12 }}
           />
           <Textarea
-            placeholder="Вопрос / условие"
+            placeholder={`
+              Условие задания
+
+              Можно использовать:
+              [answer] — поле ответа
+              [file] — загрузка файла
+            `}
             value={editTask?.question || ''}
             onChange={e => setEditTask({ ...editTask, question: e.target.value })}
             style={{ marginBottom: 12 }}

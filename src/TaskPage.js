@@ -109,6 +109,104 @@ export default function TaskPage({ id, goBack, task, balance, goToBalance, user 
         }
     `;
 
+    function renderQuestion() {
+        const parts = task.question.split(/(\[answer\]|\[file\])/g);
+        return parts.map((part, index) => {
+            if (part === '[answer]') {
+                return (
+                    <div key={index} style={{ position: 'relative', width: 'fit-content', marginTop: 4, marginBottom: 4 }}>
+                        <input
+                            type="text"
+                            placeholder="напиши..."
+                            value={answer}
+                            onChange={e => setAnswer(e.target.value)}
+                            className="answer-input"
+                        />
+
+                        {isAnswerEmpty && (
+                            <div
+                                style={{
+                                    position: 'absolute',
+                                    top: -2,
+                                    right: 0,
+                                    width: 8,
+                                    height: 8,
+                                    borderRadius: '50%',
+                                    background: 'red',
+                                    pointerEvents: 'none'
+                                }}
+                            />
+                        )}
+                    </div>
+                );
+            }
+
+            if (part === '[file]' && task.require_file === 1) {
+                return (
+                    <div key={index} style={{ display: 'inline-block', position: 'relative', marginTop: 4, marginBottom: 4 }}>
+
+                        <div
+                            onClick={() => document.getElementById('fileInput').click()}
+                            style={{
+                                width: '100px',
+                                backgroundColor: '#8c64d7',
+                                borderRadius: 999,
+                                padding: '2px 0',
+                                textAlign: 'center',
+                                cursor: 'pointer',
+                            }}
+                        >
+                            <CustomText style={{ color: '#fff', fontSize: 10 }}>
+                                выбери файл
+                            </CustomText>
+                        </div>
+
+                        <input
+                            id="fileInput"
+                            type="file"
+                            accept=".jpg,.jpeg,.png,.pdf"
+                            style={{ display: 'none' }}
+                            onChange={(e) => setSelectedFile(e.target.files[0])}
+                        />
+
+                        {selectedFile && (
+                            <CustomText style={{ fontSize: 12, color: '#8c64d7', marginTop: 4 }}>
+                                {selectedFile.name}
+                            </CustomText>
+                        )}
+
+                        {isFileMissing && (
+                            <div
+                                style={{
+                                    position: 'absolute',
+                                    top: -2,
+                                    right: 0,
+                                    width: 8,
+                                    height: 8,
+                                    borderRadius: '50%',
+                                    background: 'red'
+                                }}
+                            />
+                        )}
+                    </div>
+                );
+            }
+
+            return (
+                <CustomText
+                    key={index}
+                    style={{
+                        fontSize: 12,
+                        color: '#000',
+                        whiteSpace: 'pre-line',
+                    }}
+                >
+                    {part}
+                </CustomText>
+            );
+        });
+    }
+
     return (
         <>
         <style>{inputStyle}</style>
@@ -264,88 +362,9 @@ export default function TaskPage({ id, goBack, task, balance, goToBalance, user 
                             Как выполнить?
                         </CustomText>
 
-                        <CustomText style={{ fontSize: 12, color: '#000', whiteSpace: 'pre-line', wordBreak: 'break-word' }}>
-                            {task.question}
+                        <CustomText style={{ fontSize: 12, color: '#000', whiteSpace: 'pre-line' }}>
+                            {renderQuestion()}
                         </CustomText>
-
-                        {/* Поле ответа */}
-                        <div style={{ position: 'relative', width: 'fit-content' }}>
-                            <input
-                                type="text"
-                                placeholder="напиши..."
-                                value={answer}
-                                onChange={e => setAnswer(e.target.value)}
-                                className="answer-input"
-                            />
-                            {isAnswerEmpty && (
-                                <div
-                                    style={{
-                                        position: 'absolute',
-                                        top: 2,
-                                        right: 0,
-                                        width: 8,
-                                        height: 8,
-                                        borderRadius: '50%',
-                                        background: 'red',
-                                        pointerEvents: 'none'
-                                    }}
-                                />
-                            )}
-                        </div>
-
-                        {/* Файл */}
-                        {task.require_file === 1 && (
-                            <div style={{ display: 'inline-block', position: 'relative', width: 'fit-content', marginTop: 8 }}>
-                                <div
-                                    onClick={() => document.getElementById('fileInput').click()}
-                                    style={{
-                                        width: '100px',
-                                        backgroundColor: '#8c64d7',
-                                        borderRadius: 999,
-                                        padding: '2px 0',
-                                        textAlign: 'center',
-                                        cursor: 'pointer',
-                                    }}
-                                >
-                                    <CustomText
-                                        weight="1"
-                                        style={{
-                                            color: '#ffffff',
-                                            fontSize: 10,
-                                        }}
-                                    >
-                                        выбери файл
-                                    </CustomText>
-                                </div>
-
-                                <input
-                                    id="fileInput"
-                                    type="file"
-                                    accept=".jpg,.jpeg,.png,.pdf"
-                                    style={{ display: 'none' }}
-                                    onChange={(e) => setSelectedFile(e.target.files[0])}
-                                />
-                                {selectedFile && (
-                                    <CustomText style={{ fontSize: 12, color: '#8c64d7', marginTop: 4 }}>
-                                        {selectedFile.name}
-                                    </CustomText>
-                                )}
-
-                                {isFileMissing && (
-                                    <div
-                                        style={{
-                                            position: 'absolute',
-                                            top: -2,
-                                            right: 0,
-                                            width: 8,
-                                            height: 8,
-                                            borderRadius: '50%',
-                                            background: 'red'
-                                        }}
-                                    />
-                                )}
-                            </div>
-                        )}
                     </div>
 
                     {/* Кнопка отправки */}
