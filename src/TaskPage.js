@@ -94,7 +94,7 @@ export default function TaskPage({ id, goBack, task, balance, goToBalance, user 
         .answer-input {
             width: 100px;
             box-sizing: border-box;
-            padding: 4px 6px;
+            padding: 4px 10px;
             border-radius: 999px;
             border: 1px solid #ceaeff;
             outline: none;
