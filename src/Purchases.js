@@ -175,11 +175,49 @@ export default function Purchases({ id, goBack, user, balance, goToBalance }) {
                                                 textAlign: 'center',
                                             }}
                                         >
-                                            <img
-                                                src={`http://localhost:3001${item.image}`}
-                                                alt={item.title}
-                                                style={{ width: '100%', borderRadius: 8, marginBottom: 8 }}
-                                            />
+                                            {item.image ? (
+                                                <img
+                                                    src={`http://localhost:3001${item.image}`}
+                                                    alt=""
+                                                    style={{
+                                                        width: '100%',
+                                                        aspectRatio: '1 / 1',
+                                                        objectFit: 'cover',
+                                                        borderRadius: 8,
+                                                    }}
+                                                />
+                                            ) : (
+                                                <div
+                                                    style={{
+                                                        width: '100%',
+                                                        aspectRatio: '1 / 1',
+                                                        backgroundColor: '#e5e5e5',
+                                                        borderRadius: 8,
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        justifyContent: 'center',
+                                                        textAlign: 'center',
+                                                    }}
+                                                >
+                                                    <CustomText
+                                                        weight="1"
+                                                        style={{
+                                                            fontSize: 10,
+                                                            color: '#ffffff',
+                                                            textAlign: 'center',
+                                                            lineHeight: '10px',
+                                                            display: 'flex',
+                                                            flexDirection: 'column',
+                                                            alignItems: 'center',
+                                                            justifyContent: 'center',
+                                                        }}
+                                                    >
+                                                        <span>фото</span>
+                                                        <span>появится</span>
+                                                        <span>позже</span>
+                                                    </CustomText>
+                                                </div>
+                                            )}
                                             <CustomText weight="3" style={{ fontSize: 12, paddingTop: 3 }}>
                                                 {item.title}
                                             </CustomText>
@@ -277,11 +315,49 @@ export default function Purchases({ id, goBack, user, balance, goToBalance }) {
                                                 textAlign: 'center',
                                             }}
                                         >
-                                            <img
-                                                src={`http://localhost:3001${item.image}`}
-                                                alt={item.title}
-                                                style={{ width: '100%', borderRadius: 8, marginBottom: 8 }}
-                                            />
+                                            {item.image ? (
+                                                <img
+                                                    src={`http://localhost:3001${item.image}`}
+                                                    alt=""
+                                                    style={{
+                                                        width: '100%',
+                                                        aspectRatio: '1 / 1',
+                                                        objectFit: 'cover',
+                                                        borderRadius: 8,
+                                                    }}
+                                                />
+                                            ) : (
+                                                <div
+                                                    style={{
+                                                        width: '100%',
+                                                        aspectRatio: '1 / 1',
+                                                        backgroundColor: '#e5e5e5',
+                                                        borderRadius: 8,
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        justifyContent: 'center',
+                                                        textAlign: 'center',
+                                                    }}
+                                                >
+                                                    <CustomText
+                                                        weight="1"
+                                                        style={{
+                                                            fontSize: 10,
+                                                            color: '#ffffff',
+                                                            textAlign: 'center',
+                                                            lineHeight: '10px',
+                                                            display: 'flex',
+                                                            flexDirection: 'column',
+                                                            alignItems: 'center',
+                                                            justifyContent: 'center',
+                                                        }}
+                                                    >
+                                                        <span>фото</span>
+                                                        <span>появится</span>
+                                                        <span>позже</span>
+                                                    </CustomText>
+                                                </div>
+                                            )}
                                             <CustomText weight="3" style={{ fontSize: 12, paddingTop: 3 }}>
                                                 {item.title}
                                             </CustomText>
