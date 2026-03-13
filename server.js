@@ -39,6 +39,7 @@ function calculateAchievements(user) {
   if (user.totalEarned >= 10000) count++;
   if (user.max_streak_days > 10) count++;
   if (user.received_count > 10) count++;
+  if (user.vk_subscribed >= 1) count++;
 
   return count;
 }
@@ -294,6 +295,21 @@ app.get('/api/user/:id', async (req, res) => {
       } catch (e) {}
 
       row.vk_subscribed = vk_subscribed;
+      
+      const newAchievementCount = calculateAchievements({
+        totalEarned: row.totalEarned,
+        max_streak_days: row.max_streak_days,
+        received_count: row.received_count,
+        vk_subscribed: vk_subscribed
+      });
+
+      if (newAchievementCount !== row.achievementCount) {
+        db.run(
+          'UPDATE users SET achievementCount = ? WHERE id = ?',
+          [newAchievementCount, userId]
+        );
+        row.achievementCount = newAchievementCount;
+      }
 
       res.json(row);
     }
@@ -329,7 +345,8 @@ app.post('/api/user/:id/addBalance', (req, res) => {
     const achievementCount = calculateAchievements({
       totalEarned: newTotal,
       max_streak_days: row.max_streak_days,
-      received_count: row.received_count
+      received_count: row.received_count,
+      vk_subscribed: row.vk_subscribed
     });
 
     db.run('UPDATE users SET balance = ?, totalEarned = ?, achievementCount = ? WHERE id = ?',
@@ -374,7 +391,8 @@ app.post('/api/user/:id/claimGift', (req, res) => {
     const achievementCount = calculateAchievements({
       totalEarned: newTotal,
       max_streak_days: user.max_streak_days,
-      received_count: user.received_count
+      received_count: user.received_count,
+      vk_subscribed: user.vk_subscribed
     });
 
     db.run(
@@ -636,7 +654,8 @@ app.post('/api/admin/answers/:answerId', (req, res) => {
               const achievementCount = calculateAchievements({
                 totalEarned: newTotal,
                 max_streak_days: userRow.max_streak_days,
-                received_count: userRow.received_count
+                received_count: userRow.received_count,
+                vk_subscribed: userRow.vk_subscribed
               });
 
               db.run(`
