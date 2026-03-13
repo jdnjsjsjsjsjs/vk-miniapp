@@ -337,18 +337,18 @@ export default function Achievements({ id, goBack, balance, goToBalance, user, t
                                     }}
                                 >
                                     {unlocked
-                                        ? <img src={ach.icon} alt="" style={{ width: 60, height: 60 }} />
-                                        : <img src={lockIcon} alt="" style={{ width: 65, height: 65 }} />}
+                                        ? <img src={ach.icon} alt="" style={{ width: window.innerWidth > 768 ? 200 : 60, height: window.innerWidth > 768 ? 200 : 60 }} />
+                                        : <img src={lockIcon} alt="" style={{ width: window.innerWidth > 768 ? 200 : 65, height: window.innerWidth > 768 ? 200 : 65 }} />}
                                 </div>
 
                                 {/* Кастомный прогресс-бар */}
                                 <div
                                     style={{
                                         position: 'absolute',
-                                        bottom: 6,
+                                        bottom: window.innerWidth > 768 ? 12 : 6,
                                         left: 8,
                                         right: 8,
-                                        height: 5,
+                                        height: window.innerWidth > 768 ? 7 : 5,
                                         backgroundColor: '#ddd',
                                         borderRadius: 3,
                                         overflow: 'hidden'
@@ -367,9 +367,9 @@ export default function Achievements({ id, goBack, balance, goToBalance, user, t
                                 <CustomText
                                     style={{
                                         position: 'absolute',
-                                        bottom: 15,
+                                        bottom: window.innerWidth > 768 ? 24 : 15,
                                         width: '100%',
-                                        fontSize: 9,
+                                        fontSize: window.innerWidth > 768 ? 12 : 9,
                                         textAlign: 'center',
                                         lineHeight: 1,
                                     }}
