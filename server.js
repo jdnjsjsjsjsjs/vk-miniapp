@@ -32,14 +32,13 @@ function addTransaction(userId, type, amount, description = '') {
   );
 }
 
-function calculateAchievements(totalEarned) {
+function calculateAchievements(user) {
   let count = 0;
 
-  if (totalEarned >= 0) count++;      // Первый вход
-  if (totalEarned >= 10) count++;
-  if (totalEarned >= 100) count++;
-  if (totalEarned >= 1000) count++;
-  if (totalEarned >= 5000) count++;
+  if (user.totalEarned >= 5000) count++;
+  if (user.totalEarned >= 10000) count++;
+  if (user.max_streak_days > 10) count++;
+  if (user.received_count > 10) count++;
 
   return count;
 }
@@ -171,7 +170,7 @@ const adminId = 382210259;
 db.run(`
   INSERT INTO users (id, role)
   VALUES (?, 'admin')
-  ON CONFLICT(id) DO UPDATE SET role = 'user', balance = 10000
+  ON CONFLICT(id) DO UPDATE SET role = 'user'
 `, [adminId], (err) => {
   if (err) return console.error('Ошибка при присвоении админки:', err.message);
   console.log(`Пользователь ${adminId} назначен user`);
@@ -312,7 +311,11 @@ app.post('/api/user/:id/addBalance', (req, res) => {
 
     const newBalance = row.balance + amount;
     const newTotal = row.totalEarned + amount;
-    const achievementCount = calculateAchievements(newTotal);
+    const achievementCount = calculateAchievements({
+      totalEarned: newTotal,
+      max_streak_days: row.max_streak_days,
+      received_count: row.received_count
+    });
 
     db.run('UPDATE users SET balance = ?, totalEarned = ?, achievementCount = ? WHERE id = ?',
             [newBalance, newTotal, achievementCount, userId], function(err) {
@@ -353,7 +356,11 @@ app.post('/api/user/:id/claimGift', (req, res) => {
     const reward = rewardTable[user.gift_day - 1];
 
     const newTotal = user.totalEarned + reward;
-    const achievementCount = calculateAchievements(newTotal);
+    const achievementCount = calculateAchievements({
+      totalEarned: newTotal,
+      max_streak_days: user.max_streak_days,
+      received_count: user.received_count
+    });
 
     db.run(
       `UPDATE users
@@ -611,7 +618,11 @@ app.post('/api/admin/answers/:answerId', (req, res) => {
           if (newStatus === 'accepted') {
             db.get('SELECT totalEarned FROM users WHERE id = ?', [answer.user_id], (err, userRow) => {
               const newTotal = userRow.totalEarned + answer.reward;
-              const achievementCount = calculateAchievements(newTotal);
+              const achievementCount = calculateAchievements({
+                totalEarned: newTotal,
+                max_streak_days: userRow.max_streak_days,
+                received_count: userRow.received_count
+              });
 
               db.run(`
                 UPDATE users
