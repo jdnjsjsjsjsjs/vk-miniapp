@@ -53,6 +53,14 @@ export default function Achievements({ id, goBack, balance, goToBalance, user, t
             target: 10,
             type: 'received',
             icon: awardsIcon
+        },
+        {
+            id: 5,
+            title: 'На Стиле',
+            description: 'подпишись на группу Ивановский Стиль',
+            target: 1,
+            type: 'vk_subscribed',
+            icon: awardsIcon
         }
         ];
 
@@ -94,13 +102,17 @@ export default function Achievements({ id, goBack, balance, goToBalance, user, t
                         />
                         {(() => {
                             let value = totalEarned;
+
                             if (selectedAchievement.type === 'streak') {
                                 value = user.max_streak_days;
                             } else if (selectedAchievement.type === 'received') {
                                 value = user.received_count;  
+                            } else if (selectedAchievement.type === 'vk_subscribed') {
+                                value = user.vk_subscribed ? 1 : 0;
                             }
-                            const unlocked = value >= selectedAchievement.target;
-                            const progress = Math.min(100, (value / selectedAchievement.target) * 100);
+
+                            const unlocked = value >= (selectedAchievement.target ?? 1);
+                            const progress = selectedAchievement.type === 'vk_subscribed' ? (value ? 100 : 0) : Math.min(100, (value / selectedAchievement.target) * 100);
 
                             return (
                                 <Div style={{ textAlign: 'center', padding: 20, position: 'relative' }}>
@@ -136,6 +148,8 @@ export default function Achievements({ id, goBack, balance, goToBalance, user, t
                                             ? 'Дней подряд'
                                             : selectedAchievement.type === 'received'
                                             ? 'Собрано артефактов'
+                                            : selectedAchievement.type === 'vk_subscribed'
+                                            ? 'Подписан на группу'
                                             : 'Накоплено капиталов'}
                                     </CustomText>
                                     <CustomText
@@ -306,13 +320,17 @@ export default function Achievements({ id, goBack, balance, goToBalance, user, t
                 >
                     {achievements.map((ach) => {
                         let value = totalEarned;
+
                         if (ach.type === 'streak') {
                             value = user.max_streak_days;
                         } else if (ach.type === 'received') {
                             value = user.received_count;  
+                        } else if (ach.type === 'vk_subscribed') {
+                            value = user.vk_subscribed ? 1 : 0; 
                         }
-                        const unlocked = value >= ach.target;
-                        const progress = Math.min(100, (value / ach.target) * 100);
+
+                        const unlocked = value >= (ach.target ?? 1); 
+                        const progress = ach.type === 'vk_subscribed' ? (value ? 100 : 0) : Math.min(100, (value / ach.target) * 100);
 
                         return (
                             <Card

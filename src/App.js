@@ -125,7 +125,8 @@ export default function App() {
         streak_days: data.streak_days,
         max_streak_days: data.max_streak_days,
         last_login_date: data.last_login_date,
-        received_count: data.received_count
+        received_count: data.received_count,
+        vk_subscribed: data.vk_subscribed
       }));
 
       setBalance(data.balance);

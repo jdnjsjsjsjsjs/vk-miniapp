@@ -147,7 +147,8 @@ db.run(`
     streak_days INTEGER DEFAULT 0,
     max_streak_days INTEGER DEFAULT 0,
     last_login_date TEXT,
-    received_count INTEGER DEFAULT 0
+    received_count INTEGER DEFAULT 0,
+    vk_subscribed INTEGER DEFAULT 0
   )
 `);
 
@@ -238,22 +239,27 @@ db.run(`
 `);
 
 // Получить данные пользователя
-app.get('/api/user/:id', (req, res) => {
+app.get('/api/user/:id', async (req, res) => {
   const userId = req.params.id;
 
-  db.get('SELECT * FROM users WHERE id = ?', [userId], (err, row) => {
+  db.get('SELECT * FROM users WHERE id = ?', [userId], async (err, row) => {
     if (err) return res.status(500).json({ error: err.message });
 
     if (!row) {
       const today = new Date().toISOString().slice(0, 10);
-
       db.run(
         `INSERT INTO users 
         (id, first_name, last_name, balance, totalEarned, totalSpent, streak_days, last_login_date)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
         [userId, '', '', 0, 0, 0, 1, today],
-        function(err) {
+        async function(err) { // 🔹 async тут
           if (err) return res.status(500).json({ error: err.message });
+
+          // проверка подписки сразу для нового пользователя
+          let vk_subscribed = 0;
+          try {
+            vk_subscribed = await updateVKSubscriptionStatus(userId);
+          } catch (e) {}
 
           res.json({
             id: userId,
@@ -264,7 +270,8 @@ app.get('/api/user/:id', (req, res) => {
             totalSpent: 0,
             role: 'user',
             streak_days: 1,
-            last_login_date: today
+            last_login_date: today,
+            vk_subscribed
           });
         }
       );
@@ -280,6 +287,14 @@ app.get('/api/user/:id', (req, res) => {
       row.streak_days = result.streak;
       row.max_streak_days = result.maxStreak;
       row.last_login_date = result.lastLogin;
+
+      let vk_subscribed = 0;
+      try {
+        vk_subscribed = await updateVKSubscriptionStatus(userId);
+      } catch (e) {}
+
+      row.vk_subscribed = vk_subscribed;
+
       res.json(row);
     }
   });
@@ -1216,5 +1231,38 @@ app.get('/api/user/:id/purchases', (req, res) => {
     res.json(rows);
   });
 });
+
+const axios = require('axios');
+
+async function updateVKSubscriptionStatus(userId) {
+  const groupId = "216403046";
+  const accessToken = "vk1.a.tDdbp4GyjX_YKdFYIYeU6FUeuu5JUst0MmRW9ZqxpuFeuuHeE5VaERzD_z5JxVYnh2ytCABLxEXrDAhR7f0YMpyPIA6pKbrY0Ma6LebfVBF_3pXNhtocjr_WBvB_AjlCSp4B12lqYos-DR1datZLg8SYoqlkktieMfJ4kSl2lJ7aJyxoEbzbW2vW-jwkA_mqBwCaRHcs9XGwEOWT7zuY2g";
+
+  try {
+    const res = await axios.get('https://api.vk.com/method/groups.isMember', {
+      params: {
+        group_id: groupId,
+        user_id: userId,
+        access_token: accessToken,
+        v: '5.131'
+      }
+    });
+
+    const subscribed = res.data.response ? 1 : 0;
+
+    db.run(
+      'UPDATE users SET vk_subscribed = ? WHERE id = ?',
+      [subscribed, userId],
+      (err) => {
+        if (err) console.error('Ошибка при обновлении подписки:', err.message);
+      }
+    );
+
+    return subscribed;
+  } catch (e) {
+    console.error('Ошибка VK API:', e.message);
+    return 0;
+  }
+}
 
 app.listen(PORT, () => console.log(`Сервер запущен на http://localhost:${PORT}`));
