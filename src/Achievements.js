@@ -45,6 +45,14 @@ export default function Achievements({ id, goBack, balance, goToBalance, user, t
             target: 10,
             type: 'streak',
             icon: awardsIcon
+        },
+        {
+            id: 4,
+            title: 'Коллекционер',
+            description: 'собери 10 артефактов',
+            target: 10,
+            type: 'received',
+            icon: awardsIcon
         }
         ];
 
@@ -87,7 +95,9 @@ export default function Achievements({ id, goBack, balance, goToBalance, user, t
                         {(() => {
                             let value = totalEarned;
                             if (selectedAchievement.type === 'streak') {
-                                value = user.streak_days;
+                                value = user.max_streak_days;
+                            } else if (selectedAchievement.type === 'received') {
+                                value = user.received_count;  
                             }
                             const unlocked = value >= selectedAchievement.target;
                             const progress = Math.min(100, (value / selectedAchievement.target) * 100);
@@ -123,10 +133,11 @@ export default function Achievements({ id, goBack, balance, goToBalance, user, t
                                         }}
                                     >
                                         {selectedAchievement.type === 'streak'
-                                        ? 'Дней подряд'
-                                        : 'Накоплено капиталов'}
+                                            ? 'Дней подряд'
+                                            : selectedAchievement.type === 'received'
+                                            ? 'Собрано артефактов'
+                                            : 'Накоплено капиталов'}
                                     </CustomText>
-
                                     <CustomText
                                         style={{                                                position: 'absolute',
                                             right: 22,
@@ -296,7 +307,9 @@ export default function Achievements({ id, goBack, balance, goToBalance, user, t
                     {achievements.map((ach) => {
                         let value = totalEarned;
                         if (ach.type === 'streak') {
-                            value = user.streak_days;
+                            value = user.max_streak_days;
+                        } else if (ach.type === 'received') {
+                            value = user.received_count;  
                         }
                         const unlocked = value >= ach.target;
                         const progress = Math.min(100, (value / ach.target) * 100);

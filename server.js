@@ -48,7 +48,11 @@ function updateLoginStreak(user) {
   const today = new Date().toISOString().slice(0, 10);
 
   if (!user.last_login_date) {
-    return { streak: 1, lastLogin: today };
+    return {
+      streak: 1,
+      maxStreak: 1,
+      lastLogin: today
+    };
   }
 
   const last = new Date(user.last_login_date);
@@ -56,24 +60,44 @@ function updateLoginStreak(user) {
 
   const diffDays = Math.floor((now - last) / (1000 * 60 * 60 * 24));
 
+  let newStreak;
+  let maxStreak = user.max_streak_days || 0;
+
   if (diffDays === 1) {
-    return {
-      streak: user.streak_days + 1,
-      lastLogin: today
-    };
+    newStreak = user.streak_days + 1;
+  } else if (diffDays === 0) {
+    newStreak = user.streak_days;
+  } else {
+    newStreak = 1;
   }
 
-  if (diffDays === 0) {
-    return {
-      streak: user.streak_days,
-      lastLogin: user.last_login_date
-    };
+  if (newStreak > maxStreak) {
+    maxStreak = newStreak;
   }
 
   return {
-    streak: 1,
+    streak: newStreak,
+    maxStreak,
     lastLogin: today
   };
+}
+
+function updateReceivedCount(userId) {
+  db.get(
+    `SELECT COUNT(*) as count FROM user_items WHERE user_id = ? AND received = 1`,
+    [userId],
+    (err, row) => {
+      if (err) return console.error(err.message);
+      const receivedCount = row.count;
+      db.run(
+        `UPDATE users SET received_count = ? WHERE id = ?`,
+        [receivedCount, userId],
+        err => {
+          if (err) console.error(err.message);
+        }
+      );
+    }
+  );
 }
 
 const upload = multer({
@@ -122,7 +146,9 @@ db.run(`
     role TEXT DEFAULT 'user',
 
     streak_days INTEGER DEFAULT 0,
-    last_login_date TEXT
+    max_streak_days INTEGER DEFAULT 0,
+    last_login_date TEXT,
+    received_count INTEGER DEFAULT 0
   )
 `);
 
@@ -247,12 +273,13 @@ app.get('/api/user/:id', (req, res) => {
       const result = updateLoginStreak(row);
       db.run(
         `UPDATE users
-        SET streak_days = ?, last_login_date = ?
+        SET streak_days = ?, max_streak_days = ?, last_login_date = ?
         WHERE id = ?`,
-        [result.streak, result.lastLogin, userId]
+        [result.streak, result.maxStreak, result.lastLogin, userId]
       );
 
       row.streak_days = result.streak;
+      row.max_streak_days = result.maxStreak;
       row.last_login_date = result.lastLogin;
       res.json(row);
     }
@@ -1145,6 +1172,13 @@ app.post('/api/admin/purchases/mark-received', (req, res) => {
       [orderId],
       function(err) {
         if (err) return res.status(500).json({ error: err.message });
+
+        db.all(`SELECT DISTINCT user_id FROM user_items WHERE order_id = ?`, [orderId], (err, rows) => {
+          if (!err) {
+            rows.forEach(row => updateReceivedCount(row.user_id));
+          }
+        });
+
         res.json({ success: true });
       }
     );

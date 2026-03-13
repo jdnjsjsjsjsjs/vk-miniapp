@@ -123,7 +123,9 @@ export default function App() {
         role: data.role,
         achievementCount: data.achievementCount,
         streak_days: data.streak_days,
-        last_login_date: data.last_login_date
+        max_streak_days: data.max_streak_days,
+        last_login_date: data.last_login_date,
+        received_count: data.received_count
       }));
 
       setBalance(data.balance);
