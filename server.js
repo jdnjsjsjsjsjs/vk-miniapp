@@ -44,6 +44,38 @@ function calculateAchievements(totalEarned) {
   return count;
 }
 
+function updateLoginStreak(user) {
+  const today = new Date().toISOString().slice(0, 10);
+
+  if (!user.last_login_date) {
+    return { streak: 1, lastLogin: today };
+  }
+
+  const last = new Date(user.last_login_date);
+  const now = new Date(today);
+
+  const diffDays = Math.floor((now - last) / (1000 * 60 * 60 * 24));
+
+  if (diffDays === 1) {
+    return {
+      streak: user.streak_days + 1,
+      lastLogin: today
+    };
+  }
+
+  if (diffDays === 0) {
+    return {
+      streak: user.streak_days,
+      lastLogin: user.last_login_date
+    };
+  }
+
+  return {
+    streak: 1,
+    lastLogin: today
+  };
+}
+
 const upload = multer({
   limits: {
     fileSize: 5 * 1024 * 1024, // 5MB
@@ -87,7 +119,10 @@ db.run(`
     achievementCount INTEGER DEFAULT 0,
     gift_day INTEGER DEFAULT 1,
     last_gift_date TEXT,
-    role TEXT DEFAULT 'user'
+    role TEXT DEFAULT 'user',
+
+    streak_days INTEGER DEFAULT 0,
+    last_login_date TEXT
   )
 `);
 
@@ -185,15 +220,40 @@ app.get('/api/user/:id', (req, res) => {
     if (err) return res.status(500).json({ error: err.message });
 
     if (!row) {
+      const today = new Date().toISOString().slice(0, 10);
+
       db.run(
-        'INSERT INTO users (id, first_name, last_name, balance, totalEarned, totalSpent) VALUES (?, ?, ?, ?, ?, ?)',
-        [userId, '', '', 0, 0, 0],
+        `INSERT INTO users 
+        (id, first_name, last_name, balance, totalEarned, totalSpent, streak_days, last_login_date)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+        [userId, '', '', 0, 0, 0, 1, today],
         function(err) {
           if (err) return res.status(500).json({ error: err.message });
-          res.json({ id: userId, first_name: '', last_name: '', balance: 0, totalEarned: 0, totalSpent: 0, role: 'user' });
+
+          res.json({
+            id: userId,
+            first_name: '',
+            last_name: '',
+            balance: 0,
+            totalEarned: 0,
+            totalSpent: 0,
+            role: 'user',
+            streak_days: 1,
+            last_login_date: today
+          });
         }
       );
     } else {
+      const result = updateLoginStreak(row);
+      db.run(
+        `UPDATE users
+        SET streak_days = ?, last_login_date = ?
+        WHERE id = ?`,
+        [result.streak, result.lastLogin, userId]
+      );
+
+      row.streak_days = result.streak;
+      row.last_login_date = result.lastLogin;
       res.json(row);
     }
   });

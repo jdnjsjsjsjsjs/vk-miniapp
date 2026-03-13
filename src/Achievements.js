@@ -37,6 +37,14 @@ export default function Achievements({ id, goBack, balance, goToBalance, user, t
             description: 'накопи 10000 капиталов',
             target: 10000,
             icon: awardsIcon
+        },
+        {
+            id: 3,
+            title: 'Артефакт Постоянства',
+            description: 'заходи 10 дней подряд',
+            target: 10,
+            type: 'streak',
+            icon: awardsIcon
         }
         ];
 
@@ -77,8 +85,12 @@ export default function Achievements({ id, goBack, balance, goToBalance, user, t
                             }}
                         />
                         {(() => {
-                            const unlocked = totalEarned >= selectedAchievement.target;
-                            const progress = Math.min(100, (totalEarned / selectedAchievement.target) * 100);
+                            let value = totalEarned;
+                            if (selectedAchievement.type === 'streak') {
+                                value = user.streak_days;
+                            }
+                            const unlocked = value >= selectedAchievement.target;
+                            const progress = Math.min(100, (value / selectedAchievement.target) * 100);
 
                             return (
                                 <Div style={{ textAlign: 'center', padding: 20, position: 'relative' }}>
@@ -110,7 +122,9 @@ export default function Achievements({ id, goBack, balance, goToBalance, user, t
                                             fontWeight: 400
                                         }}
                                     >
-                                        Накоплено капиталов
+                                        {selectedAchievement.type === 'streak'
+                                        ? 'Дней подряд'
+                                        : 'Накоплено капиталов'}
                                     </CustomText>
 
                                     <CustomText
@@ -123,7 +137,7 @@ export default function Achievements({ id, goBack, balance, goToBalance, user, t
                                             fontWeight: 700
                                         }}
                                     >
-                                        {totalEarned} из {selectedAchievement.target}
+                                        {value} из {selectedAchievement.target}
                                     </CustomText>
 
                                     <div
@@ -280,8 +294,12 @@ export default function Achievements({ id, goBack, balance, goToBalance, user, t
                     }}
                 >
                     {achievements.map((ach) => {
-                        const unlocked = totalEarned >= ach.target;
-                        const progress = Math.min(100, (totalEarned / ach.target) * 100);
+                        let value = totalEarned;
+                        if (ach.type === 'streak') {
+                            value = user.streak_days;
+                        }
+                        const unlocked = value >= ach.target;
+                        const progress = Math.min(100, (value / ach.target) * 100);
 
                         return (
                             <Card

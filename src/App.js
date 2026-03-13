@@ -118,13 +118,13 @@ export default function App() {
       const res = await fetch(`http://localhost:3001/api/user/${user.id}`);
       const data = await res.json();
 
-      setUser(prev => (
-        {
-          ...prev,
-          role: data.role,
-          achievementCount: data.achievementCount
-        }
-      ));
+      setUser(prev => ({
+        ...prev,
+        role: data.role,
+        achievementCount: data.achievementCount,
+        streak_days: data.streak_days,
+        last_login_date: data.last_login_date
+      }));
 
       setBalance(data.balance);
       setTotalEarned(data.totalEarned);
