@@ -1254,8 +1254,8 @@ app.get('/api/user/:id/purchases', (req, res) => {
 const axios = require('axios');
 
 async function updateVKSubscriptionStatus(userId) {
-  const groupId = "216403046";
-  const accessToken = "vk1.a.tDdbp4GyjX_YKdFYIYeU6FUeuu5JUst0MmRW9ZqxpuFeuuHeE5VaERzD_z5JxVYnh2ytCABLxEXrDAhR7f0YMpyPIA6pKbrY0Ma6LebfVBF_3pXNhtocjr_WBvB_AjlCSp4B12lqYos-DR1datZLg8SYoqlkktieMfJ4kSl2lJ7aJyxoEbzbW2vW-jwkA_mqBwCaRHcs9XGwEOWT7zuY2g";
+  const groupId = "here's your ID";
+  const accessToken = "here's your key";
 
   try {
     const res = await axios.get('https://api.vk.com/method/groups.isMember', {
