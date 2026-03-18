@@ -39,6 +39,28 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
       .catch(err => console.error('Ошибка загрузки админ-заданий', err));
   }, [user]);
 
+  function getTimeLeft(expiresAt) {
+    if (!expiresAt) return 'бессрочно';
+    const date = new Date(expiresAt);
+    const day = date.getDate();
+    const months = [
+      'января',
+      'февраля',
+      'марта',
+      'апреля',
+      'мая',
+      'июня',
+      'июля',
+      'августа',
+      'сентября',
+      'октября',
+      'ноября',
+      'декабря'
+    ];
+    const month = months[date.getMonth()];
+    return `до ${day} ${month}`;
+  }
+
   async function handleAnswer(action) {
     await fetch(
       `http://localhost:3001/api/admin/answers/${activeAnswer.id}`,
@@ -837,6 +859,28 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
                       </div>
 
                     </div>
+
+                    <div
+                      style={{
+                        position: 'absolute',
+                          top: 12,
+                          right: 12,
+                        }}
+                      >
+                        <div
+                          style={{
+                            padding: '4px 10px',
+                            borderRadius: 999,
+                            backgroundColor: '#ffffff',
+                            color: '#8c64d7',
+                            fontSize: 10,
+                            fontWeight: 600,
+                            whiteSpace: 'nowrap',
+                          }}
+                        >
+                          {getTimeLeft(task.expires_at)}
+                        </div>
+                      </div>
                   </Card>
               ))
             )}
