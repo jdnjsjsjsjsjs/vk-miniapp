@@ -1,10 +1,11 @@
 // AdminTasks.js
 import { useState, useEffect } from 'react';
-import { Panel, Div, Button, ModalRoot, ModalCard, Input, Textarea, Checkbox } from '@vkontakte/vkui';
-import { Icon28ChevronBack } from '@vkontakte/icons'
+import { Panel, Div, Button, ModalRoot, ModalCard, Input, Textarea, Checkbox, Card } from '@vkontakte/vkui';
+import { Icon28ChevronBack, Icon16Search } from '@vkontakte/icons';
 import { CustomText } from './CustomTypography';
 
 import coinIcon from './imgs/coin.png'
+import tasksIcon from './imgs/tasks.png'
 
 export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
   const [tasks, setTasks] = useState([]);
@@ -20,6 +21,14 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
   const [confirmAction, setConfirmAction] = useState(null);
   const [editTask, setEditTask] = useState(null);
   const [deleteTaskTarget, setDeleteTaskTarget] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const inputStyle = `
+    .search-input::placeholder {
+      color: #ceaeff;
+      opacity: 1;
+    }
+  `;
 
   useEffect(() => {
     if (!user?.id) return;
@@ -51,25 +60,6 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
     );
     const data = await res.json();
     setAnswers(data);
-  }
-
-  function getTimeLeft(expiresAt) {
-    if (!expiresAt) return 'Бессрочно';
-
-    const now = new Date();
-    const end = new Date(expiresAt);
-
-    const diffMs = end - now;
-
-    if (diffMs <= 0) return 'Истекло';
-
-    const minutes = Math.floor(diffMs / 1000 / 60);
-    const hours = Math.floor(minutes / 60);
-    const days = Math.floor(hours / 24);
-
-    if (days > 0) return `${days} дн.`;
-    if (hours > 0) return `${hours} ч.`;
-    return `${minutes} мин.`;
   }
 
   // Функции для сохранения редактирования и удаления
@@ -431,8 +421,9 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
           </Div>
         </ModalCard>
       </ModalRoot>
-      <Panel id={id}>
-        <Div style={{ height: 32, backgroundColor: '#ffffff' }} />
+      <style>{inputStyle}</style>
+      <Panel id={id} style={{ backgroundColor: '#ceaeff', minHeight: '100vh' }}>
+        <Div style={{ height: 32, backgroundColor: '#ceaeff' }} />
         {/* Кастомный хедер */}
         <Div
             style={{
@@ -441,10 +432,10 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
                 left: 0,
                 right: 0,
                 height: 56,
-                backgroundColor: '#ceaeff',
+                backgroundColor: '#fff',
                 display: 'flex',
                 alignItems: 'center',
-                padding: '0 16px',
+                padding: '0 4px',
                 zIndex: 1000,
             }}
         >
@@ -458,167 +449,234 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
                     paddingLeft: 0,
                     paddingRight: 8,
                     marginRight: 4,
-                    color: '#ffffff',
+                    color: '#ceaeff',
                 }}
             >
                 Назад
             </Button>
-
-            {/* Баланс-капсула */}
-            <div
-                onClick={() => {}}
-                style={{
-                    marginLeft: 'auto',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 6,
-                    padding: '2px 18px 2px 2px',
-                    backgroundColor: '#f2f2f2',
-                    borderRadius: 999,
-                    cursor: 'pointer',
-                }}
-            >
-                <img src={coinIcon} alt="coins" style={{ height: 25, width: 25 }} />
-                <CustomText
-                    weight="3"
-                    style={{
-                        fontSize: 14,
-                        color: '#8c64d7',
-                        lineHeight: '18px',
-                    }}
-                >
-                    {balance}
-                </CustomText>
-            </div>
         </Div>
-        <Div style={{ paddingTop: 56, padding: 16, backgroundColor: '#ffffff', minHeight: '100vh' }}>
-          <CustomText weight="2" style={{ fontSize: 20, color: '#8c64d7' }}>Админка заданий</CustomText>
-            <Button
-              size="l"
-              mode="primary"
-              style={{ marginTop: 12 }}
-              onClick={() => {
-                setTitle('');
-                setQuestion('');
-                setReward('');
-                setExpiresAt('');
-                setRequireFile(false);
-                setActiveModal('createTask');
+        <Div style={{ padding: '12px', backgroundColor: '#ceaeff' }}>
+          <Card
+              mode="shadow"
+              style={{
+                borderRadius: 10,
+                padding: '20px 15px',
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                backgroundColor: '#ffffff',
+                marginBottom: 15,
+                position: 'relative'
               }}
             >
-              ➕ Добавить задание
-            </Button>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <CustomText
+                  weight="1"
+                  style={{
+                    fontSize: 16,
+                    color: '#000',
+                  }}
+                >
+                  Задания (админка)
+                </CustomText>
+              </div>
+              <img
+                src={tasksIcon}
+                alt="tasks"
+                style={{
+                  width: 75,
+                  height: 75,
+                  objectFit: 'contain',
+                  position: 'absolute',
+                  right: -5,
+                }}
+              />
+            </Card>
+            <Card
+              mode="shadow"
+              style={{
+                borderRadius: 10,
+                padding: '12px',
+                backgroundColor: '#ffffff',
+              }}
+            >
+              <div style={{ position: 'relative', marginBottom: 16 }}>
+                <Icon16Search
+                  fill="#ceaeff"
+                  style={{
+                    position: 'absolute',
+                    left: 12,
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    width: 14,
+                    height: 14,
+                    pointerEvents: 'none'
+                  }}
+                />
+                <input
+                  className="search-input"
+                  type="text"
+                  placeholder="Поиск..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  style={{
+                    width: '100%',
+                    boxSizing: 'border-box',
+                    padding: '6px 12px 6px 34px',
+                    borderRadius: 999,
+                    border: '1px solid #ceaeff',
+                    outline: 'none',
+                    fontSize: 12,
+                    color: '#ceaeff',
+                  }}
+                />
+              </div>
+              <div style={{ gap: 6, marginBottom: 12 }}>
+                <div
+                  onClick={() => {
+                    setTitle('');
+                    setQuestion('');
+                    setReward('');
+                    setExpiresAt('');
+                    setRequireFile(false);
+                    setActiveModal('createTask');
+                  }}
+                  style={{
+                    flex: 1,
+                    backgroundColor: '#8c64d7',
+                    borderRadius: 999,
+                    padding: '1px 0',
+                    textAlign: 'center',
+                    cursor: 'pointer',
+                    marginBottom: 6,
+                  }}
+                >
+                  <CustomText style={{ color: '#fff', fontSize: 10, fontWeight: 600 }}>
+                    + добавить
+                  </CustomText>
+                </div>
+
+                {/* Выполненные */}
+                <div
+                  style={{
+                    flex: 1,
+                    backgroundColor: '#ceaeff',
+                    borderRadius: 999,
+                    padding: '1px 0',
+                    textAlign: 'center',
+                    marginBottom: 6,
+                  }}
+                >
+                  <CustomText style={{ color: '#fff', fontSize: 10, fontWeight: 600 }}>
+                    выполненные задания
+                  </CustomText>
+                </div>
+
+                {/* Архив */}
+                <div
+                  style={{
+                    flex: 1,
+                    border: '1px solid #8c64d7',
+                    borderRadius: 999,
+                    padding: '1px 0',
+                    textAlign: 'center',
+                    marginBottom: 16
+                  }}
+                >
+                  <CustomText style={{ color: '#8c64d7', fontSize: 10, fontWeight: 600 }}>
+                    архив заданий
+                  </CustomText>
+                </div>
+              </div>
+
             {tasks.length === 0 ? (
               <CustomText style={{ marginTop: 16, color: '#999' }}>
                 Заданий пока нет
               </CustomText>
             ) : (
-              tasks.map(task => (
-                <Div
-                  key={task.id}
-                  style={{
-                    position: 'relative',
-                    marginTop: 12,
-                    padding: 16,
-                    backgroundColor: '#f5f5f5',
-                    borderRadius: 12,
-                    boxShadow: '0 4px 12px rgba(0,0,0,0.06)',
-                    cursor: 'pointer',
-                  }}
-                  onClick={async () => {
-                    setActiveTask(task);
-                    setActiveModal('task');
-
-                    const res = await fetch(
-                      `http://localhost:3001/api/admin/tasks/${task.id}/answers?userId=${user.id}`
-                    );
-                    const data = await res.json();
-                    setAnswers(data);
-                  }}
-                >
-                  <div
+              tasks
+                .filter(task =>
+                  task.title.toLowerCase().includes(searchQuery.toLowerCase())
+                )
+                .map(task => (
+                  <Card
+                    key={task.id}
                     style={{
-                      position: 'absolute',
-                      top: 10,
-                      right: 50,
-                      padding: '4px 10px',
-                      borderRadius: 999,
-                      backgroundColor:
-                        getTimeLeft(task.expires_at) === 'Истекло'
-                          ? '#fdecea'
-                          : task.expires_at
-                          ? '#ede7ff'
-                          : '#e0e0e0',
-                      color:
-                        getTimeLeft(task.expires_at) === 'Истекло'
-                          ? '#d32f2f'
-                          : '#8c64d7',
-                      fontSize: 12,
-                      fontWeight: 600,
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
-                    {getTimeLeft(task.expires_at)}
-                  </div>
-
-                  <div
-                    style={{
-                      position: 'absolute',
-                      top: 10,
-                      right: 10,
-                      minWidth: 22,
-                      height: 22,
-                      padding: '0 6px',
-                      backgroundColor: '#f44336',
-                      color: '#fff',
-                      borderRadius: 999,
+                      borderRadius: 12,
+                      padding: '14px',
+                      marginBottom: 6,
+                      backgroundColor: '#ffffff',
+                      border: '1px solid #ceaeff',
+                      position: 'relative',
                       display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: 12,
-                      fontWeight: 600,
-                      boxShadow: '0 2px 6px rgba(0,0,0,0.2)',
+                      flexDirection: 'column',
+                    }}
+                    onClick={async () => {
+                      setActiveTask(task);
+                      setActiveModal('task');
+
+                      const res = await fetch(
+                        `http://localhost:3001/api/admin/tasks/${task.id}/answers?userId=${user.id}`
+                      );
+                      const data = await res.json();
+                      setAnswers(data);
                     }}
                   >
-                    {task.pendingCount}
-                  </div>
+                    <CustomText weight="2" style={{ fontSize: 10, color: '#000' }}>
+                      {task.title} {task.require_file ? '📎' : ''}
+                    </CustomText>
 
-                  <CustomText weight="medium" style={{ fontSize: 16, color: '#8c64d7' }}>
-                    {task.title} {task.require_file ? '📎' : ''}
-                  </CustomText>
-                  <CustomText weight="medium" style={{ fontSize: 12, color: '#8c64d7', whiteSpace: 'pre-line' }}>{task.question}</CustomText>
-                  <CustomText style={{ fontSize: 14, color: '#666', marginTop: 4, display: 'flex', alignItems: 'center', gap: 4 }}>
-                    <img src={coinIcon} alt="coins" style={{ height: 25, width: 25 }} /> {task.reward}
-                  </CustomText>
+                    <CustomText style={{ fontSize: 16, color: '#8c64d7', display: 'flex', alignItems: 'center', gap: 4, fontWeight: 1000 }}>
+                      {task.reward}
+                      <img src={coinIcon} alt="coins" style={{ height: 25, width: 25 }} />
+                    </CustomText>
 
-                  <Button
-                    mode="tertiary"
-                    size="s"
-                    style={{  }}
-                    onClick={(e) => {
-                      e.stopPropagation(); // чтобы не открывалась модалка просмотра ответов
-                      setEditTask(task);
-                      setActiveModal('editTask');
-                    }}
-                  >
-                    ✏️ Редактировать
-                  </Button>
+                    <div style={{ display: 'flex', gap: 6, marginTop: 8 }}>
+                      <div
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setEditTask(task);
+                          setActiveModal('editTask');
+                        }}
+                        style={{
+                          flex: 1,
+                          backgroundColor: '#8c64d7',
+                          borderRadius: 999,
+                          padding: '1px 0',
+                          textAlign: 'center',
+                        }}
+                      >
+                        <CustomText style={{ color: '#fff', fontSize: 10, fontWeight: 600 }}>
+                          редактировать
+                        </CustomText>
+                      </div>
 
-                  <Button
-                    mode="tertiary"
-                    size="s"
-                    style={{  }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setDeleteTaskTarget(task);
-                      setActiveModal('deleteTask');
-                    }}
-                  >
-                    🗑️ Удалить
-                  </Button>
-                </Div>
+                      {/* Удалить */}
+                      <div
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setDeleteTaskTarget(task);
+                          setActiveModal('deleteTask');
+                        }}
+                        style={{
+                          flex: 1,
+                          border: '1px solid #8c64d7',
+                          borderRadius: 999,
+                          padding: '1px 0',
+                          textAlign: 'center',
+                        }}
+                      >
+                        <CustomText style={{ color: '#8c64d7', fontSize: 10, fontWeight: 600 }}>
+                          удалить
+                        </CustomText>
+                      </div>
+
+                    </div>
+                  </Card>
               ))
             )}
+          </Card>
         </Div>
       </Panel>
     </>
