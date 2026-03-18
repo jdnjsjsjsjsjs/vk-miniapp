@@ -1,7 +1,7 @@
 // AdminTasks.js
 import { useState, useEffect } from 'react';
 import { Panel, Div, Button, ModalRoot, ModalCard, Input, Textarea, Checkbox, Card } from '@vkontakte/vkui';
-import { Icon28ChevronBack, Icon16Search } from '@vkontakte/icons';
+import { Icon28ChevronBack, Icon16Search, Icon24Cancel } from '@vkontakte/icons';
 import { CustomText } from './CustomTypography';
 
 import coinIcon from './imgs/coin.png'
@@ -106,91 +106,255 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
     }
   };
 
+  const ModalCloseButton = ({ onClick }) => (
+    <div
+      onClick={onClick}
+      style={{
+        position: 'absolute',
+        top: 10,
+        right: 18,
+        width: 24,
+        height: 24,
+        borderRadius: '50%',
+        border: '1px solid #d9d9d9',
+        backgroundColor: '#fff',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        cursor: 'pointer',
+        zIndex: 10,
+      }}
+    >
+        <Icon24Cancel width={16} height={16} fill="#000" />
+    </div>
+);
+
   return (
     <>
       <ModalRoot activeModal={activeModal}>
         <ModalCard
           id="createTask"
           onClose={() => setActiveModal(null)}
-          header="Новое задание"
-          actions={
-            <Button
-              size="l"
-              mode="primary"
-              disabled={!title || !question || !reward}
-              onClick={async () => {
-                try {
-                  await fetch('http://localhost:3001/api/admin/tasks', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                      userId: user.id,
-                      title,
-                      question,
-                      reward: Number(reward),
-                      expires_at: expiresAt || null,
-                      require_file: requireFile ? 1 : 0
-                    })
-                  });
+        >
+          <ModalCloseButton onClick={() => setActiveModal(null)} />
 
-                  // перезагружаем список заданий
-                  const res = await fetch(
-                    `http://localhost:3001/api/admin/tasks?userId=${user.id}`
-                  );
-                  const data = await res.json();
-                  setTasks(data);
+          {/* ЗАДАНИЕ */}
+          <CustomText
+            weight="1"
+            style={{ fontSize: 16, color: '#000', marginTop: 27, marginBottom: 10 }}
+          >
+            Задание
+          </CustomText>
 
-                  setActiveModal(null);
-                } catch (e) {
-                  console.error('Ошибка создания задания', e);
-                }
+          <input
+            type="text"
+            placeholder="название задания..."
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className="search-input"
+            style={{
+              width: '92%',
+              padding: '6px 12px',
+              borderRadius: 999,
+              border: '1px solid #ceaeff',
+              outline: 'none',
+              fontSize: 12,
+              color: '#ceaeff',
+              marginBottom: 14,
+            }}
+          />
+
+          {/* ВОПРОС */}
+          <CustomText
+            weight="1"
+            style={{ fontSize: 16, color: '#000', marginBottom: 8 }}
+          >
+            Вопрос / условие
+          </CustomText>
+
+          <textarea
+            placeholder={`1...
+2...
+......
+*где нужно поле ответа - [answer], файл - [file], enter после не нажимаем!`}
+            value={question}
+            onChange={(e) => setQuestion(e.target.value)}
+            className="search-input"
+            style={{
+              width: '92%',
+              height: '72px',
+              padding: '6px 12px',
+              borderRadius: 12,
+              border: '1px solid #ceaeff',
+              outline: 'none',
+              fontSize: 12,
+              color: '#ceaeff',
+              marginBottom: 1, 
+              resize: 'none'
+            }}
+          />
+
+          {/* ФАЙЛ */}
+          <div style={{ display: 'flex', alignItems: 'center', marginBottom: 16, gap: 30, marginLeft: 20 }}>
+            <CustomText style={{ fontSize: 10, color: '#000' }}>
+              файл
+            </CustomText>
+
+            <div
+              onClick={() => setRequireFile(!requireFile)}
+              style={{
+                width: 18,
+                height: 11,
+                borderRadius: '30%',
+                backgroundColor: requireFile ? '#8c64d7' : '#e0e0e0',
+                position: 'relative',
+                cursor: 'pointer',
+                transition: '0.2s'
               }}
             >
-              Создать
-            </Button>
-          }
-        >
-          <Input
-            placeholder="Название задания"
-            value={title}
-            onChange={e => setTitle(e.target.value)}
-            style={{ marginBottom: 12 }}
-          />
+              <div
+                style={{
+                  position: 'absolute',
+                  top: 2,
+                  left: requireFile ? 9 : 2,
+                  width: 7,
+                  height: 7,
+                  borderRadius: '30%',
+                  backgroundColor: '#fff',
+                  transition: '0.2s'
+                }}
+              />
+            </div>
+          </div>
 
-          <Textarea
-            placeholder={`
-              Условие задания
-
-              Можно использовать:
-              [answer] — поле ответа
-              [file] — загрузка файла
-            `}
-            value={question}
-            onChange={e => setQuestion(e.target.value)}
-            style={{ marginBottom: 12 }}
-          />
-
-          <Input
-            type="number"
-            placeholder="Награда (баллы)"
-            value={reward}
-            onChange={e => setReward(e.target.value)}
-            style={{ marginBottom: 12 }}
-          />
-
-          <Input
-            type="datetime-local"
-            value={expiresAt}
-            onChange={e => setExpiresAt(e.target.value)}
-          />
-
-          <Checkbox
-            checked={requireFile}
-            onChange={e => setRequireFile(e.target.checked)}
-            style={{ marginTop: 12 }}
+          {/* НАГРАДА */}
+          <CustomText
+            weight="1"
+            style={{ fontSize: 16, color: '#000', marginBottom: 8 }}
           >
-            Требуется загрузка файла
-          </Checkbox>
+            Награда
+          </CustomText>
+
+          <input
+            type="number"
+            placeholder="количество баллов..."
+            value={reward}
+            onChange={(e) => setReward(e.target.value)}
+            className="search-input"
+            style={{
+              width: '92%',
+              padding: '6px 12px',
+              borderRadius: 999,
+              border: '1px solid #ceaeff',
+              outline: 'none',
+              fontSize: 12,
+              color: '#ceaeff',
+              marginBottom: 14
+            }}
+          />
+
+          {/* СРОК */}
+          <CustomText
+            weight="1"
+            style={{ fontSize: 16, color: '#000', marginBottom: 8 }}
+          >
+            Срок выполнения
+          </CustomText>
+
+          <div style={{ position: 'relative', marginBottom: 1 }}>
+            <input
+              type="datetime-local"
+              value={expiresAt}
+              onChange={(e) => setExpiresAt(e.target.value)}
+              className="search-input"
+              style={{
+                width: '92%',
+                padding: '6px 12px',
+                borderRadius: 999,
+                border: '1px solid #ceaeff',
+                outline: 'none',
+                fontSize: 12,
+                color: '#ceaeff'
+              }}
+            />
+          </div>
+
+          {/* БЕССРОЧНО */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginLeft: 20 }}>
+            <CustomText style={{ fontSize: 10, color: '#000' }}>
+              бессрочно
+            </CustomText>
+
+            <div
+              onClick={() => setExpiresAt(expiresAt ? '' : new Date().toISOString())}
+              style={{
+                width: 18,
+                height: 11,
+                borderRadius: '30%',
+                backgroundColor: !expiresAt ? '#8c64d7' : '#e0e0e0',
+                position: 'relative',
+                cursor: 'pointer',
+                transition: '0.2s'
+              }}
+            >
+              <div
+                style={{
+                  position: 'absolute',
+                  top: 2,
+                  left: !expiresAt ? 9 : 2,
+                  width: 7,
+                  height: 7,
+                  borderRadius: '30%',
+                  backgroundColor: '#fff',
+                  transition: '0.2s'
+                }}
+              />
+            </div>
+          </div>
+
+          <div
+            onClick={async () => {
+              if (!title || !question || !reward) return;
+
+              try {
+                await fetch('http://localhost:3001/api/admin/tasks', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    userId: user.id,
+                    title,
+                    question,
+                    reward: Number(reward),
+                    expires_at: expiresAt || null,
+                    require_file: requireFile ? 1 : 0
+                  })
+                });
+
+                const res = await fetch(
+                  `http://localhost:3001/api/admin/tasks?userId=${user.id}`
+                );
+                const data = await res.json();
+                setTasks(data);
+
+                setActiveModal(null);
+              } catch (e) {
+                console.error('Ошибка создания задания', e);
+              }
+            }}
+            style={{
+              width: '100%',
+              backgroundColor: (!title || !question || !reward) ? '#ceaeff' : '#8c64d7',
+              borderRadius: 999,
+              padding: '1px 0',
+              textAlign: 'center',
+              cursor: (!title || !question || !reward) ? 'default' : 'pointer',
+              marginTop: 16
+            }}
+          >
+            <CustomText style={{ color: '#fff', fontSize: 10, fontWeight: 600 }}>
+              создать
+            </CustomText>
+          </div>
         </ModalCard>
 
         <ModalCard
