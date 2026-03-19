@@ -5,6 +5,7 @@ import { Icon28ChevronBack } from '@vkontakte/icons';
 
 import coinIcon from './imgs/coin.png'
 import shopIcon from './imgs/shop1.png'
+import shopFilledIcon from './imgs/shop2.png'
 
 export default function Purchases({ id, goBack, user, balance, goToBalance }) {
     const [purchases, setPurchases] = useState([]);
@@ -143,7 +144,7 @@ export default function Purchases({ id, goBack, user, balance, goToBalance }) {
                                 </CustomText>
 
                                 <img
-                                    src={shopIcon}
+                                    src={shopFilledIcon}
                                     alt="gift"
                                     style={{
                                         width: 75,
