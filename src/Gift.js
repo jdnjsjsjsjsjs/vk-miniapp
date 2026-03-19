@@ -5,6 +5,7 @@ import { CustomText } from './CustomTypography';
 import { Icon28ChevronBack } from '@vkontakte/icons';
 
 import coinIcon from './imgs/coin.png'
+import lockIcon from './imgs/lock.png'
 
 const rewards = [
         1,1,1,1,2,
@@ -215,7 +216,6 @@ export default function Gift({ id, goBack, balance, goToBalance}) {
                             borderRadius: 12,
                             textAlign: 'center',
                             backgroundColor: cardBg,
-                            filter: isLocked ? 'blur(2px)' : 'none',
                             position: 'relative',
                             width: '100%',
                             aspectRatio: '1 / 1',
@@ -224,6 +224,17 @@ export default function Gift({ id, goBack, balance, goToBalance}) {
                             justifyContent: 'center',
                             alignItems: 'center',
                         }}
+                        >
+                        <div
+                            style={{
+                                width: '100%',
+                                height: '100%',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                filter: isLocked ? 'blur(2px)' : 'none'
+                            }}
                         >
                         <CustomText weight="1" style={{ fontSize: 8, color: isFifth ? '#fff' : '#000' }}>
                             День {day}
@@ -294,6 +305,23 @@ export default function Gift({ id, goBack, balance, goToBalance}) {
                                 получить
                             </CustomText>
                             </div>
+                        )}
+                        </div>
+                        {isLocked && (
+                            <img
+                                src={lockIcon}
+                                alt="lock"
+                                style={{
+                                    position: 'absolute',
+                                    top: '50%',
+                                    left: '50%',
+                                    transform: 'translate(-50%, -50%)',
+                                    width: 50,
+                                    height: 50,
+                                    zIndex: 10,
+                                    pointerEvents: 'none'
+                                }}
+                            />
                         )}
                         </Card>
                     );
