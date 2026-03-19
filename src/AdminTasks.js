@@ -22,6 +22,7 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
   const [editTask, setEditTask] = useState(null);
   const [deleteTaskTarget, setDeleteTaskTarget] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isCreated, setIsCreated] = useState(false);
 
   const inputStyle = `
     .search-input::placeholder {
@@ -336,7 +337,7 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
 
           <div
             onClick={async () => {
-              if (!title || !question || !reward) return;
+              if (!title || !question || !reward || isCreated) return;
 
               try {
                 await fetch('http://localhost:3001/api/admin/tasks', {
@@ -358,23 +359,35 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
                 const data = await res.json();
                 setTasks(data);
 
-                setActiveModal(null);
+                setIsCreated(true);
+
+                setTimeout(() => {
+                  setIsCreated(false);
+                  setActiveModal(null);
+                }, 3000);
+
               } catch (e) {
                 console.error('Ошибка создания задания', e);
               }
             }}
             style={{
               width: '100%',
-              backgroundColor: (!title || !question || !reward) ? '#ceaeff' : '#8c64d7',
+              backgroundColor: isCreated
+                ? '#ceaeff'
+                : (!title || !question || !reward)
+                ? '#ceaeff'
+                : '#8c64d7',
               borderRadius: 999,
               padding: '1px 0',
               textAlign: 'center',
-              cursor: (!title || !question || !reward) ? 'default' : 'pointer',
+              cursor: (!title || !question || !reward || isCreated)
+                ? 'default'
+                : 'pointer',
               marginTop: 16
             }}
           >
             <CustomText style={{ color: '#fff', fontSize: 10, fontWeight: 600 }}>
-              создать
+              {isCreated ? 'добавлено' : 'создать'}
             </CustomText>
           </div>
         </ModalCard>
