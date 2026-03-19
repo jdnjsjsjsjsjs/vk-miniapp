@@ -186,7 +186,8 @@ db.run(`
     reward INTEGER NOT NULL,
     expires_at TEXT,
     require_file INTEGER DEFAULT 0,
-    created_at TEXT DEFAULT CURRENT_TIMESTAMP
+    archive INTEGER DEFAULT 0,
+    created_at TEXT DEFAULT (datetime('now', '+3 hours'))
   )
 `);
 
@@ -440,7 +441,7 @@ app.get('/api/tasks/:userId', (req, res) => {
     LEFT JOIN task_answers a 
       ON a.task_id = t.id AND a.user_id = ?
     WHERE t.expires_at IS NULL 
-      OR t.expires_at > datetime('now')
+      OR t.expires_at > datetime('now', '+3 hours')
     ORDER BY t.created_at DESC
   `, [userId], (err, rows) => {
     if (err) return res.status(500).json({ error: err.message });
@@ -552,6 +553,15 @@ app.get('/api/admin/tasks', (req, res) => {
       FROM tasks t
       LEFT JOIN task_answers a
         ON a.task_id = t.id
+      WHERE 
+        (
+          t.archive = 0 
+          OR t.archive IS NULL
+          OR (
+            t.archive = 1 
+            AND (t.expires_at IS NULL OR t.expires_at > datetime('now', '+3 hours'))
+          )
+        )
       GROUP BY t.id
       ORDER BY t.created_at DESC
     `, (err, rows) => {
@@ -563,7 +573,7 @@ app.get('/api/admin/tasks', (req, res) => {
 
 // Для админа - создать задание
 app.post('/api/admin/tasks', (req, res) => {
-  const { userId, title, question, reward, expires_at, require_file } = req.body;
+  const { userId, title, question, reward, expires_at, require_file, archive } = req.body;
 
   db.get('SELECT role FROM users WHERE id = ?', [userId], (err, user) => {
     if (!user || user.role !== 'admin') {
@@ -571,9 +581,9 @@ app.post('/api/admin/tasks', (req, res) => {
     }
 
     db.run(
-      `INSERT INTO tasks (title, question, reward, expires_at, require_file)
-       VALUES (?, ?, ?, ?, ?)`,
-      [title, question, reward, expires_at || null, require_file || 0],
+      `INSERT INTO tasks (title, question, reward, expires_at, require_file, archive)
+       VALUES (?, ?, ?, ?, ?, ?)`,
+      [title, question, reward, expires_at || null, require_file || 0, archive || 0],
       function (err) {
         if (err) return res.status(500).json({ error: err.message });
         res.json({ id: this.lastID });
@@ -949,7 +959,7 @@ app.post('/api/admin/delete-temp-image', (req, res) => {
 
 // Для админа - редактировать задание
 app.put('/api/admin/tasks/:id', (req, res) => {
-  const { userId, title, question, reward, expires_at, require_file } = req.body;
+  const { userId, title, question, reward, expires_at, require_file, archive } = req.body;
   const taskId = req.params.id;
 
   db.get('SELECT role FROM users WHERE id = ?', [userId], (err, user) => {
@@ -959,9 +969,9 @@ app.put('/api/admin/tasks/:id', (req, res) => {
 
     db.run(
       `UPDATE tasks
-       SET title = ?, question = ?, reward = ?, expires_at = ?, require_file = ?
+       SET title = ?, question = ?, reward = ?, expires_at = ?, require_file = ?, archive = ?
        WHERE id = ?`,
-      [title, question, reward, expires_at || null, require_file || 0, taskId],
+      [title, question, reward, expires_at || null, require_file || 0, archive || 0, taskId],
       function(err) {
         if (err) return res.status(500).json({ error: err.message });
         res.json({ success: true });
@@ -1283,5 +1293,27 @@ async function updateVKSubscriptionStatus(userId) {
     return 0;
   }
 }
+
+app.get('/api/admin/tasks/archive', (req, res) => {
+  const { userId } = req.query;
+
+  db.get('SELECT role FROM users WHERE id = ?', [userId], (err, user) => {
+    if (!user || user.role !== 'admin') {
+      return res.status(403).json({ error: 'Forbidden' });
+    }
+
+    db.all(`
+      SELECT *
+      FROM tasks
+      WHERE archive = 1
+        AND expires_at IS NOT NULL
+        AND datetime(substr(expires_at,1,19)) <= datetime('now', '+3 hours')
+      ORDER BY created_at DESC
+    `, (err, rows) => {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json(rows);
+    });
+  });
+});
 
 app.listen(PORT, () => console.log(`Сервер запущен на http://localhost:${PORT}`));

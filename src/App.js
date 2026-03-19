@@ -23,6 +23,7 @@ import Purchases from './Purchases';
 import Guide from './Guide';
 import Achievements from './Achievements';
 import TaskPage from './TaskPage';
+import ArchivePage from './Archive'
 
 import image1 from './imgs/1.png'
 import coinsIcon from './imgs/coins.png'
@@ -64,6 +65,10 @@ export default function App() {
         return { backgroundColor: '#f2f2f2', color: '#000' };
     }
   };
+
+  function getMoscowTime() {
+    return new Date(new Date().toLocaleString("en-US", { timeZone: "Europe/Moscow" }));
+  }
 
   const goToTaskPage = (task) => {
     setSelectedTask(task);
@@ -180,8 +185,14 @@ export default function App() {
         const res = await fetch(`http://localhost:3001/api/tasks/${user.id}`);
         const data = await res.json();
 
-        // сортируем по дате создания (НОВЫЕ СВЕРХУ)
-        const sorted = [...data].sort(
+        const moscowNow = getMoscowTime();
+
+        const filtered = data.filter(task => {
+          const taskDeadline = new Date(task.expires_at);
+          return taskDeadline > moscowNow;
+        });
+
+        const sorted = [...filtered].sort(
           (a, b) => new Date(b.created_at) - new Date(a.created_at)
         );
 
@@ -230,6 +241,7 @@ export default function App() {
   const goToPurchases = () => setActivePanel('purchases');
   const goToGuide = () => setActivePanel('guide');
   const goToAchievements = () => setActivePanel('achievements');
+  const goToArchive = () => setActivePanel('archiveTasks');
 
   useEffect(() => {
     if (user) {
@@ -985,7 +997,7 @@ export default function App() {
       <Tasks id="tasks" goBack={goBack} balance={balance} goToBalance={goToBalance} user={user} goToTask={goToTaskPage} />
 
       {/* Панель Админка заданий */}
-      <AdminTasks id="adminTasks" goBack={goBack} user={user} goToBalance={goToBalance} balance={balance} />
+      <AdminTasks id="adminTasks" goBack={goBack} user={user} goToBalance={goToBalance} balance={balance} goToArchive={goToArchive} />
 
       {/* Панель Рейтинг */}
       <Rating id="rating" goBack={goBack} balance={balance} goToBalance={goToBalance} />
@@ -1015,8 +1027,10 @@ export default function App() {
       <Achievements id="achievements" goBack={goBack} balance={balance} goToBalance={goToBalance} user={user} totalEarned={totalEarned} goToTasks={goToTasks} />
 
       {/* Страница задания */}
-      <TaskPage id="taskpage" task={selectedTask} user={user} goBack={() => setActivePanel('tasks')} balance={balance} goToBalance={goToBalance}
-/>
+      <TaskPage id="taskpage" task={selectedTask} user={user} goBack={() => setActivePanel('tasks')} balance={balance} goToBalance={goToBalance} />
+
+      {/* Страница архива */}
+      <ArchivePage id="archiveTasks" goBack={goBack} user={user} />
     </View>
     </div>
   )

@@ -7,7 +7,7 @@ import { CustomText } from './CustomTypography';
 import coinIcon from './imgs/coin.png'
 import tasksIcon from './imgs/tasks.png'
 
-export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
+export default function AdminTasks({ id, goBack, user, goToBalance, balance, goToArchive }) {
   const [tasks, setTasks] = useState([]);
   const [activeModal, setActiveModal] = useState(null);
   const [title, setTitle] = useState('');
@@ -23,6 +23,7 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
   const [deleteTaskTarget, setDeleteTaskTarget] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [isCreated, setIsCreated] = useState(false);
+  const [archive, setArchive] = useState(false);
 
   const inputStyle = `
     .search-input::placeholder {
@@ -42,24 +43,31 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
 
   function getTimeLeft(expiresAt) {
     if (!expiresAt) return 'бессрочно';
+
     const date = new Date(expiresAt);
-    const day = date.getDate();
-    const months = [
-      'января',
-      'февраля',
-      'марта',
-      'апреля',
-      'мая',
-      'июня',
-      'июля',
-      'августа',
-      'сентября',
-      'октября',
-      'ноября',
-      'декабря'
-    ];
-    const month = months[date.getMonth()];
-    return `до ${day} ${month}`;
+
+    const formatted = date.toLocaleString('ru-RU', {
+      timeZone: 'Europe/Moscow',
+      day: 'numeric',
+      month: 'long',
+    });
+
+    return `до ${formatted}`;
+  }
+
+  function isTaskActive(task) {
+    if (!task.expires_at) return true;
+    const now = new Date();
+    const expires = new Date(task.expires_at);
+
+    const nowMoscow = new Date(
+      now.toLocaleString('en-US', { timeZone: 'Europe/Moscow' })
+    );
+    const expiresMoscow = new Date(
+      expires.toLocaleString('en-US', { timeZone: 'Europe/Moscow' })
+    );
+
+    return expiresMoscow >= nowMoscow;
   }
 
   async function handleAnswer(action) {
@@ -97,7 +105,8 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
           question: editTask.question,
           reward: Number(editTask.reward),
           expires_at: editTask.expires_at || null,
-          require_file: editTask.require_file ? 1 : 0
+          require_file: editTask.require_file ? 1 : 0,
+          archive: editTask.archive ? 1 : 0
         }),
       });
 
@@ -314,7 +323,7 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
                 width: 18,
                 height: 11,
                 borderRadius: '30%',
-                backgroundColor: !expiresAt ? '#8c64d7' : '#e0e0e0',
+                backgroundColor: !expiresAt ? '#8c64d7' : '#ceaeff',
                 position: 'relative',
                 cursor: 'pointer',
                 transition: '0.2s'
@@ -325,6 +334,39 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
                   position: 'absolute',
                   top: 2,
                   left: !expiresAt ? 9 : 2,
+                  width: 7,
+                  height: 7,
+                  borderRadius: '30%',
+                  backgroundColor: '#fff',
+                  transition: '0.2s'
+                }}
+              />
+            </div>
+          </div>
+
+          {/* АРХИВ */}
+          <div style={{ display: 'flex', alignItems: 'center', marginBottom: 16, gap: 30, marginLeft: 20 }}>
+            <CustomText style={{ fontSize: 10, color: '#000' }}>
+              архивировать
+            </CustomText>
+
+            <div
+              onClick={() => setArchive(!archive)}
+              style={{
+                width: 18,
+                height: 11,
+                borderRadius: '30%',
+                backgroundColor: archive ? '#8c64d7' : '#ceaeff',
+                position: 'relative',
+                cursor: 'pointer',
+                transition: '0.2s'
+              }}
+            >
+              <div
+                style={{
+                  position: 'absolute',
+                  top: 2,
+                  left: archive ? 9 : 2,
                   width: 7,
                   height: 7,
                   borderRadius: '30%',
@@ -349,7 +391,8 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
                     question,
                     reward: Number(reward),
                     expires_at: expiresAt || null,
-                    require_file: requireFile ? 1 : 0
+                    require_file: requireFile ? 1 : 0,
+                    archive: archive ? 1 : 0
                   })
                 });
 
@@ -591,6 +634,19 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
           >
             Требуется загрузка файла
           </Checkbox>
+          <Checkbox
+            checked={!!editTask?.archive}
+            onChange={e =>
+              setEditTask({
+                ...editTask,
+                archive: e.target.checked ? 1 : 0
+              })
+            }
+            style={{ marginTop: 12 }}
+          >
+            Архивировать
+          </Checkbox>
+
           <Div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
             <Button mode="primary" stretched onClick={saveEditTask}>
               Сохранить
@@ -774,13 +830,15 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
 
                 {/* Архив */}
                 <div
+                  onClick={() => goToArchive()}
                   style={{
                     flex: 1,
                     border: '1px solid #8c64d7',
                     borderRadius: 999,
                     padding: '1px 0',
                     textAlign: 'center',
-                    marginBottom: 16
+                    marginBottom: 16,
+                    cursor: 'pointer'
                   }}
                 >
                   <CustomText style={{ color: '#8c64d7', fontSize: 10, fontWeight: 600 }}>
@@ -796,7 +854,8 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
             ) : (
               tasks
                 .filter(task =>
-                  task.title.toLowerCase().includes(searchQuery.toLowerCase())
+                  task.title.toLowerCase().includes(searchQuery.toLowerCase()) &&
+                  isTaskActive(task)
                 )
                 .map(task => (
                   <Card
@@ -844,6 +903,7 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
                           borderRadius: 999,
                           padding: '1px 0',
                           textAlign: 'center',
+                          cursor: 'pointer'
                         }}
                       >
                         <CustomText style={{ color: '#fff', fontSize: 10, fontWeight: 600 }}>
@@ -864,6 +924,7 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
                           borderRadius: 999,
                           padding: '1px 0',
                           textAlign: 'center',
+                          cursor: 'pointer'
                         }}
                       >
                         <CustomText style={{ color: '#8c64d7', fontSize: 10, fontWeight: 600 }}>
