@@ -37,13 +37,6 @@ export default function ArchiveTasks({ id, goBack, user }) {
       .catch(err => console.error('Ошибка архива', err));
   }, [user]);
 
-  function getExpiredLabel(date) {
-    if (!date) return '';
-
-    const d = new Date(date);
-    return `истекло ${d.getDate()}.${d.getMonth() + 1}`;
-  }
-
   return (
     <Panel id={id} style={{ backgroundColor: '#ceaeff', minHeight: '100vh' }}>
       <Div style={{ height: 32, backgroundColor: '#ceaeff' }} />
