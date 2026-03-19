@@ -229,7 +229,7 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance }) {
                 width: 18,
                 height: 11,
                 borderRadius: '30%',
-                backgroundColor: requireFile ? '#8c64d7' : '#e0e0e0',
+                backgroundColor: requireFile ? '#8c64d7' : '#ceaeff',
                 position: 'relative',
                 cursor: 'pointer',
                 transition: '0.2s'
