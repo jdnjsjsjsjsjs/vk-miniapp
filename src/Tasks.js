@@ -32,26 +32,28 @@ export default function Tasks({ id, goBack, balance, goToBalance, user, goToTask
 
         const date = new Date(expiresAt);
 
-        const day = date.getDate();
+        const formatted = date.toLocaleString('ru-RU', {
+        timeZone: 'Europe/Moscow',
+        day: 'numeric',
+        month: 'long',
+        });
 
-        const months = [
-            'января',
-            'февраля',
-            'марта',
-            'апреля',
-            'мая',
-            'июня',
-            'июля',
-            'августа',
-            'сентября',
-            'октября',
-            'ноября',
-            'декабря'
-        ];
+        return `до ${formatted}`;
+    }
 
-        const month = months[date.getMonth()];
+    function isTaskActive(task) {
+        if (!task.expires_at) return true;
+        const now = new Date();
+        const expires = new Date(task.expires_at);
 
-        return `до ${day} ${month}`;
+        const nowMoscow = new Date(
+        now.toLocaleString('en-US', { timeZone: 'Europe/Moscow' })
+        );
+        const expiresMoscow = new Date(
+        expires.toLocaleString('en-US', { timeZone: 'Europe/Moscow' })
+        );
+
+        return expiresMoscow >= nowMoscow;
     }
 
     const inputStyle = `
@@ -324,7 +326,7 @@ export default function Tasks({ id, goBack, balance, goToBalance, user, goToTask
                         )}
 
                         {tasks
-                        .filter(task => task.title.toLowerCase().includes(searchQuery.toLowerCase()))
+                        .filter(task => task.title.toLowerCase().includes(searchQuery.toLowerCase()) && isTaskActive(task))
                         .sort((a, b) => {
                             if (a.status === 'accepted' && b.status !== 'accepted') return 1;
                             if (a.status !== 'accepted' && b.status === 'accepted') return -1;

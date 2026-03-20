@@ -1316,4 +1316,39 @@ app.get('/api/admin/tasks/archive', (req, res) => {
   });
 });
 
+app.get('/api/admin/answers-feed', (req, res) => {
+  const { userId } = req.query;
+
+  // проверка админа
+  db.get('SELECT role FROM users WHERE id = ?', [userId], (err, user) => {
+    if (err) return res.status(500).json({ error: err.message });
+
+    if (!user || user.role !== 'admin') {
+      return res.status(403).json({ error: 'Forbidden' });
+    }
+
+    // основной запрос
+    db.all(`
+      SELECT
+        a.id,
+        a.answer,
+        a.status,
+        a.user_id,
+        a.file_path,
+        a.created_at,
+        u.first_name,
+        u.last_name,
+        t.title as task_title
+      FROM task_answers a
+      JOIN users u ON u.id = a.user_id
+      JOIN tasks t ON t.id = a.task_id
+      ORDER BY a.created_at DESC
+    `, (err, rows) => {
+      if (err) return res.status(500).json({ error: err.message });
+
+      res.json(rows);
+    });
+  });
+});
+
 app.listen(PORT, () => console.log(`Сервер запущен на http://localhost:${PORT}`));

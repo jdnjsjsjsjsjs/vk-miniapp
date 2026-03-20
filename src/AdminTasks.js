@@ -7,7 +7,7 @@ import { CustomText } from './CustomTypography';
 import coinIcon from './imgs/coin.png'
 import tasksIcon from './imgs/tasks.png'
 
-export default function AdminTasks({ id, goBack, user, goToBalance, balance, goToArchive }) {
+export default function AdminTasks({ id, goBack, user, goToBalance, balance, goToArchive, goToAnswersFeed }) {
   const [tasks, setTasks] = useState([]);
   const [activeModal, setActiveModal] = useState(null);
   const [title, setTitle] = useState('');
@@ -814,6 +814,7 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance, goT
 
                 {/* Выполненные */}
                 <div
+                  onClick={() => goToAnswersFeed()}
                   style={{
                     flex: 1,
                     backgroundColor: '#ceaeff',

@@ -24,6 +24,7 @@ import Guide from './Guide';
 import Achievements from './Achievements';
 import TaskPage from './TaskPage';
 import ArchivePage from './Archive'
+import AdminAnswersFeed from './AdminAnswersFeed';
 
 import image1 from './imgs/1.png'
 import coinsIcon from './imgs/coins.png'
@@ -244,6 +245,7 @@ export default function App() {
   const goToGuide = () => setActivePanel('guide');
   const goToAchievements = () => setActivePanel('achievements');
   const goToArchive = () => setActivePanel('archiveTasks');
+  const goToAnswersFeed = () => setActivePanel('answersFeed');
 
   useEffect(() => {
     if (user) {
@@ -999,7 +1001,7 @@ export default function App() {
       <Tasks id="tasks" goBack={goBack} balance={balance} goToBalance={goToBalance} user={user} goToTask={goToTaskPage} />
 
       {/* Панель Админка заданий */}
-      <AdminTasks id="adminTasks" goBack={goBack} user={user} goToBalance={goToBalance} balance={balance} goToArchive={goToArchive} />
+      <AdminTasks id="adminTasks" goBack={goBack} user={user} goToBalance={goToBalance} balance={balance} goToArchive={goToArchive} goToAnswersFeed={goToAnswersFeed} />
 
       {/* Панель Рейтинг */}
       <Rating id="rating" goBack={goBack} balance={balance} goToBalance={goToBalance} />
@@ -1033,6 +1035,9 @@ export default function App() {
 
       {/* Страница архива */}
       <ArchivePage id="archiveTasks" goBack={goBack} user={user} />
+
+      {/* Страница выполненных заданий */}
+      <AdminAnswersFeed id="answersFeed" user={user} goBack={goBack} />
     </View>
     </div>
   )
