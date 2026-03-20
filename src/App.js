@@ -188,6 +188,8 @@ export default function App() {
         const moscowNow = getMoscowTime();
 
         const filtered = data.filter(task => {
+          if (!task.expires_at) return true;
+
           const taskDeadline = new Date(task.expires_at);
           return taskDeadline > moscowNow;
         });
