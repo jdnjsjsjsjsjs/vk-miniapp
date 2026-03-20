@@ -77,9 +77,13 @@ export default function ArchiveTasks({ id, goBack, user }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           userId: user.id,
+          title: restoreTask.title,
+          question: restoreTask.question,
+          reward: restoreTask.reward,
           expires_at: expiresISOString,
-          archive: 1
-        }),
+          require_file: restoreTask.require_file,
+          archive: 0
+        })
       });
 
       // Удаляем задание из списка локально
@@ -124,11 +128,13 @@ export default function ArchiveTasks({ id, goBack, user }) {
           header="Редактировать задание"
           onClose={() => { setEditTask(null); setActiveModal(null); }}
         >
+          <ModalCloseButton onClick={() => setActiveModal(null)} />
+
           <Input
             placeholder="Название"
             value={editTask?.title || ''}
             onChange={e => setEditTask({ ...editTask, title: e.target.value })}
-            style={{ marginBottom: 12 }}
+            style={{ marginBottom: 12, marginTop: 27 }}
           />
           <Textarea
             placeholder={`Условие задания\n[answer] — поле ответа\n[file] — загрузка файла`}
@@ -174,7 +180,9 @@ export default function ArchiveTasks({ id, goBack, user }) {
           header="Восстановить задание"
           onClose={() => setActiveModal(null)}
         >
-          <CustomText style={{ marginBottom: 12 }}>Выберите новый срок выполнения:</CustomText>
+          <ModalCloseButton onClick={() => setActiveModal(null)} />
+
+          <CustomText style={{ marginBottom: 12, marginTop: 27 }}>Выберите новый срок выполнения:</CustomText>
           <Input
             type="datetime-local"
             value={newExpires}
