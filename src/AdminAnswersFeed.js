@@ -245,56 +245,59 @@ export default function AdminAnswersFeed({ id, user, goBack }) {
                   border: '1px solid #ceaeff'
                 }}
               >
-                <CustomText weight="2">
-                  ID{a.user_id} — {a.first_name} {a.last_name}
+                <CustomText style={{ fontSize: 13 }}>
+                  <span style={{ fontWeight: 600 }}>ID{a.user_id}</span> — {a.first_name} {a.last_name}
                 </CustomText>
 
-                <CustomText style={{ marginTop: 6 }}>
-                  Задание: {a.task_title}
+                <CustomText style={{ marginTop: 4, fontSize: 12, color: '#8c64d7', lineHeight: 1 }}>
+                    <span style={{ fontWeight: 600 }}>Задание:</span> {a.task_title}
                 </CustomText>
 
-                <CustomText style={{ marginTop: 4, color: '#666' }}>
-                  Выполнено: {formatDate(a.created_at)}
+                <CustomText style={{ fontSize: 12, color: '#8c64d7' }}>
+                  <span style={{ fontWeight: 600 }}>Выполнено:</span> {formatDate(a.created_at)}
                 </CustomText>
 
-                <Div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
-                  <Button
-                    mode="primary"
-                    size="s"
-                    disabled={a.status !== 'pending'}
-                    onClick={() => {
-                      setActiveAnswer(a);
-                      setConfirmAction('accept');
-                      setActiveModal('confirm');
+                <div style={{ display: 'flex', gap: 6, marginTop: 8 }}>
+                  <div
+                    onClick={(e) => {
+                        setActiveAnswer(a);
+                        setConfirmAction('accept');
+                        setActiveModal('confirm');
+                    }}
+                    style={{
+                        flex: 1,
+                        backgroundColor: '#8c64d7',
+                        borderRadius: 999,
+                        padding: '1px 0',
+                        textAlign: 'center',
+                        cursor: 'pointer'
                     }}
                   >
-                    Принять
-                  </Button>
+                    <CustomText style={{ color: '#fff', fontSize: 10, fontWeight: 600 }}>
+                        принять
+                    </CustomText>
+                  </div>
 
-                  <Button
-                    mode="destructive"
-                    size="s"
-                    disabled={a.status !== 'pending'}
-                    onClick={() => {
+                  <div
+                    onClick={(e) => {
                       setActiveAnswer(a);
                       setConfirmAction('reject');
                       setActiveModal('confirm');
                     }}
-                  >
-                    Отклонить
-                  </Button>
-
-                  <Button
-                    mode="secondary"
-                    size="s"
-                    onClick={() => {
-                      setActiveAnswer(a);
-                      setActiveModal('answer');
+                    style={{
+                        flex: 1,
+                        border: '1px solid #8c64d7',
+                        borderRadius: 999,
+                        padding: '1px 0',
+                        textAlign: 'center',
+                        cursor: 'pointer'
                     }}
                   >
-                    Открыть
-                  </Button>
-                </Div>
+                    <CustomText style={{ color: '#8c64d7', fontSize: 10, fontWeight: 600 }}>
+                        отклонить
+                    </CustomText>
+                  </div>
+                </div>
               </Card>
             ))
           )}
