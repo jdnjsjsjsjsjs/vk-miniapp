@@ -302,7 +302,6 @@ export default function AdminAnswersFeed({ id, user, goBack }) {
             </div>
           </div>
         </ModalCard>
-
       </ModalRoot>
 
       <Panel id={id} style={{ backgroundColor: '#ceaeff', minHeight: '100vh' }}>

@@ -16,9 +16,6 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance, goT
   const [expiresAt, setExpiresAt] = useState('');
   const [requireFile, setRequireFile] = useState(false);
   const [activeTask, setActiveTask] = useState(null);
-  const [answers, setAnswers] = useState([]);
-  const [activeAnswer, setActiveAnswer] = useState(null);
-  const [confirmAction, setConfirmAction] = useState(null);
   const [editTask, setEditTask] = useState(null);
   const [deleteTaskTarget, setDeleteTaskTarget] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -82,29 +79,6 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance, goT
     );
 
     return expiresMoscow >= nowMoscow;
-  }
-
-  async function handleAnswer(action) {
-    await fetch(
-      `http://localhost:3001/api/admin/answers/${activeAnswer.id}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userId: user.id,
-          action
-        })
-      }
-    );
-
-    setActiveAnswer(null);
-    setActiveModal('task');
-
-    const res = await fetch(
-      `http://localhost:3001/api/admin/tasks/${activeTask.id}/answers?userId=${user.id}`
-    );
-    const data = await res.json();
-    setAnswers(data);
   }
 
   // Функции для сохранения редактирования и удаления
@@ -535,157 +509,6 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance, goT
           </div>
         </ModalCard>
 
-        <ModalCard
-          id="task"
-          onClose={() => {
-            setActiveModal(null);
-            setActiveTask(null);
-            setAnswers([]);
-          }}
-        >
-          {answers.length === 0 ? (
-            <CustomText style={{ color: '#999' }}>
-              Ответов пока нет
-            </CustomText>
-          ) : (
-            answers.map(a => (
-              <Div
-                key={a.id}
-                style={{
-                  padding: 12,
-                  borderRadius: 10,
-                  backgroundColor: '#f5f5f5',
-                  marginBottom: 8,
-                  cursor: 'pointer'
-                }}
-                onClick={() => {
-                  setActiveAnswer(a);
-                  setActiveModal('answer');
-                }}
-              >
-                <CustomText style={{ color: '#8c64d7' }}>
-                  {a.first_name} {a.last_name}
-                </CustomText>
-                <CustomText
-                  style={{
-                    fontSize: 13,
-                    fontWeight: 500,
-                    color:
-                      a.status === 'accepted'
-                        ? '#4caf50'
-                        : a.status === 'rejected'
-                        ? '#f44336'
-                        : '#ff9800',
-                  }}
-                >
-                  {a.status === 'pending' && '⏳ На проверке'}
-                  {a.status === 'accepted' && '✅ Принято'}
-                  {a.status === 'rejected' && '❌ Отклонено'}
-                </CustomText>
-              </Div>
-            ))
-          )}
-        </ModalCard>
-
-        <ModalCard
-          id="answer"
-          onClose={() => {
-            setActiveModal('task');
-            setActiveAnswer(null);
-          }}
-          header={`${activeAnswer?.first_name} ${activeAnswer?.last_name}`}
-          subheader="Ответ пользователя"
-          actions={
-            activeAnswer?.status === 'pending' && (
-              <Div style={{ display: 'flex', gap: 8 }}>
-                <Button
-                  mode="primary"
-                  onClick={() => {
-                    setConfirmAction('accept');
-                    setActiveModal('confirm');
-                  }}
-                >
-                  Принять
-                </Button>
-                <Button
-                  mode="destructive"
-                  onClick={() => {
-                    setConfirmAction('reject');
-                    setActiveModal('confirm');
-                  }}
-                >
-                  Отклонить
-                </Button>
-              </Div>
-            )
-          }
-        >
-          <CustomText>{activeAnswer?.answer}</CustomText>
-          {activeAnswer?.file_path && (
-            <Div style={{ marginTop: 12 }}>
-              {activeAnswer.file_path.endsWith('.pdf') ? (
-                <a
-                  href={`http://localhost:3001${activeAnswer.file_path}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  📄 Открыть PDF
-                </a>
-              ) : (
-                <img
-                  src={`http://localhost:3001${activeAnswer.file_path}`}
-                  alt="Ответ"
-                  style={{
-                    width: '100%',
-                    borderRadius: 12,
-                    marginTop: 8
-                  }}
-                />
-              )}
-            </Div>
-          )}
-        </ModalCard>
-
-        <ModalCard
-          id="confirm"
-          onClose={() => setActiveModal('answer')}
-          actions={
-            <Div style={{ display: 'flex', gap: 8 }}>
-              <Button
-                mode={confirmAction === 'accept' ? 'primary' : 'destructive'}
-                onClick={() => {
-                  handleAnswer(confirmAction);
-                  setConfirmAction(null);
-                }}
-              >
-                Подтвердить
-              </Button>
-              <Button
-                mode="secondary"
-                onClick={() => setActiveModal('answer')}
-              >
-                Отмена
-              </Button>
-            </Div>
-          }
-        >
-          {/* Динамический контент вместо header/subheader */}
-          <CustomText weight="2" style={{ marginBottom: 8 }}>
-            {confirmAction === 'accept'
-              ? 'Подтвердить принятие'
-              : confirmAction === 'reject'
-              ? 'Подтвердить отклонение'
-              : ''}
-          </CustomText>
-          <CustomText style={{ color: '#666' }}>
-            {confirmAction === 'accept'
-              ? 'Пользователю будут начислены баллы'
-              : confirmAction === 'reject'
-              ? 'Ответ пользователя будет отклонён'
-              : ''}
-          </CustomText>
-        </ModalCard>
-
         {/* Модалка редактирования */}
         <ModalCard
           id="editTask"
@@ -976,20 +799,48 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance, goT
         {/* Модалка удаления */}
         <ModalCard
           id="deleteTask"
-          header="Удалить задание?"
           onClose={() => setActiveModal(null)}
         >
-          <CustomText style={{ marginBottom: 12 }}>
-            Задание <b>{deleteTaskTarget?.title}</b> будет удалено навсегда.
+          <ModalCloseButton onClick={() => setActiveModal(null)} />
+          <CustomText weight="1" style={{ marginBottom: 20 }}>
+            Удалить <b style={{ color: '#8c64d7' }}>{deleteTaskTarget?.title}</b>?
           </CustomText>
-          <Div style={{ display: 'flex', gap: 8 }}>
-            <Button mode="destructive" stretched onClick={deleteTask}>
-              Удалить
-            </Button>
-            <Button mode="secondary" stretched onClick={() => setActiveModal(null)}>
-              Отмена
-            </Button>
-          </Div>
+
+          <div style={{ display: 'flex', gap: 6 }}>
+            {/* Кнопка Подтвердить */}
+            <div
+              onClick={deleteTask}
+              style={{
+                flex: 1,
+                backgroundColor: '#8c64d7',
+                borderRadius: 999,
+                padding: '1px 0',
+                textAlign: 'center',
+                cursor: 'pointer'
+              }}
+            >
+              <CustomText style={{ color: '#fff', fontSize: 10, fontWeight: 600 }}>
+                удалить
+              </CustomText>
+            </div>
+
+            {/* Кнопка Отмена */}
+            <div
+              onClick={() => setActiveModal(null)}
+              style={{
+                flex: 1,
+                border: '1px solid #8c64d7',
+                borderRadius: 999,
+                padding: '1px 0',
+                textAlign: 'center',
+                cursor: 'pointer'
+              }}
+            >
+              <CustomText style={{ color: '#8c64d7', fontSize: 10, fontWeight: 600 }}>
+                отмена
+              </CustomText>
+            </div>
+          </div>
         </ModalCard>
       </ModalRoot>
       <style>{inputStyle}</style>
