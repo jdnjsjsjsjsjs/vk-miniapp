@@ -7,7 +7,7 @@ import {
   ModalRoot,
   ModalCard
 } from '@vkontakte/vkui';
-import { Icon28ChevronBack } from '@vkontakte/icons';
+import { Icon28ChevronBack, Icon24Cancel } from '@vkontakte/icons';
 import { CustomText } from './CustomTypography';
 
 import tasksIcon from './imgs/tasks.png'
@@ -57,9 +57,144 @@ export default function AdminAnswersFeed({ id, user, goBack }) {
     setActiveAnswer(null);
   }
 
+  const ModalCloseButton = ({ onClick }) => (
+    <div
+      onClick={onClick}
+      style={{
+        position: 'absolute',
+        top: 10,
+        right: 18,
+        width: 24,
+        height: 24,
+        borderRadius: '50%',
+        border: '1px solid #d9d9d9',
+        backgroundColor: '#fff',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        cursor: 'pointer',
+        zIndex: 10,
+      }}
+    >
+      <Icon24Cancel width={16} height={16} fill="#000" />
+    </div>
+  );
+
   return (
     <>
       <ModalRoot activeModal={activeModal}>
+
+        {/* Просмотр и принятие ответа пользователя */}
+        <ModalCard
+          id="answerInfo"
+          onClose={() => {
+            setActiveModal(null);
+            setActiveAnswer(null);
+          }}
+        >
+          <ModalCloseButton onClick={() => setActiveModal(null)} />
+
+          {/* ID и имя пользователя */}
+          <CustomText
+            weight="1"
+            style={{ fontSize: 16, color: '#000', marginBottom: 5 }}
+          >
+            ID{activeAnswer?.user_id} - {activeAnswer?.first_name} {activeAnswer?.last_name}
+          </CustomText>
+
+          {/* Задание */}
+          <CustomText
+            style={{
+              fontSize: 10,
+              color: '#8c64d7',
+              lineHeight: 1
+            }}
+          >
+            <span style={{ fontWeight: 600 }}>Задание:</span> {activeAnswer?.task_title}
+          </CustomText>
+
+          {/* Дата выполнения */}
+          <CustomText
+            style={{
+              fontSize: 10,
+              color: '#8c64d7',
+              lineHeight: 1,
+              marginTop: 5, 
+              marginBottom: 20
+            }}
+          >
+            <span style={{ fontWeight: 600 }}>Выполнено:</span> {formatDate(activeAnswer?.created_at)}
+          </CustomText>
+
+          {/* Файл(ы) */}
+          {activeAnswer?.file_path && (
+            <div style={{ marginBottom: 12 }}>
+              <CustomText style={{ fontWeight: 600, fontSize: 10, lineHeight: 1 }}>Файл:</CustomText>
+              {Array.isArray(activeAnswer.file_path)
+                ? activeAnswer.file_path.map((f, i) => (
+                    <a
+                      key={i}
+                      href={`http://localhost:3001${f}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ display: 'block', marginBottom: 2, color: '#8c64d7', fontSize: 10 }}
+                    >
+                      {f.split('/').pop()}
+                    </a>
+                  ))
+                : (
+                  <a
+                    href={`http://localhost:3001${activeAnswer.file_path}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ display: 'block', marginBottom: 2, color: '#8c64d7', fontSize: 10 }}
+                  >
+                    {activeAnswer.file_path.split('/').pop()}
+                  </a>
+                )}
+            </div>
+          )}
+
+          {/* Сообщение пользователя */}
+          <div>
+            <CustomText style={{ fontWeight: 600, fontSize: 10, lineHeight: 1 }}>Текстовое сообщение:</CustomText>
+            <CustomText
+              style={{
+                fontSize: 10,
+                color: '#8c64d7',
+                lineHeight: 1,
+                whiteSpace: 'pre-wrap',
+                marginTop: 5,
+                marginLeft: 2
+              }}
+            >
+              {activeAnswer?.answer}
+            </CustomText>
+          </div>
+
+          {/* Кнопка принять */}
+          {activeAnswer?.status === 'pending' && (
+            <div
+              onClick={() => {
+                setConfirmAction('accept');
+                setActiveModal('confirm');
+              }}
+              style={{
+                width: '100%',
+                backgroundColor: '#8c64d7',
+                borderRadius: 999,
+                padding: '1px 0',
+                textAlign: 'center',
+                cursor: 'pointer',
+                marginTop: 16
+              }}
+            >
+              <CustomText style={{ color: '#fff', fontSize: 10, fontWeight: 600 }}>
+                принять
+              </CustomText>
+            </div>
+          )}
+        </ModalCard>
 
         {/* Просмотр ответа */}
         <ModalCard
@@ -122,29 +257,50 @@ export default function AdminAnswersFeed({ id, user, goBack }) {
         {/* Подтверждение */}
         <ModalCard
           id="confirm"
-          onClose={() => setActiveModal('answer')}
-          actions={
-            <Div style={{ display: 'flex', gap: 8 }}>
-              <Button
-                mode={confirmAction === 'accept' ? 'primary' : 'destructive'}
-                onClick={() => handleAnswer(confirmAction)}
-              >
-                Подтвердить
-              </Button>
-              <Button
-                mode="secondary"
-                onClick={() => setActiveModal('answer')}
-              >
-                Отмена
-              </Button>
-            </Div>
-          }
+          onClose={() => setActiveModal('answerInfo')}
         >
-          <CustomText weight="2">
+          <ModalCloseButton onClick={() => setActiveModal(null)} />
+          <CustomText weight="1" style={{ marginBottom: 20 }}>
             {confirmAction === 'accept'
               ? 'Подтвердить принятие'
               : 'Подтвердить отклонение'}
           </CustomText>
+
+          <div style={{ display: 'flex', gap: 6 }}>
+            {/* Кнопка Подтвердить */}
+            <div
+              onClick={() => handleAnswer(confirmAction)}
+              style={{
+                flex: 1,
+                backgroundColor: '#8c64d7',
+                borderRadius: 999,
+                padding: '1px 0',
+                textAlign: 'center',
+                cursor: 'pointer'
+              }}
+            >
+              <CustomText style={{ color: '#fff', fontSize: 10, fontWeight: 600 }}>
+                подтвердить
+              </CustomText>
+            </div>
+
+            {/* Кнопка Отмена */}
+            <div
+              onClick={() => setActiveModal('answerInfo')}
+              style={{
+                flex: 1,
+                border: '1px solid #8c64d7',
+                borderRadius: 999,
+                padding: '1px 0',
+                textAlign: 'center',
+                cursor: 'pointer'
+              }}
+            >
+              <CustomText style={{ color: '#8c64d7', fontSize: 10, fontWeight: 600 }}>
+                отмена
+              </CustomText>
+            </div>
+          </div>
         </ModalCard>
 
       </ModalRoot>
@@ -234,7 +390,9 @@ export default function AdminAnswersFeed({ id, user, goBack }) {
               Ответов пока нет
             </CustomText>
           ) : (
-            answers.map(a => (
+            answers
+              .filter(a => a.status !== 'accepted') 
+              .map(a => (
               <Card
                 key={a.id}
                 style={{
@@ -258,45 +416,62 @@ export default function AdminAnswersFeed({ id, user, goBack }) {
                 </CustomText>
 
                 <div style={{ display: 'flex', gap: 6, marginTop: 8 }}>
-                  <div
-                    onClick={(e) => {
-                        setActiveAnswer(a);
-                        setConfirmAction('accept');
-                        setActiveModal('confirm');
-                    }}
-                    style={{
-                        flex: 1,
-                        backgroundColor: '#8c64d7',
-                        borderRadius: 999,
-                        padding: '1px 0',
-                        textAlign: 'center',
-                        cursor: 'pointer'
-                    }}
-                  >
-                    <CustomText style={{ color: '#fff', fontSize: 10, fontWeight: 600 }}>
-                        принять
-                    </CustomText>
-                  </div>
+                  {a.status === 'pending' ? (
+                    <>
+                      <div
+                        onClick={() => {
+                          setActiveAnswer(a);
+                          setActiveModal('answerInfo');
+                        }}
+                        style={{
+                          flex: 1,
+                          backgroundColor: '#8c64d7',
+                          borderRadius: 999,
+                          padding: '1px 0',
+                          textAlign: 'center',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        <CustomText style={{ color: '#fff', fontSize: 10, fontWeight: 600 }}>
+                          принять
+                        </CustomText>
+                      </div>
 
-                  <div
-                    onClick={(e) => {
-                      setActiveAnswer(a);
-                      setConfirmAction('reject');
-                      setActiveModal('confirm');
-                    }}
-                    style={{
+                      <div
+                        onClick={() => {
+                          setActiveAnswer(a);
+                          setConfirmAction('reject');
+                          setActiveModal('confirm');
+                        }}
+                        style={{
+                          flex: 1,
+                          border: '1px solid #8c64d7',
+                          borderRadius: 999,
+                          padding: '1px 0',
+                          textAlign: 'center',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        <CustomText style={{ color: '#8c64d7', fontSize: 10, fontWeight: 600 }}>
+                          отклонить
+                        </CustomText>
+                      </div>
+                    </>
+                  ) : a.status === 'rejected' ? (
+                    <div
+                      style={{
                         flex: 1,
-                        border: '1px solid #8c64d7',
+                        backgroundColor: '#ff3b3033', // лёгкий красный фон
                         borderRadius: 999,
                         padding: '1px 0',
-                        textAlign: 'center',
-                        cursor: 'pointer'
-                    }}
-                  >
-                    <CustomText style={{ color: '#8c64d7', fontSize: 10, fontWeight: 600 }}>
-                        отклонить
-                    </CustomText>
-                  </div>
+                        textAlign: 'center'
+                      }}
+                    >
+                      <CustomText style={{ color: '#ff3b30', fontSize: 10, fontWeight: 600 }}>
+                        отклонено
+                      </CustomText>
+                    </div>
+                  ) : null}
                 </div>
               </Card>
             ))
