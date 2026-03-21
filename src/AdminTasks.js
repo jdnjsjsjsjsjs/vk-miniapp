@@ -1,7 +1,7 @@
 // AdminTasks.js
 import { useState, useEffect } from 'react';
-import { Panel, Div, Button, ModalRoot, ModalCard, Input, Textarea, Checkbox, Card } from '@vkontakte/vkui';
-import { Icon28ChevronBack, Icon16Search, Icon24Cancel } from '@vkontakte/icons';
+import { Panel, Div, Button, ModalRoot, ModalCard, Card } from '@vkontakte/vkui';
+import { Icon28ChevronBack, Icon16Search, Icon24Cancel, Icon24Attach } from '@vkontakte/icons';
 import { CustomText } from './CustomTypography';
 
 import coinIcon from './imgs/coin.png'
@@ -53,6 +53,20 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance, goT
     });
 
     return `до ${formatted}`;
+  }
+
+  function formatDateTime(dateString) {
+    if (!dateString) return 'бессрочно';
+
+    const date = new Date(dateString);
+
+    return date.toLocaleString('ru-RU', {
+      timeZone: 'Europe/Moscow',
+      day: 'numeric',
+      month: 'long',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
   }
 
   function isTaskActive(task) {
@@ -436,6 +450,92 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance, goT
         </ModalCard>
 
         <ModalCard
+          id="taskInfo"
+          onClose={() => {
+            setActiveModal(null);
+            setActiveTask(null);
+          }}
+        >
+          <ModalCloseButton onClick={() => setActiveModal(null)} />
+
+          {/* Название */}
+          <CustomText
+            weight="1"
+            style={{ fontSize: 16, color: '#000', marginBottom: 12 }}
+          >
+            Задание - {activeTask?.title}
+          </CustomText>
+
+          {/* Описание */}
+          <CustomText
+            style={{
+              fontSize: 10,
+              lineHeight: 1,
+              color: '#000',
+              marginBottom: 12,
+              whiteSpace: 'pre-wrap'
+            }}
+          >
+            {activeTask?.question}
+          </CustomText>
+
+          {/* Файл */}
+          {activeTask?.require_file ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 3}}>
+              <Icon24Attach width={12} height={12} fill="#8c64d7" />
+              <CustomText style={{ fontSize: 10, color: '#000' }}>
+                требуется файл
+              </CustomText>
+            </div>
+          ) : null}
+
+          {/* Награда */}
+          <CustomText
+            style={{
+              fontSize: 10,
+              color: '#000',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6,
+              lineHeight: 1
+            }}
+          >
+            <span style={{ color: '#8c64d7', fontWeight: 700 }}>
+              Награда:
+            </span>{' '}
+            {activeTask?.reward}
+          </CustomText>
+
+          {/* Срок */}
+          <CustomText style={{ fontSize: 10, color: '#000', lineHeight: 1, marginTop: 5 }}>
+            <span style={{ color: '#8c64d7', fontWeight: 700 }}>
+              Срок выполнения:
+            </span>{' '}
+            {formatDateTime(activeTask?.expires_at)}
+          </CustomText>
+          
+          <div
+            onClick={() => {
+              setEditTask(activeTask);
+              setActiveModal('editTask');
+            }}
+            style={{
+              width: '100%',
+              backgroundColor: '#8c64d7',
+              borderRadius: 999,
+              padding: '1px 0',
+              textAlign: 'center',
+              cursor: 'pointer',
+              marginTop: 16
+            }}
+          >
+            <CustomText style={{ color: '#fff', fontSize: 10, fontWeight: 600 }}>
+              редактировать
+            </CustomText>
+          </div>
+        </ModalCard>
+
+        <ModalCard
           id="task"
           onClose={() => {
             setActiveModal(null);
@@ -589,72 +689,288 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance, goT
         {/* Модалка редактирования */}
         <ModalCard
           id="editTask"
-          header="Редактировать задание"
           onClose={() => { setEditTask(null); setActiveModal(null); }}
         >
-          <Input
-            placeholder="Название"
+          <ModalCloseButton onClick={() => setActiveModal(null)} />
+          <CustomText
+            weight="1"
+            style={{ fontSize: 16, color: '#000', marginTop: 27, marginBottom: 10 }}
+          >
+            Редактировать
+          </CustomText>
+          <input
+            type="text"
+            placeholder="название задания..."
             value={editTask?.title || ''}
             onChange={e => setEditTask({ ...editTask, title: e.target.value })}
-            style={{ marginBottom: 12 }}
+            className="search-input"
+            style={{
+              width: '92%',
+              padding: '6px 12px',
+              borderRadius: 999,
+              border: '1px solid #ceaeff',
+              outline: 'none',
+              fontSize: 12,
+              color: '#ceaeff',
+              marginBottom: 14,
+            }}
           />
-          <Textarea
-            placeholder={`
-              Условие задания
 
-              Можно использовать:
-              [answer] — поле ответа
-              [file] — загрузка файла
-            `}
+          {/* ВОПРОС */}
+          <CustomText
+            weight="1"
+            style={{ fontSize: 16, color: '#000', marginBottom: 8 }}
+          >
+            Вопрос / условие
+          </CustomText>
+
+          <textarea
+            placeholder={`1...
+2...
+......
+*где нужно поле ответа - [answer], файл - [file], enter после не нажимаем!`}
             value={editTask?.question || ''}
             onChange={e => setEditTask({ ...editTask, question: e.target.value })}
-            style={{ marginBottom: 12 }}
+            className="search-input"
+            style={{
+              width: '92%',
+              height: '72px',
+              padding: '6px 12px',
+              borderRadius: 12,
+              border: '1px solid #ceaeff',
+              outline: 'none',
+              fontSize: 12,
+              color: '#ceaeff',
+              marginBottom: 1, 
+              resize: 'none'
+            }}
           />
-          <Input
+
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              marginBottom: 16,
+              gap: 30,
+              marginLeft: 20
+            }}
+          >
+            <CustomText style={{ fontSize: 10, color: '#000' }}>
+              файл
+            </CustomText>
+
+            <div
+              onClick={() =>
+                setEditTask({
+                  ...editTask,
+                  require_file: editTask?.require_file ? 0 : 1
+                })
+              }
+              style={{
+                width: 18,
+                height: 11,
+                borderRadius: '30%',
+                backgroundColor: editTask?.require_file ? '#8c64d7' : '#ceaeff',
+                position: 'relative',
+                cursor: 'pointer',
+                transition: '0.2s'
+              }}
+            >
+              <div
+                style={{
+                  position: 'absolute',
+                  top: 2,
+                  left: editTask?.require_file ? 9 : 2,
+                  width: 7,
+                  height: 7,
+                  borderRadius: '30%',
+                  backgroundColor: '#fff',
+                  transition: '0.2s'
+                }}
+              />
+            </div>
+          </div>
+          {/* НАГРАДА */}
+          <CustomText
+            weight="1"
+            style={{ fontSize: 16, color: '#000', marginBottom: 8 }}
+          >
+            Награда
+          </CustomText>
+          <input
             type="number"
-            placeholder="Награда"
+            placeholder="количество баллов..."
             value={editTask?.reward || ''}
             onChange={e => setEditTask({ ...editTask, reward: e.target.value })}
-            style={{ marginBottom: 12 }}
+            className="search-input"
+            style={{
+              width: '92%',
+              padding: '6px 12px',
+              borderRadius: 999,
+              border: '1px solid #ceaeff',
+              outline: 'none',
+              fontSize: 12,
+              color: '#ceaeff',
+              marginBottom: 14
+            }}
           />
-          <Input
-            type="datetime-local"
-            value={editTask?.expires_at || ''}
-            onChange={e => setEditTask({ ...editTask, expires_at: e.target.value })}
-          />
-          <Checkbox
-            checked={!!editTask?.require_file}
-            onChange={e =>
-              setEditTask({
-                ...editTask,
-                require_file: e.target.checked ? 1 : 0
-              })
-            }
-            style={{ marginTop: 12 }}
+          {/* СРОК */}
+          <CustomText
+            weight="1"
+            style={{ fontSize: 16, color: '#000', marginBottom: 8 }}
           >
-            Требуется загрузка файла
-          </Checkbox>
-          <Checkbox
-            checked={!!editTask?.archive}
-            onChange={e =>
-              setEditTask({
-                ...editTask,
-                archive: e.target.checked ? 1 : 0
-              })
-            }
-            style={{ marginTop: 12 }}
+            Срок выполнения
+          </CustomText>
+          <div style={{ position: 'relative', marginBottom: 1 }}>
+            <input
+              type="datetime-local"
+              value={editTask?.expires_at || ''}
+              onChange={e => setEditTask({ ...editTask, expires_at: e.target.value })}
+              className="search-input"
+              style={{
+                width: '92%',
+                padding: '6px 12px',
+                borderRadius: 999,
+                border: '1px solid #ceaeff',
+                outline: 'none',
+                fontSize: 12,
+                color: '#ceaeff'
+              }}
+            />
+          </div>
+          {/* БЕССРОЧНО */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 10,
+              marginLeft: 20
+            }}
           >
-            Архивировать
-          </Checkbox>
+            <CustomText style={{ fontSize: 10, color: '#000' }}>
+              бессрочно
+            </CustomText>
 
-          <Div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
-            <Button mode="primary" stretched onClick={saveEditTask}>
-              Сохранить
-            </Button>
-            <Button mode="secondary" stretched onClick={() => setActiveModal(null)}>
-              Отмена
-            </Button>
-          </Div>
+            <div
+              onClick={() =>
+                setEditTask({
+                  ...editTask,
+                  expires_at: editTask?.expires_at ? null : new Date().toISOString()
+                })
+              }
+              style={{
+                width: 18,
+                height: 11,
+                borderRadius: '30%',
+                backgroundColor: !editTask?.expires_at ? '#8c64d7' : '#ceaeff',
+                position: 'relative',
+                cursor: 'pointer',
+                transition: '0.2s'
+              }}
+            >
+              <div
+                style={{
+                  position: 'absolute',
+                  top: 2,
+                  left: !editTask?.expires_at ? 9 : 2,
+                  width: 7,
+                  height: 7,
+                  borderRadius: '30%',
+                  backgroundColor: '#fff',
+                  transition: '0.2s'
+                }}
+              />
+            </div>
+          </div>
+          {/* АРХИВ */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              marginBottom: 16,
+              gap: 30,
+              marginLeft: 20
+            }}
+          >
+            <CustomText style={{ fontSize: 10, color: '#000' }}>
+              архивировать
+            </CustomText>
+
+            <div
+              onClick={() =>
+                setEditTask({
+                  ...editTask,
+                  archive: editTask?.archive ? 0 : 1
+                })
+              }
+              style={{
+                width: 18,
+                height: 11,
+                borderRadius: '30%',
+                backgroundColor: editTask?.archive ? '#8c64d7' : '#ceaeff',
+                position: 'relative',
+                cursor: 'pointer',
+                transition: '0.2s'
+              }}
+            >
+              <div
+                style={{
+                  position: 'absolute',
+                  top: 2,
+                  left: editTask?.archive ? 9 : 2,
+                  width: 7,
+                  height: 7,
+                  borderRadius: '30%',
+                  backgroundColor: '#fff',
+                  transition: '0.2s'
+                }}
+              />
+            </div>
+          </div>
+
+          <div
+            onClick={async () => {
+              if (
+                !editTask?.title ||
+                !editTask?.question ||
+                !editTask?.reward ||
+                isCreated
+              ) return;
+
+              try {
+                await saveEditTask();
+
+                setIsCreated(true);
+
+                setTimeout(() => {
+                  setIsCreated(false);
+                  setActiveModal(null);
+                }, 3000);
+
+              } catch (e) {
+                console.error('Ошибка сохранения задания', e);
+              }
+            }}
+            style={{
+              width: '100%',
+              backgroundColor: isCreated
+                ? '#ceaeff'
+                : (!editTask?.title || !editTask?.question || !editTask?.reward)
+                ? '#ceaeff'
+                : '#8c64d7',
+              borderRadius: 999,
+              padding: '1px 0',
+              textAlign: 'center',
+              cursor:
+                (!editTask?.title || !editTask?.question || !editTask?.reward || isCreated)
+                  ? 'default'
+                  : 'pointer',
+            }}
+          >
+            <CustomText style={{ color: '#fff', fontSize: 10, fontWeight: 600 }}>
+              {isCreated ? 'сохранено' : 'сохранить'}
+            </CustomText>
+          </div>
         </ModalCard>
 
         {/* Модалка удаления */}
@@ -871,15 +1187,9 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance, goT
                       display: 'flex',
                       flexDirection: 'column',
                     }}
-                    onClick={async () => {
+                    onClick={() => {
                       setActiveTask(task);
-                      setActiveModal('task');
-
-                      const res = await fetch(
-                        `http://localhost:3001/api/admin/tasks/${task.id}/answers?userId=${user.id}`
-                      );
-                      const data = await res.json();
-                      setAnswers(data);
+                      setActiveModal('taskInfo');
                     }}
                   >
                     <CustomText weight="2" style={{ fontSize: 10, color: '#000' }}>
