@@ -202,7 +202,7 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance, goT
             className="search-input"
             style={{
               width: '92%',
-              height: '72px',
+              minHeight: '72px',
               padding: '6px 12px',
               borderRadius: 12,
               border: '1px solid #ceaeff',

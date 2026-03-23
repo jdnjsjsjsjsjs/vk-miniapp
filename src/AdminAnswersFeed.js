@@ -18,6 +18,14 @@ export default function AdminAnswersFeed({ id, user, goBack }) {
   const [activeAnswer, setActiveAnswer] = useState(null);
   const [confirmAction, setConfirmAction] = useState(null);
   const [comment, setComment] = useState('');
+  const [actionMode, setActionMode] = useState(null); 
+
+  const inputStyle = `
+    .search-input::placeholder {
+      color: #ceaeff;
+      opacity: 1;
+    }
+  `;
 
   useEffect(() => {
     if (!user?.id) return;
@@ -57,6 +65,9 @@ export default function AdminAnswersFeed({ id, user, goBack }) {
 
     setActiveModal(null);
     setActiveAnswer(null);
+    setComment('');
+    setActionMode(null);
+    setConfirmAction(null);
   }
 
   const ModalCloseButton = ({ onClick }) => (
@@ -174,11 +185,42 @@ export default function AdminAnswersFeed({ id, user, goBack }) {
             </CustomText>
           </div>
 
+          {actionMode === 'reject' && (
+            <div style={{ marginTop: 12 }}>
+              <CustomText style={{ fontSize: 10, fontWeight: 600 }}>
+                Комментарий:
+              </CustomText>
+
+              <textarea
+                placeholder="напишите комментарий..."
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                className="search-input"
+                style={{
+                  width: '92%',
+                  minHeight: '72px',
+                  borderRadius: 12,
+                  border: '1px solid #ceaeff',
+                  padding: '6px 12px',
+                  outline: 'none',
+                  fontSize: 12,
+                  color: '#000',
+                  resize: 'none'
+                }}
+              />
+            </div>
+          )}
+
           {/* Кнопка принять */}
           {activeAnswer?.status === 'pending' && (
             <div
               onClick={() => {
-                setConfirmAction('accept');
+                if (actionMode === 'reject' && !comment.trim()) {
+                  alert('Введите комментарий');
+                  return;
+                }
+
+                setConfirmAction(actionMode);
                 setActiveModal('confirm');
               }}
               style={{
@@ -188,11 +230,13 @@ export default function AdminAnswersFeed({ id, user, goBack }) {
                 padding: '1px 0',
                 textAlign: 'center',
                 cursor: 'pointer',
-                marginTop: 16
+                marginTop: 16,
+                opacity:
+                  actionMode === 'reject' && !comment.trim() ? 0.5 : 1
               }}
             >
               <CustomText style={{ color: '#fff', fontSize: 10, fontWeight: 600 }}>
-                принять
+                {actionMode === 'reject' ? 'отклонить' : 'принять'}
               </CustomText>
             </div>
           )}
@@ -221,7 +265,6 @@ export default function AdminAnswersFeed({ id, user, goBack }) {
                   onClick={() => {
                     setConfirmAction('reject');
                     setActiveModal('confirm');
-                    setComment('');
                   }}
                 >
                   Отклонить
@@ -260,7 +303,10 @@ export default function AdminAnswersFeed({ id, user, goBack }) {
         {/* Подтверждение */}
         <ModalCard
           id="confirm"
-          onClose={() => setActiveModal('answerInfo')}
+          onClose={() => {
+            setActiveModal('answerInfo');
+            setConfirmAction(null);
+          }}
         >
           <ModalCloseButton onClick={() => setActiveModal(null)} />
           <CustomText weight="1" style={{ marginBottom: 20 }}>
@@ -269,28 +315,17 @@ export default function AdminAnswersFeed({ id, user, goBack }) {
               : 'Подтвердить отклонение'}
           </CustomText>
 
-          {confirmAction === 'reject' && (
-            <textarea
-              placeholder="Комментарий пользователю..."
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              style={{
-                width: '100%',
-                minHeight: 70,
-                borderRadius: 8,
-                border: '1px solid #ddd',
-                padding: 8,
-                fontSize: 12,
-                marginBottom: 12,
-                resize: 'none'
-              }}
-            />
-          )}
-
           <div style={{ display: 'flex', gap: 6 }}>
             {/* Кнопка Подтвердить */}
             <div
-              onClick={() => handleAnswer(confirmAction)}
+              onClick={() => {
+                if (confirmAction === 'reject' && !comment.trim()) {
+                  alert('Введите комментарий');
+                  return;
+                }
+
+                handleAnswer(confirmAction);
+              }}
               style={{
                 flex: 1,
                 backgroundColor: '#8c64d7',
@@ -324,7 +359,7 @@ export default function AdminAnswersFeed({ id, user, goBack }) {
           </div>
         </ModalCard>
       </ModalRoot>
-
+      <style>{inputStyle}</style>
       <Panel id={id} style={{ backgroundColor: '#ceaeff', minHeight: '100vh' }}>
         <Div style={{ height: 32, backgroundColor: '#ceaeff' }} />
         {/* Header */}
@@ -465,6 +500,7 @@ export default function AdminAnswersFeed({ id, user, goBack }) {
                       <div
                         onClick={() => {
                           setActiveAnswer(a);
+                          setActionMode('accept');
                           setActiveModal('answerInfo');
                         }}
                         style={{
@@ -484,8 +520,9 @@ export default function AdminAnswersFeed({ id, user, goBack }) {
                       <div
                         onClick={() => {
                           setActiveAnswer(a);
-                          setConfirmAction('reject');
-                          setActiveModal('confirm');
+                          setActionMode('reject');
+                          setComment('');
+                          setActiveModal('answerInfo');
                         }}
                         style={{
                           flex: 1,

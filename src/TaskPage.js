@@ -35,18 +35,18 @@ export default function TaskPage({ id, goBack, task, balance, goToBalance, user 
             .then(setMyAnswer)
             .catch(() => {});
     }, [task, user]);
-
-    const isAnswerEmpty = !answer.trim();
     const isFileMissing = task.require_file === 1 && !selectedFile;
 
-    const isFormValid = !isAnswerEmpty && !isFileMissing;
-
     if (!task) return null;
+    const requiresText = task.question.includes('[answer]');
+
+    const isAnswerEmpty = requiresText && !answer.trim();
+    const isFormValid = !isFileMissing && !isAnswerEmpty;
 
     const submitTask = async () => {
 
         if (isSubmitting) return;
-        if (!answer.trim()) return;
+        if (requiresText && !answer.trim()) return;
 
         if (task.require_file === 1 && !selectedFile) {
             alert('Необходимо загрузить файл');
@@ -61,7 +61,7 @@ export default function TaskPage({ id, goBack, task, balance, goToBalance, user 
 
                 const formData = new FormData();
                 formData.append('userId', user.id);
-                formData.append('answer', answer);
+                formData.append('answer', requiresText ? answer : '');
                 formData.append('file', selectedFile);
 
                 await fetch(
@@ -81,7 +81,7 @@ export default function TaskPage({ id, goBack, task, balance, goToBalance, user 
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             userId: user.id,
-                            answer
+                            answer: requiresText ? answer : null
                         })
                     }
                 );
