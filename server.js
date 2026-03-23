@@ -199,6 +199,7 @@ db.run(`
     answer TEXT,
     file_path TEXT,
     status TEXT DEFAULT 'pending',
+    was_rejected INTEGER DEFAULT 0,
     created_at TEXT DEFAULT CURRENT_TIMESTAMP,
     UNIQUE(task_id, user_id)
   )
@@ -462,6 +463,7 @@ app.post('/api/tasks/:taskId/answer', (req, res) => {
     DO UPDATE SET
       answer = excluded.answer,
       status = 'pending',
+      was_rejected = task_answers.was_rejected,
       created_at = CURRENT_TIMESTAMP
     `,
     [taskId, userId, answer],
@@ -647,8 +649,8 @@ app.post('/api/admin/answers/:answerId', (req, res) => {
       const newStatus = action === 'accept' ? 'accepted' : 'rejected';
 
       db.run(
-        'UPDATE task_answers SET status = ? WHERE id = ?',
-        [newStatus, answerId],
+        'UPDATE task_answers SET status = ?, was_rejected = ? WHERE id = ?',
+        [newStatus, newStatus === 'rejected' ? 1 : answer.was_rejected, answerId],
         () => {
 
           if (answer.file_path) {
@@ -1336,6 +1338,7 @@ app.get('/api/admin/answers-feed', (req, res) => {
         a.user_id,
         a.file_path,
         a.created_at,
+        a.was_rejected,
         u.first_name,
         u.last_name,
         t.title as task_title

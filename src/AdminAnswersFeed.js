@@ -399,9 +399,33 @@ export default function AdminAnswersFeed({ id, user, goBack }) {
                   padding: 14,
                   marginBottom: 8,
                   backgroundColor: '#fff',
-                  border: '1px solid #ceaeff'
+                  border: '1px solid #ceaeff',
+                  position: 'relative'
                 }}
               >
+                {a.status === 'rejected' && (
+                  <div style={{
+                    position: 'absolute',
+                    top: 12,
+                    right: 12,
+                    width: 8,
+                    height: 8,
+                    borderRadius: '50%',
+                    backgroundColor: '#ff3b30'
+                  }} />
+                )}
+
+                {a.status === 'pending' && Boolean(a.was_rejected) && (
+                  <div style={{
+                    position: 'absolute',
+                    top: 12,
+                    right: 12,
+                    width: 8,
+                    height: 8,
+                    borderRadius: '50%',
+                    backgroundColor: '#34c759' 
+                  }} />
+                )}
                 <CustomText style={{ fontSize: 13 }}>
                   <span style={{ fontWeight: 600 }}>ID{a.user_id}</span> — {a.first_name} {a.last_name}
                 </CustomText>
@@ -457,19 +481,7 @@ export default function AdminAnswersFeed({ id, user, goBack }) {
                       </div>
                     </>
                   ) : a.status === 'rejected' ? (
-                    <div
-                      style={{
-                        flex: 1,
-                        backgroundColor: '#ff3b3033', // лёгкий красный фон
-                        borderRadius: 999,
-                        padding: '1px 0',
-                        textAlign: 'center'
-                      }}
-                    >
-                      <CustomText style={{ color: '#ff3b30', fontSize: 10, fontWeight: 600 }}>
-                        отклонено
-                      </CustomText>
-                    </div>
+                    null
                   ) : null}
                 </div>
               </Card>
