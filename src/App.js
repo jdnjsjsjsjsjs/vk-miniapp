@@ -1022,7 +1022,7 @@ export default function App() {
       <AdminPurchases id="adminPurchases" goBack={goBack} user={user} balance={balance} />
 
       {/* Панель настроек */}
-      <Purchases id="purchases" goBack={goBack} user={user} balance={balance} goToBalance={goToBalance}/>
+      <Purchases id="purchases" goBack={goBack} user={user} balance={balance} goToBalance={goToBalance} goToProfile={goToProfile} />
 
       {/* Панель Справочника */}
       <Guide id="guide" goBack={goBack}/>
@@ -1034,10 +1034,10 @@ export default function App() {
       <TaskPage id="taskpage" task={selectedTask} user={user} goBack={() => setActivePanel('tasks')} balance={balance} goToBalance={goToBalance} />
 
       {/* Страница архива */}
-      <ArchivePage id="archiveTasks" goBack={goBack} user={user} />
+      <ArchivePage id="archiveTasks" goBack={goBack} user={user} goToTasks={goToTasks} />
 
       {/* Страница выполненных заданий */}
-      <AdminAnswersFeed id="answersFeed" user={user} goBack={goBack} />
+      <AdminAnswersFeed id="answersFeed" user={user} goBack={goBack} goToTasks={goToTasks} />
     </View>
     </div>
   )

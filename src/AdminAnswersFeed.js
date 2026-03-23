@@ -12,7 +12,7 @@ import { CustomText } from './CustomTypography';
 
 import tasksIcon from './imgs/tasks.png'
 
-export default function AdminAnswersFeed({ id, user, goBack }) {
+export default function AdminAnswersFeed({ id, user, goBack, goToTasks }) {
   const [answers, setAnswers] = useState([]);
   const [activeModal, setActiveModal] = useState(null);
   const [activeAnswer, setActiveAnswer] = useState(null);
@@ -381,7 +381,7 @@ export default function AdminAnswersFeed({ id, user, goBack }) {
             mode="tertiary"
             size="l"
             before={<Icon28ChevronBack />}
-            onClick={goBack}
+            onClick={goToTasks}
             style={{ 
                 paddingLeft: 0,
                 paddingRight: 8,

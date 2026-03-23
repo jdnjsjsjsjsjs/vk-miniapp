@@ -6,7 +6,7 @@ import { CustomText } from './CustomTypography';
 import tasksIcon from './imgs/tasks.png';
 import coinIcon from './imgs/coin.png';
 
-export default function ArchiveTasks({ id, goBack, user }) {
+export default function ArchiveTasks({ id, goBack, user, goToTasks }) {
   const [tasks, setTasks] = useState([]);
   const [activeModal, setActiveModal] = useState(null);
   const [editTask, setEditTask] = useState(null);
@@ -571,7 +571,7 @@ export default function ArchiveTasks({ id, goBack, user }) {
             mode="tertiary"
             size="l"
             before={<Icon28ChevronBack />}
-            onClick={goBack}
+            onClick={goToTasks}
             style={{
               paddingLeft: 0,
               paddingRight: 8,
