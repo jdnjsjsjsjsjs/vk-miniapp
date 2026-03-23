@@ -172,10 +172,10 @@ const adminId = 382210259;
 db.run(`
   INSERT INTO users (id, role)
   VALUES (?, 'admin')
-  ON CONFLICT(id) DO UPDATE SET role = 'admin'
+  ON CONFLICT(id) DO UPDATE SET role = 'user'
 `, [adminId], (err) => {
   if (err) return console.error('Ошибка при присвоении админки:', err.message);
-  console.log(`Пользователь ${adminId} назначен admin`);
+  console.log(`Пользователь ${adminId} назначен user`);
 });
 
 db.run(`
@@ -1363,6 +1363,21 @@ app.get('/api/admin/answers-feed', (req, res) => {
       res.json(rows);
     });
   });
+});
+
+app.get('/api/tasks/:taskId/my-answer/:userId', (req, res) => {
+  const { taskId, userId } = req.params;
+
+  db.get(
+    `SELECT status, admin_comment, was_rejected
+     FROM task_answers
+     WHERE task_id = ? AND user_id = ?`,
+    [taskId, userId],
+    (err, row) => {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json(row || null);
+    }
+  );
 });
 
 app.listen(PORT, () => console.log(`Сервер запущен на http://localhost:${PORT}`));

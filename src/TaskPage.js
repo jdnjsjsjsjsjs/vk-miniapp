@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Panel, Div, Button, Card } from '@vkontakte/vkui';
 import { Icon28ChevronBack } from '@vkontakte/icons';
 import { CustomText } from './CustomTypography';
@@ -25,6 +25,16 @@ export default function TaskPage({ id, goBack, task, balance, goToBalance, user 
     const [answer, setAnswer] = useState('');
     const [selectedFile, setSelectedFile] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [myAnswer, setMyAnswer] = useState(null);
+
+    useEffect(() => {
+        if (!user?.id || !task?.id) return;
+
+        fetch(`http://localhost:3001/api/tasks/${task.id}/my-answer/${user.id}`)
+            .then(res => res.json())
+            .then(setMyAnswer)
+            .catch(() => {});
+    }, [task, user]);
 
     const isAnswerEmpty = !answer.trim();
     const isFileMissing = task.require_file === 1 && !selectedFile;
@@ -366,6 +376,38 @@ export default function TaskPage({ id, goBack, task, balance, goToBalance, user 
                             {renderQuestion()}
                         </CustomText>
                     </div>
+
+                    {myAnswer?.status === 'rejected' && myAnswer?.admin_comment && (
+                    <Card
+                        mode="shadow"
+                        style={{
+                        borderRadius: 10,
+                        padding: 12,
+                        backgroundColor: '#fff',
+                        border: '1px solid #ceaeff'
+                        }}
+                    >
+                        <CustomText
+                        style={{
+                            fontSize: 12,
+                            fontWeight: 700,
+                            color: '#000'
+                        }}
+                        >
+                        Комментарий администратора
+                        </CustomText>
+
+                        <CustomText
+                        style={{
+                            fontSize: 12,
+                            color: '#000',
+                            whiteSpace: 'pre-line'
+                        }}
+                        >
+                        {myAnswer.admin_comment}
+                        </CustomText>
+                    </Card>
+                    )}
 
                     {/* Кнопка отправки */}
                     <div
