@@ -37,9 +37,14 @@ export default function AdminAnswersFeed({ id, user, goBack, goToTasks }) {
   }, [user]);
 
   const formatDate = (date) => {
-    return new Date(date).toLocaleString('ru-RU', {
-      timeZone: 'Europe/Moscow'
-    });
+    if (!date) return '';
+    const parts = date?.split(' ');
+    if (!parts || parts.length < 2) return date; 
+    const [d, t] = parts;
+    const [year, month, day] = d.split('-');
+    const [hours, minutes, seconds] = t.split(':');
+    const utcDate = new Date(Date.UTC(year, month-1, day, hours, minutes, seconds));
+    return utcDate.toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' });
   };
 
   async function handleAnswer(action) {
