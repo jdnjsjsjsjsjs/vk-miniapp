@@ -17,6 +17,7 @@ export default function AdminAnswersFeed({ id, user, goBack }) {
   const [activeModal, setActiveModal] = useState(null);
   const [activeAnswer, setActiveAnswer] = useState(null);
   const [confirmAction, setConfirmAction] = useState(null);
+  const [comment, setComment] = useState('');
 
   useEffect(() => {
     if (!user?.id) return;
@@ -41,7 +42,8 @@ export default function AdminAnswersFeed({ id, user, goBack }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           userId: user.id,
-          action
+          action,
+          comment: action === 'reject' ? comment : null
         })
       }
     );
@@ -219,6 +221,7 @@ export default function AdminAnswersFeed({ id, user, goBack }) {
                   onClick={() => {
                     setConfirmAction('reject');
                     setActiveModal('confirm');
+                    setComment('');
                   }}
                 >
                   Отклонить
@@ -265,6 +268,24 @@ export default function AdminAnswersFeed({ id, user, goBack }) {
               ? 'Подтвердить принятие'
               : 'Подтвердить отклонение'}
           </CustomText>
+
+          {confirmAction === 'reject' && (
+            <textarea
+              placeholder="Комментарий пользователю..."
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              style={{
+                width: '100%',
+                minHeight: 70,
+                borderRadius: 8,
+                border: '1px solid #ddd',
+                padding: 8,
+                fontSize: 12,
+                marginBottom: 12,
+                resize: 'none'
+              }}
+            />
+          )}
 
           <div style={{ display: 'flex', gap: 6 }}>
             {/* Кнопка Подтвердить */}

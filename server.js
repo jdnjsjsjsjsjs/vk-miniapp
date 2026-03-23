@@ -200,6 +200,7 @@ db.run(`
     file_path TEXT,
     status TEXT DEFAULT 'pending',
     was_rejected INTEGER DEFAULT 0,
+    admin_comment TEXT,
     created_at TEXT DEFAULT CURRENT_TIMESTAMP,
     UNIQUE(task_id, user_id)
   )
@@ -626,7 +627,7 @@ app.get('/api/admin/tasks/:taskId/answers', (req, res) => {
 
 //Для админа - принять/отклонить ответ
 app.post('/api/admin/answers/:answerId', (req, res) => {
-  const { userId, action } = req.body; // action = 'accept' | 'reject'
+  const { userId, action, comment } = req.body;
   const answerId = req.params.answerId;
 
   db.get('SELECT role FROM users WHERE id = ?', [userId], (err, admin) => {
@@ -649,8 +650,17 @@ app.post('/api/admin/answers/:answerId', (req, res) => {
       const newStatus = action === 'accept' ? 'accepted' : 'rejected';
 
       db.run(
-        'UPDATE task_answers SET status = ?, was_rejected = ? WHERE id = ?',
-        [newStatus, newStatus === 'rejected' ? 1 : answer.was_rejected, answerId],
+        `UPDATE task_answers 
+        SET status = ?, 
+            was_rejected = ?, 
+            admin_comment = ?
+        WHERE id = ?`,
+        [
+          newStatus,
+          newStatus === 'rejected' ? 1 : answer.was_rejected,
+          action === 'reject' ? (comment || '') : null,
+          answerId
+        ],
         () => {
 
           if (answer.file_path) {
@@ -1339,6 +1349,7 @@ app.get('/api/admin/answers-feed', (req, res) => {
         a.file_path,
         a.created_at,
         a.was_rejected,
+        a.admin_comment,
         u.first_name,
         u.last_name,
         t.title as task_title
