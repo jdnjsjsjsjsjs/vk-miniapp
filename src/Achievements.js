@@ -6,9 +6,11 @@ import { Icon28ChevronBack, Icon24Cancel } from '@vkontakte/icons';
 
 import coinIcon from './imgs/coin.png'
 import medalIcon from './imgs/awards.png'
-import coinsIcon from './imgs/coins.png'
-import awardsIcon from './imgs/awards.png'
+import kapustaIcon from './imgs/kapusta.png'
 import lockIcon from './imgs/lock.png'
+import coinsIcon from './imgs/morecoins.png'
+import collectIcon from './imgs/collectionaire.png'
+import boxcalIcon from './imgs/boxcalendar.png'
 
 export default function Achievements({ id, goBack, balance, goToBalance, user, totalEarned, goToTasks }) {
     const [activeModal, setActiveModal] = useState(null);
@@ -29,14 +31,14 @@ export default function Achievements({ id, goBack, balance, goToBalance, user, t
             title: <> Срубил <s>капусту</s> щаницу </>,
             description: 'накопи 5000 капиталов',
             target: 5000,
-            icon: coinsIcon
+            icon: kapustaIcon
         },
         {
             id: 2,
             title: 'Капитальный капитал',
             description: 'накопи 10000 капиталов',
             target: 10000,
-            icon: awardsIcon
+            icon: coinsIcon
         },
         {
             id: 3,
@@ -44,7 +46,7 @@ export default function Achievements({ id, goBack, balance, goToBalance, user, t
             description: 'заходи 10 дней подряд',
             target: 10,
             type: 'streak',
-            icon: awardsIcon
+            icon: boxcalIcon
         },
         {
             id: 4,
@@ -52,7 +54,7 @@ export default function Achievements({ id, goBack, balance, goToBalance, user, t
             description: 'собери 10 артефактов',
             target: 10,
             type: 'received',
-            icon: awardsIcon
+            icon: collectIcon
         },
         {
             id: 5,
@@ -60,7 +62,7 @@ export default function Achievements({ id, goBack, balance, goToBalance, user, t
             description: 'подпишись на группу Ивановский Стиль',
             target: 1,
             type: 'vk_subscribed',
-            icon: awardsIcon
+            icon: lockIcon
         }
         ];
 
