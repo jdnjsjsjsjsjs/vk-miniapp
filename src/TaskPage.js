@@ -23,7 +23,7 @@ function formatDeadline(expiresAt) {
 export default function TaskPage({ id, goBack, task, balance, goToBalance, user }) {
 
     const [answer, setAnswer] = useState('');
-    const [selectedFiles, setSelectedFiles] = useState([]);
+    const [selectedFiles, setSelectedFiles] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [myAnswer, setMyAnswer] = useState(null);
 
@@ -35,7 +35,9 @@ export default function TaskPage({ id, goBack, task, balance, goToBalance, user 
             .then(setMyAnswer)
             .catch(() => {});
     }, [task, user]);
-    const isFileMissing = task.require_file === 1 && selectedFiles.length === 0;
+    const allFiles = Object.values(selectedFiles).flat();
+
+    const isFileMissing = task.require_file === 1 && allFiles.length === 0;
 
     if (!task) return null;
     const requiresText = task.question.includes('[answer]');
@@ -62,7 +64,7 @@ export default function TaskPage({ id, goBack, task, balance, goToBalance, user 
                 const formData = new FormData();
                 formData.append('userId', user.id);
                 formData.append('answer', requiresText ? answer : '');
-                selectedFiles.forEach(file => {
+                Object.values(selectedFiles).flat().forEach(file => {
                     formData.append('files', file);
                 });
 
@@ -154,11 +156,14 @@ export default function TaskPage({ id, goBack, task, balance, goToBalance, user 
             }
 
             if (part === '[file]' && task.require_file === 1) {
+                const inputId = `fileInput_${index}`;
+                const filesForThisBlock = selectedFiles[index] || [];
+
                 return (
                     <div key={index} style={{ display: 'inline-block', position: 'relative', marginTop: 4, marginBottom: 4 }}>
 
                         <div
-                            onClick={() => document.getElementById('fileInput').click()}
+                            onClick={() => document.getElementById(inputId).click()}
                             style={{
                                 width: '100px',
                                 backgroundColor: '#8c64d7',
@@ -174,24 +179,32 @@ export default function TaskPage({ id, goBack, task, balance, goToBalance, user 
                         </div>
 
                         <input
-                            id="fileInput"
+                            id={inputId}
                             type="file"
                             multiple
                             accept=".jpg,.jpeg,.png,.pdf"
                             style={{ display: 'none' }}
                             onChange={(e) => {
                                 const newFiles = Array.from(e.target.files);
-                                const combined = [...selectedFiles, ...newFiles];
-                                if (combined.length > 5) {
-                                    alert('Можно загрузить максимум 5 файлов');
-                                    setSelectedFiles(combined.slice(0, 5));
-                                    return;
-                                }
-                                setSelectedFiles(combined);
+
+                                setSelectedFiles(prev => {
+                                    const existing = prev[index] || [];
+                                    const combined = [...existing, ...newFiles];
+
+                                    if (combined.length > 5) {
+                                        alert('Максимум 5 файлов на один блок');
+                                    }
+
+                                    return {
+                                        ...prev,
+                                        [index]: combined.slice(0, 5)
+                                    };
+                                });
                             }}
                         />
 
-                        {selectedFiles.length > 0 && selectedFiles.map((file, i) => (
+                        {/* Файлы ТОЛЬКО для этого блока */}
+                        {filesForThisBlock.map((file, i) => (
                             <CustomText
                                 key={i}
                                 style={{ fontSize: 12, color: '#8c64d7', marginTop: 4 }}
@@ -200,19 +213,6 @@ export default function TaskPage({ id, goBack, task, balance, goToBalance, user 
                             </CustomText>
                         ))}
 
-                        {isFileMissing && (
-                            <div
-                                style={{
-                                    position: 'absolute',
-                                    top: -2,
-                                    right: 0,
-                                    width: 8,
-                                    height: 8,
-                                    borderRadius: '50%',
-                                    background: 'red'
-                                }}
-                            />
-                        )}
                     </div>
                 );
             }
