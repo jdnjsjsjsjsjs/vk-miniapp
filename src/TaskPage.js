@@ -23,7 +23,7 @@ function formatDeadline(expiresAt) {
 export default function TaskPage({ id, goBack, task, balance, goToBalance, user }) {
 
     const [answer, setAnswer] = useState('');
-    const [selectedFile, setSelectedFile] = useState(null);
+    const [selectedFiles, setSelectedFiles] = useState([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [myAnswer, setMyAnswer] = useState(null);
 
@@ -35,7 +35,7 @@ export default function TaskPage({ id, goBack, task, balance, goToBalance, user 
             .then(setMyAnswer)
             .catch(() => {});
     }, [task, user]);
-    const isFileMissing = task.require_file === 1 && !selectedFile;
+    const isFileMissing = task.require_file === 1 && selectedFiles.length === 0;
 
     if (!task) return null;
     const requiresText = task.question.includes('[answer]');
@@ -48,7 +48,7 @@ export default function TaskPage({ id, goBack, task, balance, goToBalance, user 
         if (isSubmitting) return;
         if (requiresText && !answer.trim()) return;
 
-        if (task.require_file === 1 && !selectedFile) {
+        if (task.require_file === 1 && selectedFiles.length === 0) {
             alert('Необходимо загрузить файл');
             return;
         }
@@ -62,7 +62,9 @@ export default function TaskPage({ id, goBack, task, balance, goToBalance, user 
                 const formData = new FormData();
                 formData.append('userId', user.id);
                 formData.append('answer', requiresText ? answer : '');
-                formData.append('file', selectedFile);
+                selectedFiles.forEach(file => {
+                    formData.append('files', file);
+                });
 
                 await fetch(
                     `http://localhost:3001/api/tasks/${task.id}/answer-with-file`,
@@ -89,7 +91,7 @@ export default function TaskPage({ id, goBack, task, balance, goToBalance, user 
             }
 
             setAnswer('');
-            setSelectedFile(null);
+            setSelectedFiles([]);
 
             goBack();
 
@@ -174,16 +176,29 @@ export default function TaskPage({ id, goBack, task, balance, goToBalance, user 
                         <input
                             id="fileInput"
                             type="file"
+                            multiple
                             accept=".jpg,.jpeg,.png,.pdf"
                             style={{ display: 'none' }}
-                            onChange={(e) => setSelectedFile(e.target.files[0])}
+                            onChange={(e) => {
+                                const newFiles = Array.from(e.target.files);
+                                const combined = [...selectedFiles, ...newFiles];
+                                if (combined.length > 5) {
+                                    alert('Можно загрузить максимум 5 файлов');
+                                    setSelectedFiles(combined.slice(0, 5));
+                                    return;
+                                }
+                                setSelectedFiles(combined);
+                            }}
                         />
 
-                        {selectedFile && (
-                            <CustomText style={{ fontSize: 12, color: '#8c64d7', marginTop: 4 }}>
-                                {selectedFile.name}
+                        {selectedFiles.length > 0 && selectedFiles.map((file, i) => (
+                            <CustomText
+                                key={i}
+                                style={{ fontSize: 12, color: '#8c64d7', marginTop: 4 }}
+                            >
+                                {file.name}
                             </CustomText>
-                        )}
+                        ))}
 
                         {isFileMissing && (
                             <div

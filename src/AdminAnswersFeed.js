@@ -32,7 +32,13 @@ export default function AdminAnswersFeed({ id, user, goBack, goToTasks }) {
 
     fetch(`http://localhost:3001/api/admin/answers-feed?userId=${user.id}`)
       .then(res => res.json())
-      .then(setAnswers)
+      .then(data => {
+        const normalized = data.map(a => ({
+          ...a,
+          files: a.file_paths ? JSON.parse(a.file_paths) : []
+        }));
+        setAnswers(normalized);
+      })
       .catch(err => console.error('Ошибка загрузки ответов', err));
   }, [user]);
 
@@ -66,7 +72,13 @@ export default function AdminAnswersFeed({ id, user, goBack, goToTasks }) {
       `http://localhost:3001/api/admin/answers-feed?userId=${user.id}`
     );
     const data = await res.json();
-    setAnswers(data);
+
+    const normalized = data.map(a => ({
+      ...a,
+      files: a.file_paths ? JSON.parse(a.file_paths) : []
+    }));
+
+    setAnswers(normalized);
 
     setActiveModal(null);
     setActiveAnswer(null);
@@ -145,31 +157,30 @@ export default function AdminAnswersFeed({ id, user, goBack, goToTasks }) {
           </CustomText>
 
           {/* Файл(ы) */}
-          {activeAnswer?.file_path && (
+          {activeAnswer?.files?.length > 0 && (
             <div style={{ marginBottom: 12 }}>
-              <CustomText style={{ fontWeight: 600, fontSize: 10, lineHeight: 1 }}>Файл:</CustomText>
-              {Array.isArray(activeAnswer.file_path)
-                ? activeAnswer.file_path.map((f, i) => (
-                    <a
-                      key={i}
-                      href={`http://localhost:3001${f}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{ display: 'block', marginBottom: 2, color: '#8c64d7', fontSize: 10 }}
-                    >
-                      {f.split('/').pop()}
-                    </a>
-                  ))
-                : (
-                  <a
-                    href={`http://localhost:3001${activeAnswer.file_path}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{ display: 'block', marginBottom: 2, color: '#8c64d7', fontSize: 10 }}
-                  >
-                    {activeAnswer.file_path.split('/').pop()}
-                  </a>
-                )}
+              <CustomText style={{ fontWeight: 600, fontSize: 10 }}>
+                Файлы:
+              </CustomText>
+
+              {activeAnswer.files.map((f, i) => (
+                <a
+                  key={i}
+                  href={`http://localhost:3001${f}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  download
+                  style={{
+                    display: 'block',
+                    marginBottom: 6,
+                    color: '#8c64d7',
+                    fontSize: 12,
+                    textDecoration: 'none'
+                  }}
+                >
+                  {f.split('/').pop()}
+                </a>
+              ))}
             </div>
           )}
 
@@ -280,27 +291,33 @@ export default function AdminAnswersFeed({ id, user, goBack, goToTasks }) {
         >
           <CustomText>{activeAnswer?.answer}</CustomText>
 
-          {activeAnswer?.file_path && (
+          {activeAnswer?.files?.length > 0 && (
             <Div style={{ marginTop: 12 }}>
-              {activeAnswer.file_path.endsWith('.pdf') ? (
-                <a
-                  href={`http://localhost:3001${activeAnswer.file_path}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  📄 Открыть PDF
-                </a>
-              ) : (
-                <img
-                  src={`http://localhost:3001${activeAnswer.file_path}`}
-                  alt="Ответ"
-                  style={{
-                    width: '100%',
-                    borderRadius: 12,
-                    marginTop: 8
-                  }}
-                />
-              )}
+              {activeAnswer.files.map((f, i) => {
+                const isPdf = f.endsWith('.pdf');
+
+                return isPdf ? (
+                  <a
+                    key={i}
+                    href={`http://localhost:3001${f}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    📄 Открыть PDF
+                  </a>
+                ) : (
+                  <img
+                    key={i}
+                    src={`http://localhost:3001${f}`}
+                    alt="Ответ"
+                    style={{
+                      width: '100%',
+                      borderRadius: 12,
+                      marginTop: 8
+                    }}
+                  />
+                );
+              })}
             </Div>
           )}
         </ModalCard>

@@ -106,7 +106,7 @@ const upload = multer({
   },
   fileFilter(req, file, cb) {
     if (!file.mimetype.match(/image\/(jpeg|png)/)) {
-      cb(new Error('Только jpg и png'));
+      return cb(new Error('Только jpg и png'));
     }
     cb(null, true);
   },
@@ -197,7 +197,7 @@ db.run(`
     task_id INTEGER NOT NULL,
     user_id INTEGER NOT NULL,
     answer TEXT,
-    file_path TEXT,
+    file_paths TEXT,
     status TEXT DEFAULT 'pending',
     was_rejected INTEGER DEFAULT 0,
     admin_comment TEXT,
@@ -477,56 +477,66 @@ app.post('/api/tasks/:taskId/answer', (req, res) => {
 
 app.post(
   '/api/tasks/:taskId/answer-with-file',
-  answerUpload.single('file'),
+  answerUpload.array('files', 5),
   async (req, res) => {
     const taskId = req.params.taskId;
     const { userId, answer } = req.body;
 
     db.get('SELECT * FROM tasks WHERE id = ?', [taskId], async (err, task) => {
       db.get(
-        'SELECT file_path FROM task_answers WHERE task_id = ? AND user_id = ?',
+        'SELECT file_paths FROM task_answers WHERE task_id = ? AND user_id = ?',
         [taskId, userId],
         async (err, oldAnswer) => {
 
-          if (oldAnswer && oldAnswer.file_path) {
-            const oldPath = path.join(__dirname, oldAnswer.file_path);
-            if (fs.existsSync(oldPath)) {
-              fs.unlinkSync(oldPath);
-            }
+          if (oldAnswer && oldAnswer.file_paths) {
+            try {
+              const paths = JSON.parse(oldAnswer.file_paths);
+
+              for (const p of paths) {
+                const fullPath = path.resolve(__dirname, '.' + p);
+                if (fs.existsSync(fullPath)) {
+                  fs.unlinkSync(fullPath);
+                }
+              }
+            } catch (e) {}
           }
           if (!task) return res.status(404).json({ error: 'Task not found' });
 
-          let filePath = null;
+          let filePaths = [];
 
           if (task.require_file) {
-            if (!req.file) {
+            if (!req.files || req.files.length === 0) {
               return res.status(400).json({ error: 'File required' });
             }
 
-            const safeName = path
-              .basename(req.file.originalname)
-              .replace(/[^a-zA-Z0-9._-]/g, '_');
+            for (const file of req.files) {
+              const ext = path.extname(file.originalname);
+              const baseName = path
+                .basename(file.originalname, ext)
+                .replace(/[^a-zA-Z0-9]/g, '_')
+                .slice(0, 15);
 
-            const fileName = `task_${taskId}_${userId}_${Date.now()}_${safeName}`;
-            const outputPath = path.join(__dirname, 'uploads', 'task-answers', fileName);
+              const fileName = `${baseName}_${Date.now()}${ext}`;
+              const outputPath = path.join(__dirname, 'uploads', 'task-answers', fileName);
 
-            await fs.promises.writeFile(outputPath, req.file.buffer);
+              await fs.promises.writeFile(outputPath, file.buffer);
 
-            filePath = `/uploads/task-answers/${fileName}`;
+              filePaths.push(`/uploads/task-answers/${fileName}`);
+            }
           }
 
           db.run(
             `
-            INSERT INTO task_answers (task_id, user_id, answer, file_path, status)
+            INSERT INTO task_answers (task_id, user_id, answer, file_paths, status)
             VALUES (?, ?, ?, ?, 'pending')
             ON CONFLICT(task_id, user_id)
             DO UPDATE SET
               answer = excluded.answer,
-              file_path = excluded.file_path,
+              file_paths = excluded.file_paths,
               status = 'pending',
               created_at = CURRENT_TIMESTAMP
             `,
-            [taskId, userId, answer || '', filePath],
+            [taskId, userId, answer || '', JSON.stringify(filePaths)],
             function (err) {
               if (err) return res.status(500).json({ error: err.message });
               res.json({ success: true });
@@ -611,7 +621,7 @@ app.get('/api/admin/tasks/:taskId/answers', (req, res) => {
         a.answer,
         a.status,
         a.user_id,
-        a.file_path,
+        a.file_paths,
         u.first_name,
         u.last_name
       FROM task_answers a
@@ -663,11 +673,17 @@ app.post('/api/admin/answers/:answerId', (req, res) => {
         ],
         () => {
 
-          if (answer.file_path) {
-            const fullPath = path.join(__dirname, answer.file_path);
-            if (fs.existsSync(fullPath)) {
-              fs.unlinkSync(fullPath);
-            }
+          if (answer.file_paths) {
+            try {
+              const paths = JSON.parse(answer.file_paths);
+
+              for (const p of paths) {
+                const fullPath = path.resolve(__dirname, '.' + p);
+                if (fs.existsSync(fullPath)) {
+                  fs.unlinkSync(fullPath);
+                }
+              }
+            } catch (e) {}
           }
 
           if (newStatus === 'accepted') {
@@ -1004,15 +1020,15 @@ app.delete('/api/admin/tasks/:id', (req, res) => {
 
     // 1. Получаем все файлы задания
     db.all(
-      'SELECT file_path FROM task_answers WHERE task_id = ?',
+      'SELECT file_paths FROM task_answers WHERE task_id = ?',
       [taskId],
       (err, answers) => {
         if (err) return res.status(500).json({ error: err.message });
 
         // 2. Удаляем файлы
         answers.forEach(a => {
-          if (a.file_path) {
-            const fullPath = path.join(__dirname, a.file_path);
+          if (a.file_paths) {
+            const fullPath = path.join(__dirname, a.file_paths);
             if (fs.existsSync(fullPath)) {
               fs.unlinkSync(fullPath);
             }
@@ -1346,7 +1362,7 @@ app.get('/api/admin/answers-feed', (req, res) => {
         a.answer,
         a.status,
         a.user_id,
-        a.file_path,
+        a.file_paths,
         a.created_at,
         a.was_rejected,
         a.admin_comment,
