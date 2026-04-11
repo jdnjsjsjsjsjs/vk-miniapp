@@ -246,6 +246,7 @@ export default function App() {
   const goToAchievements = () => setActivePanel('achievements');
   const goToArchive = () => setActivePanel('archiveTasks');
   const goToAnswersFeed = () => setActivePanel('answersFeed');
+  const goToAdminPurchases = () => setActivePanel('adminPurchases');
 
   useEffect(() => {
     if (user) {
@@ -1016,7 +1017,7 @@ export default function App() {
       <ShopHigh id="shophigh" goBack={goBack} go={go} balance={balance} goToBalance={goToBalance} user={user} />
 
       {/* Панель профиля */}
-      <Profile id="profile" goBack={goBack} user={user} balance={balance} goToPurchases={goToPurchases} goToGuide={goToGuide} goToAchievements={goToAchievements} goToBalance={goToBalance} />
+      <Profile id="profile" goBack={goBack} user={user} balance={balance} goToPurchases={goToPurchases} goToGuide={goToGuide} goToAchievements={goToAchievements} goToBalance={goToBalance} goToTasks={goToTasks} goToAdminPurchases={goToAdminPurchases} />
 
       {/* Панель админ-получения */}
       <AdminPurchases id="adminPurchases" goBack={goBack} user={user} balance={balance} />
