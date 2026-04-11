@@ -434,7 +434,7 @@ export default function Tasks({ id, goBack, balance, goToBalance, user, goToTask
                                         style={{
                                             marginTop: 8,
                                             width: '100%',
-                                            backgroundColor: '#8c64d7',
+                                            backgroundColor: '#ccaaff',
                                             borderRadius: 999,
                                             padding: '2px 0',
                                             textAlign: 'center',

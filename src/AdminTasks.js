@@ -955,6 +955,23 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance, goT
                 />
               </div>
               <div style={{ gap: 6, marginBottom: 12 }}>
+                {/* Выполненные */}
+                <div
+                  onClick={() => goToAnswersFeed()}
+                  style={{
+                    flex: 1,
+                    backgroundColor: '#ceaeff',
+                    borderRadius: 999,
+                    padding: '1px 0',
+                    textAlign: 'center',
+                    marginBottom: 6,
+                  }}
+                >
+                  <CustomText style={{ color: '#fff', fontSize: 10, fontWeight: 600 }}>
+                    выполненные задания
+                  </CustomText>
+                </div>
+
                 <div
                   onClick={() => {
                     setTitle('');
@@ -975,24 +992,7 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance, goT
                   }}
                 >
                   <CustomText style={{ color: '#fff', fontSize: 10, fontWeight: 600 }}>
-                    + добавить
-                  </CustomText>
-                </div>
-
-                {/* Выполненные */}
-                <div
-                  onClick={() => goToAnswersFeed()}
-                  style={{
-                    flex: 1,
-                    backgroundColor: '#ceaeff',
-                    borderRadius: 999,
-                    padding: '1px 0',
-                    textAlign: 'center',
-                    marginBottom: 6,
-                  }}
-                >
-                  <CustomText style={{ color: '#fff', fontSize: 10, fontWeight: 600 }}>
-                    выполненные задания
+                    + добавить задание
                   </CustomText>
                 </div>
 
