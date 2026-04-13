@@ -224,6 +224,7 @@ db.run(`
     item_id INTEGER NOT NULL,
     order_id INTEGER NOT NULL,
     received INTEGER DEFAULT 0,
+    price_at_purchase INTEGER,
     purchased_at TEXT DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (item_id) REFERENCES shop_items(id)
@@ -1178,9 +1179,9 @@ app.post('/api/cart/checkout', (req, res) => {
         cartItems.forEach(item => {
           for (let i = 0; i < item.quantity; i++) {
             db.run(`
-              INSERT INTO user_items (user_id, item_id, order_id, received)
-              VALUES (?, ?, ?, 0)
-            `, [userId, item.item_id, orderId]);
+              INSERT INTO user_items (user_id, item_id, order_id, received, price_at_purchase)
+              VALUES (?, ?, ?, 0, ?)
+            `, [userId, item.item_id, orderId, item.price]);
           }
         });
 
@@ -1228,6 +1229,7 @@ app.get('/api/admin/purchases', (req, res) => {
         u.last_name,
         s.title,
         s.image,
+        s.price,
         ui.item_id,
         ui.received,
         ui.purchased_at

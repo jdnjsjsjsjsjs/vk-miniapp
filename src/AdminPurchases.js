@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Div, Button, Panel } from '@vkontakte/vkui';
+import { Div, Button, Panel, Card } from '@vkontakte/vkui';
 import { Icon28ChevronBack } from '@vkontakte/icons';
 import { CustomText } from './CustomTypography';
 
-import coinIcon from './imgs/coin.png'
+import shopIcon from './imgs/shop2.png'
 
 export default function AdminPurchases({ id, goBack, user, balance }) {
   const [purchases, setPurchases] = useState([]);
@@ -23,7 +23,6 @@ export default function AdminPurchases({ id, goBack, user, balance }) {
         body: JSON.stringify({ userId: user.id, orderId }),
       });
 
-      // Обновляем локальный стейт — все позиции заказа получают received = 1
       setPurchases(prev =>
         prev.map(p =>
           p.order_id === orderId ? { ...p, received: 1 } : p
@@ -49,96 +48,166 @@ export default function AdminPurchases({ id, goBack, user, balance }) {
 
   return (
     <Panel id={id}>
-      <Div style={{ height: 32, backgroundColor: '#ffffff' }} />
-          <Div
-              style={{
-                  position: 'fixed',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  height: 56,
-                  backgroundColor: '#ceaeff',
-                  display: 'flex',
-                  alignItems: 'center',
-                  padding: '0 16px',
-                  zIndex: 1000,
-              }}
+      <Div style={{ height: 32, backgroundColor: '#ceaeff' }} />
+        {/* Header */}
+        <Div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: 56,
+            backgroundColor: '#fff',
+            display: 'flex',
+            alignItems: 'center',
+            padding: '0 4px',
+            zIndex: 1000
+          }}
+        >
+          <Button
+            mode="tertiary"
+            size="l"
+            before={<Icon28ChevronBack />}
+            onClick={goBack}
+            style={{ 
+                paddingLeft: 0,
+                paddingRight: 8,
+                marginRight: 4,
+                color: '#ceaeff' 
+            }}
           >
-              {/* Кнопка назад */}
-              <Button
-                  mode="tertiary"
-                  size="l"
-                  before={<Icon28ChevronBack />}
-                  onClick={goBack}
-                  style={{
-                      paddingLeft: 0,
-                      paddingRight: 8,
-                      marginRight: 4,
-                      color: '#ffffff',
-                  }}
-              >
-                  Назад
-              </Button>
+            Назад
+          </Button>
+        </Div>
 
-              {/* Баланс-капсула */}
-              <div
-                  onClick={() => {}}
-                  style={{
-                      marginLeft: 'auto',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 6,
-                      padding: '2px 18px 2px 2px',
-                      backgroundColor: '#f2f2f2',
-                      borderRadius: 999,
-                      cursor: 'pointer',
-                  }}
+        <Div style={{ padding: '12px', backgroundColor: '#ceaeff' }}>
+        
+        <Card
+            mode="shadow"
+            style={{
+                borderRadius: 10,
+                padding: '20px 15px',
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                backgroundColor: '#ffffff',
+                marginBottom: 15,
+                position: 'relative'
+            }}
+        >
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <CustomText
+                    weight="1"
+                    style={{
+                        fontSize: 16,
+                        color: '#000',
+                    }}
+                >
+                    Выдача артефактов (админка)
+                </CustomText>
+            </div>
+            <img
+                src={shopIcon}
+                alt="tasks"
+                style={{
+                    width: 75,
+                    height: 75,
+                    objectFit: 'contain',
+                    position: 'absolute',
+                    right: -5,
+                }}
+            />
+        </Card>
+
+        <Card
+          mode="shadow"
+          style={{
+            borderRadius: 10,
+            padding: '12px',
+            backgroundColor: '#ffffff',
+          }}
+        >
+          {Object.values(groupedByOrder).map(group => {
+            const totalPrice = group.items.reduce((sum, item) => sum + item.price, 0);
+            const isReceived = group.items.every(item => item.received);
+            const groupedItems = Object.values(
+              group.items.reduce((acc, item) => {
+                if (!acc[item.item_id]) {
+                  acc[item.item_id] = {
+                    title: item.title,
+                    count: 0,
+                    price: item.price
+                  };
+                }
+                acc[item.item_id].count += 1;
+                return acc;
+              }, {})
+            );
+
+            return (
+              <Card
+                key={group.items[0].order_id}
+                style={{
+                  borderRadius: 12,
+                  padding: 14,
+                  marginBottom: 8,
+                  backgroundColor: '#fff',
+                  border: '1px solid #ceaeff',
+                }}
               >
-                  <img src={coinIcon} alt="coins" style={{ height: 25, width: 25 }} />
+                <CustomText style={{ fontSize: 13 }}>
+                  <span style={{ fontWeight: 800 }}>
+                    ID: {group.items[0].order_id}
+                  </span> - {group.items[0].first_name} {group.items[0].last_name}
+                </CustomText>
+
+                <CustomText style={{ fontSize: 12, color: '#8c64d7', lineHeight: 1 }}>
+                  <span style={{ fontWeight: 600 }}>Время заказа:</span> {new Date(group.purchasedAt).toLocaleString()}
+                </CustomText>
+
+                <CustomText style={{ fontSize: 12, color: '#8c64d7', lineHeight: 1 }}>
+                  <span style={{ fontWeight: 600 }}>Покупка: </span>
+                  {groupedItems
+                    .map(i => `${i.title} (капиталов - ${i.price}) - ${i.count} шт.`)
+                    .join(', ')}
+                </CustomText>
+
+                <CustomText style={{ fontSize: 12, color: '#8c64d7', lineHeight: 1 }}>
+                  <span style={{ fontWeight: 600 }}>Потрачено капиталов: </span> {totalPrice}
+                </CustomText>
+
+                {/* КНОПКА */}
+                <div
+                  onClick={() => {
+                    if (!isReceived) markReceived(group.items[0].order_id);
+                  }}
+                  style={{
+                    marginTop: 10,
+                    flex: 1,
+                    borderRadius: 999,
+                    padding: '1px 0',
+                    textAlign: 'center',
+                    cursor: isReceived ? 'default' : 'pointer',
+
+                    backgroundColor: isReceived ? '#fff' : '#8c64d7',
+                    border: isReceived ? '1px solid #8c64d7' : 'none',
+                  }}
+                >
                   <CustomText
-                      weight="3"
-                      style={{
-                          fontSize: 14,
-                          color: '#8c64d7',
-                          lineHeight: '18px',
-                      }}
+                    style={{
+                      fontSize: 10,
+                      fontWeight: 600,
+                      color: isReceived ? '#8c64d7' : '#fff',
+                    }}
                   >
-                      {balance}
+                    {isReceived ? 'выдано' : 'выдать'}
                   </CustomText>
-              </div>
-          </Div>
-
-      <Div>
-        {Object.values(groupedByOrder).map(group => (
-          <Div key={group.items[0].order_id} style={{ borderBottom: '1px solid #eee', marginBottom: 12, paddingBottom: 8 }}>
-            
-            {/* ID и время заказа */}
-            <CustomText weight="3">
-              <strong>Заказ ID:</strong> {group.items[0].order_id}
-            </CustomText>
-            <CustomText weight="2" style={{ fontSize: 12, color: '#666', marginBottom: 6 }}>
-              <strong>Время заказа:</strong> {new Date(group.purchasedAt).toLocaleString()}
-            </CustomText>
-
-            {group.items.map(p => (
-              <CustomText key={p.item_id} style={{ marginLeft: 8 }}>
-                {p.first_name} {p.last_name} — {p.title}
-              </CustomText>
-            ))}
-
-            {!group.items.every(item => item.received) ? (
-              <Button
-                size="s"
-                style={{ marginTop: 6 }}
-                onClick={() => markReceived(group.items[0].order_id)}
-              >
-                Получено
-              </Button>
-            ) : (
-              <CustomText style={{ color: 'green', marginTop: 6 }}>✔ Выдано</CustomText>
-            )}
-          </Div>
-        ))}
+                </div>
+              </Card>
+            );
+          })}
+        </Card>
       </Div>
     </Panel>
   );
