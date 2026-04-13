@@ -13,6 +13,10 @@ export default function AdminShop({ id, user, goBack }) {
     const [editItem, setEditItem] = useState(null);
     const [uploading, setUploading] = useState(false);
     const [tempImage, setTempImage] = useState(null);
+    const [successState, setSuccessState] = useState({
+        add: false,
+        edit: false,
+    });
 
     const inputStyle = `
     .search-input::placeholder {
@@ -97,8 +101,13 @@ export default function AdminShop({ id, user, goBack }) {
     ]);
 
     setNewItem({ title: '', description: '', price: '' });
-        setTempImage(null);
-        setActiveModal(null);
+        setSuccessState(prev => ({ ...prev, add: true }));
+
+        setTimeout(() => {
+            setSuccessState(prev => ({ ...prev, add: false }));
+            setTempImage(null);
+            setActiveModal(null);
+        }, 3000);
     };
 
     const saveEditItem = async () => {
@@ -120,9 +129,14 @@ export default function AdminShop({ id, user, goBack }) {
             )
         );
 
-        setEditItem(null);
-        setTempImage(null);
-        setActiveModal(null);
+        setSuccessState(prev => ({ ...prev, edit: true }));
+
+        setTimeout(() => {
+            setSuccessState(prev => ({ ...prev, edit: false }));
+            setEditItem(null);
+            setTempImage(null);
+            setActiveModal(null);
+        }, 3000);
     };
 
     const deleteItem = async () => {
@@ -427,7 +441,7 @@ export default function AdminShop({ id, user, goBack }) {
                         onClick={saveNewItem}
                         style={{
                             width: '100%',
-                            backgroundColor: '#8c64d7',
+                            backgroundColor: successState.add ? '#ceaeff' : '#8c64d7',
                             borderRadius: 999,
                             padding: '1px 0',
                             textAlign: 'center',
@@ -436,7 +450,7 @@ export default function AdminShop({ id, user, goBack }) {
                         }}
                     >
                         <CustomText style={{ color: '#fff', fontSize: 10, fontWeight: 600 }}>
-                            добавить
+                            {successState.add ? 'добавлено' : 'добавить'}
                         </CustomText>
                     </div>
                 </ModalCard>
@@ -458,44 +472,125 @@ export default function AdminShop({ id, user, goBack }) {
                         setActiveModal(null);
                     }}
                 >
+                    <ModalCloseButton onClick={() => setActiveModal(null)} />
+                    <CustomText
+                        weight="1"
+                        style={{ fontSize: 14, color: '#000', marginTop: 27, marginBottom: 3 }}
+                    >
+                        Артефакт
+                    </CustomText>
+                    
                     <input
-                        placeholder="Название"
-                        value={editItem?.title || ''}
-                        onChange={e => setEditItem({ ...editItem, title: e.target.value })}
-                        style={inputStyle}
+                        type="text"
+                        placeholder="название артефакта..."
+                            value={editItem?.title || ''}
+                            onChange={e => setEditItem({ ...editItem, title: e.target.value })}
+                            className="search-input"
+                            style={{
+                                width: '92%',
+                                padding: '6px 12px',
+                                borderRadius: 999,
+                                border: '1px solid #ceaeff',
+                                outline: 'none',
+                                fontSize: 12,
+                                color: '#ceaeff',
+                                marginBottom: 7,
+                            }}
                     />
 
-                    <textarea
-                        placeholder="Описание"
-                        value={editItem?.description || ''}
-                        onChange={e => setEditItem({ ...editItem, description: e.target.value })}
-                        style={{ ...inputStyle, height: 80 }}
+                    <CustomText
+                        weight="1"
+                        style={{ fontSize: 14, color: '#000', marginBottom: 3 }}
+                    >
+                        Описание
+                    </CustomText>
+                    
+                    <input
+                        type="text"
+                        placeholder="описание артефакта..."
+                            value={editItem?.description || ''}
+                            onChange={e => setEditItem({ ...editItem, description: e.target.value })}
+                            className="search-input"
+                            style={{
+                                width: '92%',
+                                padding: '6px 12px',
+                                borderRadius: 999,
+                                border: '1px solid #ceaeff',
+                                outline: 'none',
+                                fontSize: 12,
+                                color: '#ceaeff',
+                                marginBottom: 7,
+                            }}
                     />
 
+                    <CustomText
+                        weight="1"
+                        style={{ fontSize: 14, color: '#000', marginBottom: 3 }}
+                    >
+                        Цена
+                    </CustomText>
+                    
                     <input
                         type="number"
-                        placeholder="Цена"
-                        value={editItem?.price || ''}
-                        onChange={e => setEditItem({ ...editItem, price: e.target.value })}
-                        style={inputStyle}
+                        placeholder="количество капиталов за 1 штуку..."
+                            value={editItem?.price || ''}
+                            onChange={e => setEditItem({ ...editItem, price: e.target.value })}
+                            className="search-input"
+                            style={{
+                                width: '92%',
+                                padding: '6px 12px',
+                                borderRadius: 999,
+                                border: '1px solid #ceaeff',
+                                outline: 'none',
+                                fontSize: 12,
+                                color: '#ceaeff',
+                                marginBottom: 7,
+                            }}
                     />
 
-                    <input
-                        type="file"
-                        accept="image/png, image/jpeg"
-                        onChange={async e => {
-                            const file = e.target.files[0];
-                            if (!file) return;
-                            if (tempImage && tempImage !== editItem?.image) {
-                                await fetch('http://localhost:3001/api/admin/delete-temp-image', {
-                                    method: 'POST',
-                                    headers: { 'Content-Type': 'application/json' },
-                                    body: JSON.stringify({ userId: user.id, imagePath: tempImage }),
-                                });
-                            }
-                            uploadImage(file, imagePath => setTempImage(imagePath));
-                        }}
-                    />
+                    {/* КНОПКА ЗАГРУЗКИ */}
+                    <div style={{ marginBottom: 12 }}>
+                        <div
+                            onClick={() => document.getElementById('fileInputEdit').click()}
+                            style={{
+                                width: '100px',
+                                backgroundColor: '#ceaeff',
+                                borderRadius: 999,
+                                padding: '1px 5px',
+                                textAlign: 'center',
+                                cursor: 'pointer',
+                                marginTop: 7,
+                            }}
+                        >
+                            <CustomText style={{ color: '#fff', fontSize: 10 }}>
+                                📎прикрепить фото
+                            </CustomText>
+                        </div>
+
+                        <input
+                            id="fileInputEdit"
+                            type="file"
+                            accept="image/png, image/jpeg"
+                            style={{ display: 'none' }}
+                            onChange={async e => {
+                                const file = e.target.files[0];
+                                if (!file) return;
+
+                                if (tempImage && tempImage !== editItem?.image) {
+                                    await fetch('http://localhost:3001/api/admin/delete-temp-image', {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({
+                                            userId: user.id,
+                                            imagePath: tempImage
+                                        }),
+                                    });
+                                }
+
+                                uploadImage(file, imagePath => setTempImage(imagePath));
+                            }}
+                        />
+                    </div>
 
                     {uploading && (
                         <CustomText style={{ marginBottom: 8 }}>Загрузка изображения…</CustomText>
@@ -509,14 +604,22 @@ export default function AdminShop({ id, user, goBack }) {
                         />
                     )}
 
-                    <Div style={{ display: 'flex', gap: 8 }}>
-                        <Button mode="primary" stretched onClick={saveEditItem}>
-                            Сохранить
-                        </Button>
-                        <Button mode="secondary" stretched onClick={() => setActiveModal(null)}>
-                            Отмена
-                        </Button>
-                    </Div>
+                    <div
+                        onClick={saveEditItem}
+                        style={{
+                            width: '100%',
+                            backgroundColor: successState.edit ? '#ceaeff' : '#8c64d7',
+                            borderRadius: 999,
+                            padding: '1px 0',
+                            textAlign: 'center',
+                            cursor: 'pointer',
+                            marginTop: 7
+                        }}
+                    >
+                        <CustomText style={{ color: '#fff', fontSize: 10, fontWeight: 600 }}>
+                            {successState.edit ? 'сохранено' : 'сохранить'}
+                        </CustomText>
+                    </div>
                 </ModalCard>
 
                 <ModalCard
