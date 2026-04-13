@@ -25,6 +25,7 @@ import Achievements from './Achievements';
 import TaskPage from './TaskPage';
 import ArchivePage from './Archive'
 import AdminAnswersFeed from './AdminAnswersFeed';
+import AdminShop from './AdminShop';
 
 import image1 from './imgs/1.png'
 import coinsIcon from './imgs/coins.png'
@@ -247,6 +248,7 @@ export default function App() {
   const goToArchive = () => setActivePanel('archiveTasks');
   const goToAnswersFeed = () => setActivePanel('answersFeed');
   const goToAdminPurchases = () => setActivePanel('adminPurchases');
+  const goToAdminShop = () => setActivePanel('adminShop');
 
   useEffect(() => {
     if (user) {
@@ -1017,7 +1019,7 @@ export default function App() {
       <ShopHigh id="shophigh" goBack={goBack} go={go} balance={balance} goToBalance={goToBalance} user={user} />
 
       {/* Панель профиля */}
-      <Profile id="profile" goBack={goBack} user={user} balance={balance} goToPurchases={goToPurchases} goToGuide={goToGuide} goToAchievements={goToAchievements} goToBalance={goToBalance} goToTasks={goToTasks} goToAdminPurchases={goToAdminPurchases} />
+      <Profile id="profile" goBack={goBack} user={user} balance={balance} goToPurchases={goToPurchases} goToGuide={goToGuide} goToAchievements={goToAchievements} goToBalance={goToBalance} goToTasks={goToTasks} goToAdminPurchases={goToAdminPurchases} goToAdminShop={goToAdminShop} />
 
       {/* Панель админ-получения */}
       <AdminPurchases id="adminPurchases" goBack={goBack} user={user} balance={balance} />
@@ -1039,6 +1041,9 @@ export default function App() {
 
       {/* Страница выполненных заданий */}
       <AdminAnswersFeed id="answersFeed" user={user} goBack={goBack} goToTasks={goToTasks} />
+
+      {/* Админка магазина */}
+      <AdminShop id="adminShop" user={user} goBack={goBack} />
     </View>
     </div>
   )

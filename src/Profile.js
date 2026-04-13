@@ -2,7 +2,7 @@ import { Panel, Div, Button, Card } from '@vkontakte/vkui';
 import { CustomText } from './CustomTypography';
 import { Icon28ChevronBack, Icon28ChevronRightOutline } from '@vkontakte/icons';
 
-export default function Profile({ id, goBack, user, balance, goToPurchases, goToGuide, goToAchievements, goToBalance, goToTasks, goToAdminPurchases }) {
+export default function Profile({ id, goBack, user, balance, goToPurchases, goToGuide, goToAchievements, goToBalance, goToTasks, goToAdminPurchases, goToAdminShop }) {
   const isAdmin = user?.role === 'admin';
 
   return (
@@ -117,7 +117,7 @@ export default function Profile({ id, goBack, user, balance, goToPurchases, goTo
               let handleClick;
               if (item === 'Выдача артефактов') handleClick = goToAdminPurchases;
               else if (item === 'Задания') handleClick = goToTasks;
-              else if (item === 'Магазин артефактов') handleClick = goToTasks;
+              else if (item === 'Магазин артефактов') handleClick = goToAdminShop;
 
               return (
                 <div
