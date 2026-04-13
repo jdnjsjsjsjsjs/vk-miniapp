@@ -6,15 +6,6 @@ import { CustomText } from './CustomTypography';
 import coinIcon from './imgs/coin.png'
 import boxIcon from './imgs/box1.png'
 
-const inputStyle = {
-    padding: 10,
-    paddingRight: 12,
-    marginBottom: 12,
-    borderRadius: 8,
-    border: '1px solid #ccc',
-    fontSize: 14,
-};
-
 export default function AdminShop({ id, user, goBack }) {
     const [items, setItems] = useState([]);
     const [activeModal, setActiveModal] = useState(null);
@@ -22,6 +13,13 @@ export default function AdminShop({ id, user, goBack }) {
     const [editItem, setEditItem] = useState(null);
     const [uploading, setUploading] = useState(false);
     const [tempImage, setTempImage] = useState(null);
+
+    const inputStyle = `
+    .search-input::placeholder {
+      color: #ceaeff;
+      opacity: 1;
+    }
+  `;
 
     const ModalCloseButton = ({ onClick }) => (
         <div
@@ -290,47 +288,121 @@ export default function AdminShop({ id, user, goBack }) {
             {/* Модалка добавления */}
                 <ModalCard
                     id="add"
-                    header="Добавить товар"
                     onClose={() => {
                         deleteTempImage();
                         setActiveModal(null);
                     }}
                 >
+                    <ModalCloseButton onClick={() => setActiveModal(null)} />
+                    <CustomText
+                        weight="1"
+                        style={{ fontSize: 14, color: '#000', marginTop: 27, marginBottom: 3 }}
+                    >
+                        Артефакт
+                    </CustomText>
+                    
                     <input
-                        placeholder="Название"
-                        value={newItem.title}
-                        onChange={e => setNewItem({ ...newItem, title: e.target.value })}
-                        style={inputStyle}
+                        type="text"
+                        placeholder="название артефакта..."
+                            value={newItem.title}
+                            onChange={e => setNewItem({ ...newItem, title: e.target.value })}
+                            className="search-input"
+                            style={{
+                                width: '92%',
+                                padding: '6px 12px',
+                                borderRadius: 999,
+                                border: '1px solid #ceaeff',
+                                outline: 'none',
+                                fontSize: 12,
+                                color: '#ceaeff',
+                                marginBottom: 7,
+                            }}
                     />
 
-                    <textarea
-                        placeholder="Описание"
-                        value={newItem.description}
-                        onChange={e => setNewItem({ ...newItem, description: e.target.value })}
-                        style={{ ...inputStyle, height: 80 }}
+                    <CustomText
+                        weight="1"
+                        style={{ fontSize: 14, color: '#000', marginBottom: 3 }}
+                    >
+                        Описание
+                    </CustomText>
+                    
+                    <input
+                        type="text"
+                        placeholder="описание артефакта..."
+                            value={newItem.description}
+                            onChange={e => setNewItem({ ...newItem, description: e.target.value })}
+                            className="search-input"
+                            style={{
+                                width: '92%',
+                                padding: '6px 12px',
+                                borderRadius: 999,
+                                border: '1px solid #ceaeff',
+                                outline: 'none',
+                                fontSize: 12,
+                                color: '#ceaeff',
+                                marginBottom: 7,
+                            }}
                     />
 
+                    <CustomText
+                        weight="1"
+                        style={{ fontSize: 14, color: '#000', marginBottom: 3 }}
+                    >
+                        Цена
+                    </CustomText>
+                    
                     <input
-                        placeholder="Цена"
                         type="number"
-                        value={newItem.price}
-                        onChange={e => setNewItem({ ...newItem, price: e.target.value })}
-                        style={inputStyle}
+                        placeholder="количество капиталов за 1 штуку..."
+                            value={newItem.price}
+                            onChange={e => setNewItem({ ...newItem, price: e.target.value })}
+                            className="search-input"
+                            style={{
+                                width: '92%',
+                                padding: '6px 12px',
+                                borderRadius: 999,
+                                border: '1px solid #ceaeff',
+                                outline: 'none',
+                                fontSize: 12,
+                                color: '#ceaeff',
+                                marginBottom: 7,
+                            }}
                     />
 
-                    <input
-                        type="file"
-                        accept="image/png, image/jpeg"
-                        onChange={e => {
-                            const file = e.target.files[0];
-                            if (!file) return;
+                    {/* КНОПКА ЗАГРУЗКИ */}
+                    <div style={{ marginBottom: 12 }}>
+                        <div
+                            onClick={() => document.getElementById('fileInputAdd').click()}
+                            style={{
+                                width: '100px',
+                                backgroundColor: '#ceaeff',
+                                borderRadius: 999,
+                                padding: '1px 5px',
+                                textAlign: 'center',
+                                cursor: 'pointer',
+                                marginTop: 7,
+                            }}
+                        >
+                            <CustomText style={{ color: '#fff', fontSize: 10 }}>
+                                📎прикрепить фото
+                            </CustomText>
+                        </div>
 
-                            uploadImage(file, imagePath => {
-                                setTempImage(imagePath);
-                            });
-                        }}
-                        style={{ marginBottom: 12 }}
-                    />
+                        <input
+                            id="fileInputAdd"
+                            type="file"
+                            accept="image/png, image/jpeg"
+                            style={{ display: 'none' }}
+                            onChange={e => {
+                                const file = e.target.files[0];
+                                if (!file) return;
+
+                                uploadImage(file, imagePath => {
+                                    setTempImage(imagePath);
+                                });
+                            }}
+                        />
+                    </div>
 
                     {uploading && (
                         <CustomText style={{ marginBottom: 8 }}>Загрузка изображения…</CustomText>
@@ -351,24 +423,22 @@ export default function AdminShop({ id, user, goBack }) {
                         />
                     )}
 
-                    {/* КНОПКИ */}
-                    <Div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
-                        <Button
-                            mode="primary"
-                            stretched
-                            onClick={saveNewItem}
-                        >
-                            Сохранить
-                        </Button>
-
-                        <Button
-                            mode="secondary"
-                            stretched
-                            onClick={() => setActiveModal(null)}
-                        >
-                            Отмена
-                        </Button>
-                    </Div>
+                    <div
+                        onClick={saveNewItem}
+                        style={{
+                            width: '100%',
+                            backgroundColor: '#8c64d7',
+                            borderRadius: 999,
+                            padding: '1px 0',
+                            textAlign: 'center',
+                            cursor: 'pointer',
+                            marginTop: 7
+                        }}
+                    >
+                        <CustomText style={{ color: '#fff', fontSize: 10, fontWeight: 600 }}>
+                            добавить
+                        </CustomText>
+                    </div>
                 </ModalCard>
 
                 <ModalCard
@@ -468,6 +538,7 @@ export default function AdminShop({ id, user, goBack }) {
                     </Div>
                 </ModalCard>
         </ModalRoot>
+        <style>{inputStyle}</style>
       <Panel id={id} style={{ backgroundColor: '#ceaeff', minHeight: '100vh' }}>
         <Div style={{ height: 32, backgroundColor: '#ceaeff' }} />
         {/* Кастомный хедер */}
