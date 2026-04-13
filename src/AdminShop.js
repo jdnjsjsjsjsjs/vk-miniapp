@@ -3,7 +3,8 @@ import { Panel, Div, Button, Card, ModalRoot, ModalCard } from '@vkontakte/vkui'
 import { Icon28ChevronBack, Icon24Cancel } from '@vkontakte/icons';
 import { CustomText } from './CustomTypography';
 
-import tasksIcon from './imgs/tasks.png'
+import coinIcon from './imgs/coin.png'
+import boxIcon from './imgs/box1.png'
 
 const inputStyle = {
     padding: 10,
@@ -21,6 +22,29 @@ export default function AdminShop({ id, user, goBack }) {
     const [editItem, setEditItem] = useState(null);
     const [uploading, setUploading] = useState(false);
     const [tempImage, setTempImage] = useState(null);
+
+    const ModalCloseButton = ({ onClick }) => (
+        <div
+            onClick={onClick}
+            style={{
+                position: 'absolute',
+                top: 10,
+                right: 18,
+                width: 24,
+                height: 24,
+                borderRadius: '50%',
+                border: '1px solid #d9d9d9',
+                backgroundColor: '#fff',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                zIndex: 10,
+            }}
+        >
+            <Icon24Cancel width={16} height={16} fill="#000" />
+        </div>
+    );
 
     const [newItem, setNewItem] = useState({
         title: '',
@@ -122,23 +146,147 @@ export default function AdminShop({ id, user, goBack }) {
 
         setUploading(true);
 
-        const res = await fetch('http://localhost:3001/api/admin/upload/shop-image', {
-            method: 'POST',
-            body: formData,
-        });
+        try {
+            const res = await fetch(
+                'http://localhost:3001/api/admin/upload/shop-image',
+                {
+                    method: 'POST',
+                    body: formData,
+                }
+            );
 
-        const data = await res.json();
+            const data = await res.json();
 
-        if (data.imagePath) {
-            onSuccess(data.imagePath);
+            if (data.imagePath) {
+                onSuccess(data.imagePath);
+            } else {
+                alert('Ошибка загрузки изображения');
+            }
+        } catch (e) {
+            console.error(e);
+            alert('Ошибка загрузки');
+        } finally {
+            setUploading(false);
         }
-
-        setUploading(false);
     };
 
   return (
     <>
         <ModalRoot activeModal={activeModal}>
+            <ModalCard
+                id="view"
+                onClose={() => {
+                    setActiveModal(null);
+                    setActiveItem(null);
+                }}
+            >
+                <ModalCloseButton
+                    onClick={() => {
+                        setActiveModal(null);
+                        setActiveItem(null);
+                    }}
+                />
+                {/* Фото */}
+                {activeItem?.image ? (
+                    <img
+                        src={`http://localhost:3001${activeItem.image}`}
+                        alt=""
+                        style={{
+                            width: '100%',
+                            borderRadius: 12,
+                            marginBottom: 12,
+                            marginTop: 27,
+                        }}
+                    />
+                ) : (
+                    <div
+                        style={{
+                            width: '100%',
+                            aspectRatio: '1 / 1',
+                            backgroundColor: '#e5e5e5',
+                            borderRadius: 12,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            marginBottom: 12,
+                            marginTop: 27,
+                        }}
+                    >
+                        <CustomText
+                            weight="1"
+                            style={{
+                                fontSize: 12,
+                                color: '#ffffff',
+                                textAlign: 'center',
+                                lineHeight: '14px',
+                            }}
+                        >
+                            фото<br />появится<br />позже
+                        </CustomText>
+                    </div>
+                )}
+
+                {/* Название + описание + цена */}
+                    <div
+                        style={{
+                            display: 'flex',
+                            alignItems: 'flex-start',
+                            justifyContent: 'space-between',
+                            gap: 8,
+                            marginBottom: 8,
+                        }}
+                    >
+                        {/* Левая часть: название + описание */}
+                        <div style={{ flex: 1 }}>
+                            <CustomText
+                                weight="3"
+                                style={{
+                                    fontSize: 14,
+                                    marginBottom: 4,
+                                    lineHeight: '20px',
+                                }}
+                            >
+                                {activeItem?.title}
+                            </CustomText>
+
+                            <CustomText
+                                style={{
+                                    color: '#6f6f6f',
+                                    fontSize: 14,
+                                    lineHeight: '18px',
+                                }}
+                            >
+                                {activeItem?.description}
+                            </CustomText>
+                        </div>
+
+                        {/* Цена + монетка */}
+                        <div
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 2,
+                                marginLeft: 4,
+                            }}
+                        >
+                            <CustomText
+                                weight="1"
+                                style={{
+                                    fontSize: 18,
+                                    color: '#8c64d7',
+                                }}
+                            >
+                                {activeItem?.price}
+                            </CustomText>
+
+                            <img
+                                src={coinIcon}
+                                alt=""
+                                style={{ width: 24, height: 24 }}
+                            />
+                        </div>
+                    </div>
+            </ModalCard>
             {/* Модалка добавления */}
                 <ModalCard
                     id="add"
@@ -377,11 +525,11 @@ export default function AdminShop({ id, user, goBack }) {
                     color: '#000',
                   }}
                 >
-                  Задания (админка)
+                  Магазин артефактов (админка)
                 </CustomText>
               </div>
               <img
-                src={tasksIcon}
+                src={boxIcon}
                 alt="tasks"
                 style={{
                   width: 75,
@@ -431,41 +579,106 @@ export default function AdminShop({ id, user, goBack }) {
                 {items.map(item => (
                     <Card
                     key={item.id}
+                    onClick={() => {
+                        setActiveItem(item);
+                        setActiveModal('view');
+                    }}
                     style={{
-                        padding: 12,
-                        marginBottom: 8,
+                        borderRadius: 12,
+                        padding: '14px',
+                        marginBottom: 6,
+                        backgroundColor: '#ffffff',
                         border: '1px solid #ceaeff',
-                        borderRadius: 12
                     }}
                     >
-                    <CustomText weight="1">{item.title}</CustomText>
+                    <div
+                        style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            gap: 8,
+                        }}
+                        >
+                        {/* Название слева */}
+                        <CustomText
+                            weight="2"
+                            style={{
+                            fontSize: 10,
+                            color: '#000',
+                            }}
+                        >
+                            {item.title}
+                        </CustomText>
 
-                    <CustomText style={{ fontSize: 12, color: '#8c64d7' }}>
-                        Цена: {item.price}
-                    </CustomText>
+                        {/* Цена справа */}
+                        <div
+                            style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 4,
+                            }}
+                        >
+                            <CustomText
+                            style={{
+                                fontSize: 16,
+                                color: '#8c64d7',
+                                fontWeight: 1000,
+                            }}
+                            >
+                            {item.price}
+                            </CustomText>
 
-                    <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
-                        <Button
-                        size="s"
-                        onClick={() => {
+                            <img
+                            src={coinIcon}
+                            alt="coins"
+                            style={{ height: 20, width: 20 }}
+                            />
+                        </div>
+                    </div>
+
+                    <div style={{ display: 'flex', gap: 6, marginTop: 8 }}>
+                      <div
+                        onClick={(e) => {
+                            e.stopPropagation();
                             setEditItem(item);
                             setTempImage(item.image);
                             setActiveModal('edit');
                         }}
-                        >
-                        ✏️ Редактировать
-                        </Button>
+                        style={{
+                          flex: 1,
+                          backgroundColor: '#8c64d7',
+                          borderRadius: 999,
+                          padding: '1px 0',
+                          textAlign: 'center',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        <CustomText style={{ color: '#fff', fontSize: 10, fontWeight: 600 }}>
+                          редактировать
+                        </CustomText>
+                      </div>
 
-                        <Button
-                        size="s"
-                        mode="destructive"
-                        onClick={() => {
+                      {/* Удалить */}
+                      <div
+                        onClick={(e) => {
+                            e.stopPropagation();
                             setActiveItem(item);
                             setActiveModal('delete');
                         }}
-                        >
-                        🗑 Удалить
-                        </Button>
+                        style={{
+                          flex: 1,
+                          border: '1px solid #8c64d7',
+                          borderRadius: 999,
+                          padding: '1px 0',
+                          textAlign: 'center',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        <CustomText style={{ color: '#8c64d7', fontSize: 10, fontWeight: 600 }}>
+                          удалить
+                        </CustomText>
+                      </div>
+
                     </div>
                     </Card>
                 ))}
