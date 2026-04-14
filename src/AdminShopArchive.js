@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Panel, Div, Button, Card, ModalRoot, ModalCard } from '@vkontakte/vkui';
-import { Icon28ChevronBack, Icon24Cancel } from '@vkontakte/icons';
+import { Icon28ChevronBack, Icon24Cancel, Icon16Search } from '@vkontakte/icons';
 import { CustomText } from './CustomTypography';
 
 import coinIcon from './imgs/coin.png'
@@ -17,8 +17,13 @@ export default function AdminShop({ id, user, goToAdminShop }) {
         add: false,
         edit: false,
     });
+    const [searchQuery, setSearchQuery] = useState('');
 
-    const archivedItems = items.filter(i => i.archived == 1);
+    const archivedItems = items
+        .filter(i => i.archived === 1)
+        .filter(i =>
+            i.title.toLowerCase().includes(searchQuery.toLowerCase())
+        );
 
     const groups = [
         {
@@ -764,6 +769,38 @@ export default function AdminShop({ id, user, goToAdminShop }) {
             </Card>
 
             <Card mode="shadow" style={{ padding: 12, borderRadius: 10 }}>
+            {/* ПОИСК */}
+            <div style={{ position: 'relative', marginBottom: 16 }}>
+                <Icon16Search
+                fill="#ceaeff"
+                style={{
+                    position: 'absolute',
+                    left: 12,
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    width: 14,
+                    height: 14,
+                    pointerEvents: 'none'
+                }}
+                />
+                <input
+                className="search-input"
+                type="text"
+                placeholder="Поиск..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                style={{
+                    width: '100%',
+                    boxSizing: 'border-box',
+                    padding: '6px 12px 6px 34px',
+                    borderRadius: 999,
+                    border: '1px solid #ceaeff',
+                    outline: 'none',
+                    fontSize: 12,
+                    color: '#ceaeff',
+                }}
+                />
+            </div>
                 {groups.map(group => (
                     group.items.length > 0 && (
                         <div key={group.title} style={{ marginBottom: 16 }}>
