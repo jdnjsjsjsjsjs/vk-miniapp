@@ -18,6 +18,27 @@ export default function AdminShop({ id, user, goToProfile }) {
         edit: false,
     });
 
+    const groups = [
+        {
+            title: 'Артефакты от 100 капиталов',
+            items: items
+                .filter(i => i.price >= 0 && i.price < 500)
+                .sort((a, b) => a.price - b.price)
+        },
+        {
+            title: 'Артефакты от 500 капиталов',
+            items: items
+                .filter(i => i.price >= 500 && i.price < 1000)
+                .sort((a, b) => a.price - b.price)
+        },
+        {
+            title: 'Артефакты от 1000 капиталов',
+            items: items
+                .filter(i => i.price >= 1000)
+                .sort((a, b) => a.price - b.price)
+        }
+    ];
+
     const inputStyle = `
     .search-input::placeholder {
       color: #ceaeff;
@@ -775,111 +796,120 @@ export default function AdminShop({ id, user, goToProfile }) {
                   </CustomText>
                 </div>
                 </div>
-                {items.map(item => (
-                    <Card
-                    key={item.id}
-                    onClick={() => {
-                        setActiveItem(item);
-                        setActiveModal('view');
-                    }}
-                    style={{
-                        borderRadius: 12,
-                        padding: '14px',
-                        marginBottom: 6,
-                        backgroundColor: '#ffffff',
-                        border: '1px solid #ceaeff',
-                    }}
-                    >
-                    <div
-                        style={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                            gap: 8,
-                        }}
-                        >
-                        {/* Название слева */}
-                        <CustomText
-                            weight="2"
-                            style={{
-                            fontSize: 10,
-                            color: '#000',
-                            }}
-                        >
-                            {item.title}
-                        </CustomText>
-
-                        {/* Цена справа */}
-                        <div
-                            style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 4,
-                            }}
-                        >
+                {groups.map(group => (
+                    group.items.length > 0 && (
+                        <div key={group.title} style={{ marginBottom: 16 }}>
                             <CustomText
-                            style={{
-                                fontSize: 16,
-                                color: '#8c64d7',
-                                fontWeight: 1000,
-                            }}
+                                weight="1"
+                                style={{
+                                    fontSize: 14,
+                                    color: '#000',
+                                    marginBottom: 8,
+                                    marginLeft: 4
+                                }}
                             >
-                            {item.price}
+                                {group.title}
                             </CustomText>
 
-                            <img
-                            src={coinIcon}
-                            alt="coins"
-                            style={{ height: 20, width: 20 }}
-                            />
+                            {/* Список товаров */}
+                            {group.items.map(item => (
+                                <Card
+                                    key={item.id}
+                                    onClick={() => {
+                                        setActiveItem(item);
+                                        setActiveModal('view');
+                                    }}
+                                    style={{
+                                        borderRadius: 12,
+                                        padding: '14px',
+                                        marginBottom: 6,
+                                        backgroundColor: '#ffffff',
+                                        border: '1px solid #ceaeff',
+                                    }}
+                                >
+                                    <div
+                                        style={{
+                                            display: 'flex',
+                                            justifyContent: 'space-between',
+                                            alignItems: 'center',
+                                            gap: 8,
+                                        }}
+                                    >
+                                        <CustomText
+                                            weight="2"
+                                            style={{
+                                                fontSize: 10,
+                                                color: '#000',
+                                            }}
+                                        >
+                                            {item.title}
+                                        </CustomText>
+
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                                            <CustomText
+                                                style={{
+                                                    fontSize: 16,
+                                                    color: '#8c64d7',
+                                                    fontWeight: 1000,
+                                                }}
+                                            >
+                                                {item.price}
+                                            </CustomText>
+
+                                            <img
+                                                src={coinIcon}
+                                                alt="coins"
+                                                style={{ height: 20, width: 20 }}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div style={{ display: 'flex', gap: 6, marginTop: 8 }}>
+                                        <div
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setEditItem(item);
+                                                setTempImage(item.image);
+                                                setActiveModal('edit');
+                                            }}
+                                            style={{
+                                                flex: 1,
+                                                backgroundColor: '#8c64d7',
+                                                borderRadius: 999,
+                                                padding: '1px 0',
+                                                textAlign: 'center',
+                                                cursor: 'pointer'
+                                            }}
+                                        >
+                                            <CustomText style={{ color: '#fff', fontSize: 10, fontWeight: 600 }}>
+                                                редактировать
+                                            </CustomText>
+                                        </div>
+
+                                        <div
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setActiveItem(item);
+                                                setActiveModal('delete');
+                                            }}
+                                            style={{
+                                                flex: 1,
+                                                border: '1px solid #8c64d7',
+                                                borderRadius: 999,
+                                                padding: '1px 0',
+                                                textAlign: 'center',
+                                                cursor: 'pointer'
+                                            }}
+                                        >
+                                            <CustomText style={{ color: '#8c64d7', fontSize: 10, fontWeight: 600 }}>
+                                                удалить
+                                            </CustomText>
+                                        </div>
+                                    </div>
+                                </Card>
+                            ))}
                         </div>
-                    </div>
-
-                    <div style={{ display: 'flex', gap: 6, marginTop: 8 }}>
-                      <div
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            setEditItem(item);
-                            setTempImage(item.image);
-                            setActiveModal('edit');
-                        }}
-                        style={{
-                          flex: 1,
-                          backgroundColor: '#8c64d7',
-                          borderRadius: 999,
-                          padding: '1px 0',
-                          textAlign: 'center',
-                          cursor: 'pointer'
-                        }}
-                      >
-                        <CustomText style={{ color: '#fff', fontSize: 10, fontWeight: 600 }}>
-                          редактировать
-                        </CustomText>
-                      </div>
-
-                      {/* Удалить */}
-                      <div
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            setActiveItem(item);
-                            setActiveModal('delete');
-                        }}
-                        style={{
-                          flex: 1,
-                          border: '1px solid #8c64d7',
-                          borderRadius: 999,
-                          padding: '1px 0',
-                          textAlign: 'center',
-                          cursor: 'pointer'
-                        }}
-                      >
-                        <CustomText style={{ color: '#8c64d7', fontSize: 10, fontWeight: 600 }}>
-                          удалить
-                        </CustomText>
-                      </div>
-
-                    </div>
-                    </Card>
+                    )
                 ))}
             </Card>
         </Div>
