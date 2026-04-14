@@ -206,14 +206,14 @@ db.run(`
   )
 `);
 
-// Товары магазина
 db.run(`
   CREATE TABLE IF NOT EXISTS shop_items (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT NOT NULL,
     description TEXT,
     price INTEGER NOT NULL,
-    image TEXT
+    image TEXT,
+    archived INTEGER DEFAULT 0
   )
 `);
 

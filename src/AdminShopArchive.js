@@ -6,7 +6,7 @@ import { CustomText } from './CustomTypography';
 import coinIcon from './imgs/coin.png'
 import boxIcon from './imgs/box1.png'
 
-export default function AdminShop({ id, user, goToAdminShopArchive, goToProfile }) {
+export default function AdminShop({ id, user, goToAdminShop }) {
     const [items, setItems] = useState([]);
     const [activeModal, setActiveModal] = useState(null);
     const [activeItem, setActiveItem] = useState(null);
@@ -18,24 +18,24 @@ export default function AdminShop({ id, user, goToAdminShopArchive, goToProfile 
         edit: false,
     });
 
-    const activeItems = items.filter(i => i.archived !== 1);
+    const archivedItems = items.filter(i => i.archived == 1);
 
     const groups = [
         {
             title: 'Артефакты от 100 капиталов',
-            items: activeItems
+            items: archivedItems
                 .filter(i => i.price >= 0 && i.price < 500)
                 .sort((a, b) => a.price - b.price)
         },
         {
             title: 'Артефакты от 500 капиталов',
-            items: activeItems
+            items: archivedItems
                 .filter(i => i.price >= 500 && i.price < 1000)
                 .sort((a, b) => a.price - b.price)
         },
         {
             title: 'Артефакты от 1000 капиталов',
-            items: activeItems
+            items: archivedItems
                 .filter(i => i.price >= 1000)
                 .sort((a, b) => a.price - b.price)
         }
@@ -712,7 +712,7 @@ export default function AdminShop({ id, user, goToAdminShopArchive, goToProfile 
                 mode="tertiary"
                 size="l"
                 before={<Icon28ChevronBack />}
-                onClick={goToProfile}
+                onClick={goToAdminShop}
                 style={{
                     paddingLeft: 0,
                     paddingRight: 8,
@@ -747,7 +747,7 @@ export default function AdminShop({ id, user, goToAdminShopArchive, goToProfile 
                     color: '#000',
                   }}
                 >
-                  Магазин артефактов (админка)
+                  Архив артефактов (админка)
                 </CustomText>
               </div>
               <img
@@ -764,41 +764,6 @@ export default function AdminShop({ id, user, goToAdminShopArchive, goToProfile 
             </Card>
 
             <Card mode="shadow" style={{ padding: 12, borderRadius: 10 }}>
-                <div style={{ gap: 6, marginBottom: 12 }}>
-                <div
-                  onClick={() => setActiveModal('add')}
-                  style={{
-                    flex: 1,
-                    backgroundColor: '#8c64d7',
-                    borderRadius: 999,
-                    padding: '1px 0',
-                    textAlign: 'center',
-                    marginBottom: 6,
-                  }}
-                >
-                  <CustomText style={{ color: '#fff', fontSize: 10, fontWeight: 600 }}>
-                    + добавить артефакт
-                  </CustomText>
-                </div>
-
-                {/* Архив */}
-                <div
-                  onClick={goToAdminShopArchive}
-                  style={{
-                    flex: 1,
-                    border: '1px solid #8c64d7',
-                    borderRadius: 999,
-                    padding: '1px 0',
-                    textAlign: 'center',
-                    marginBottom: 16,
-                    cursor: 'pointer'
-                  }}
-                >
-                  <CustomText style={{ color: '#8c64d7', fontSize: 10, fontWeight: 600 }}>
-                    архив артефактов
-                  </CustomText>
-                </div>
-                </div>
                 {groups.map(group => (
                     group.items.length > 0 && (
                         <div key={group.title} style={{ marginBottom: 16 }}>

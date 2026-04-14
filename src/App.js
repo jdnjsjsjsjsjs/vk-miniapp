@@ -26,6 +26,7 @@ import TaskPage from './TaskPage';
 import ArchivePage from './Archive'
 import AdminAnswersFeed from './AdminAnswersFeed';
 import AdminShop from './AdminShop';
+import AdminShopArchive from './AdminShopArchive'
 
 import image1 from './imgs/1.png'
 import coinsIcon from './imgs/coins.png'
@@ -249,6 +250,7 @@ export default function App() {
   const goToAnswersFeed = () => setActivePanel('answersFeed');
   const goToAdminPurchases = () => setActivePanel('adminPurchases');
   const goToAdminShop = () => setActivePanel('adminShop');
+  const goToAdminShopArchive = () => setActivePanel('adminShopArchive');
 
   useEffect(() => {
     if (user) {
@@ -1043,7 +1045,10 @@ export default function App() {
       <AdminAnswersFeed id="answersFeed" user={user} goBack={goBack} goToTasks={goToTasks} />
 
       {/* Админка магазина */}
-      <AdminShop id="adminShop" user={user} goToProfile={goToProfile} />
+      <AdminShop id="adminShop" user={user} goToAdminShopArchive={goToAdminShopArchive} goToProfile={goToProfile} />
+
+      {/* Архив админки магазина */}
+      <AdminShopArchive id="adminShopArchive" user={user} goToAdminShop={goToAdminShop} />
     </View>
     </div>
   )
