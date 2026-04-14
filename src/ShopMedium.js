@@ -6,33 +6,14 @@ import { Icon28ChevronBack, Icon28ShoppingCartOutline, Icon24Cancel } from '@vko
 import coinIcon from './imgs/coin.png'
 import box2Icon from './imgs/box2.png'
 
-const inputStyle = {
-    padding: 10,
-    paddingRight: 12,
-    marginBottom: 12,
-    borderRadius: 8,
-    border: '1px solid #ccc',
-    fontSize: 14,
-};
-
 export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
     const [items, setItems] = useState([]);
     const [activeItem, setActiveItem] = useState(null);
     const [activeModal, setActiveModal] = useState(null);
-    const [editItem, setEditItem] = useState(null);
-    const [uploading, setUploading] = useState(false);
-    const [tempImage, setTempImage] = useState(null);
     const [cart, setCart] = useState({});
     const [cartItemsFull, setCartItemsFull] = useState([]);
     const [checkoutConfirm, setCheckoutConfirm] = useState(false);
     const [checkoutSuccess, setCheckoutSuccess] = useState(false);
-
-    const [newItem, setNewItem] = useState({
-        title: '',
-        description: '',
-        price: '',
-        image: '',
-    });
 
     const ModalCloseButton = ({ onClick }) => (
         <div
@@ -57,160 +38,20 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
         </div>
     );
 
-    const isAdmin = user?.role === 'admin';
-
     const loadShop = async () => {
-        const url = isAdmin
-            ? `http://localhost:3001/api/admin/shop?userId=${user.id}`
-            : `http://localhost:3001/api/shop?userId=${user.id}`;
-
-        const res = await fetch(url);
+        const res = await fetch(`http://localhost:3001/api/shop?userId=${user.id}`);
         const data = await res.json();
 
-        const loadedItems = isAdmin ? data : data.items;
-        setItems(loadedItems);
+        setItems(data.items);
     };
 
     useEffect(() => {
         loadShop();
-    }, [user.id, isAdmin]);
+    }, [user.id]);
 
     useEffect(() => {
         loadCart();
     }, [user.id]);
-
-    const saveNewItem = async () => {
-        if (!newItem.title || !newItem.price) {
-            alert('Заполни название и цену');
-            return;
-        }
-
-        const res = await fetch('http://localhost:3001/api/admin/shop', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                userId: user.id,
-                title: newItem.title,
-                description: newItem.description,
-                price: Number(newItem.price),
-                image: tempImage,
-            }),
-        });
-
-        const data = await res.json();
-
-        setItems(prev => [
-            { id: data.id, ...newItem, image: tempImage },
-            ...prev,
-        ]);
-
-        setNewItem({ title: '', description: '', price: '', image: '' });
-        setTempImage(null);
-        setActiveModal(null);
-    };
-
-    const saveEditItem = async () => {
-        if (!editItem.title || !editItem.price) {
-            alert('Заполни название и цену');
-            return;
-        }
-
-        const oldImage = editItem.image;
-        const newImage = tempImage;
-        
-        await fetch(`http://localhost:3001/api/admin/shop/${editItem.id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                userId: user.id,
-                title: editItem.title,
-                description: editItem.description,
-                price: Number(editItem.price),
-                image: newImage,
-            }),
-        });
-        if (oldImage !== newImage) {
-            await fetch('http://localhost:3001/api/admin/delete-temp-image', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ userId: user.id, imagePath: oldImage }),
-            });
-        }
-        setItems(prev =>
-            prev.map(i =>
-                i.id === editItem.id ? { ...editItem, image: newImage } : i
-            )
-        );
-        setEditItem(null);
-        setTempImage(null);
-        setActiveModal(null);
-    };
-
-    const deleteItem = async () => {
-        if (activeItem?.image) {
-            await fetch('http://localhost:3001/api/admin/delete-temp-image', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ userId: user.id, imagePath: activeItem.image }),
-            });
-        }
-
-        await fetch(`http://localhost:3001/api/admin/shop/${activeItem.id}`, {
-            method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userId: user.id }),
-        });
-
-        setItems(prev => prev.filter(i => i.id !== activeItem.id));
-        setActiveItem(null);
-        setActiveModal(null);
-    };
-
-    const deleteTempImage = async () => {
-        if (!tempImage) return;
-
-        await fetch('http://localhost:3001/api/admin/delete-temp-image', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                userId: user.id,
-                imagePath: tempImage,
-            }),
-        });
-
-        setTempImage(null);
-    };
-
-    const uploadImage = async (file, onSuccess) => {
-        const formData = new FormData();
-        formData.append('image', file);
-        formData.append('userId', user.id);
-
-        setUploading(true);
-
-        try {
-            const res = await fetch(
-                'http://localhost:3001/api/admin/upload/shop-image',
-                {
-                    method: 'POST',
-                    body: formData,
-                }
-            );
-
-            const data = await res.json();
-
-            if (data.imagePath) {
-                onSuccess(data.imagePath);
-            } else {
-                alert('Ошибка загрузки изображения');
-            }
-        } catch (e) {
-            console.error(e);
-            alert('Ошибка загрузки');
-        } finally {
-            setUploading(false);
-        }
-    };
 
     const addToCart = async (itemId) => {
         await fetch('http://localhost:3001/api/cart/add', {
@@ -491,188 +332,6 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
                             </CustomText>
                         </div>
                     )}
-                </ModalCard>
-
-                {/* Модалка добавления */}
-                <ModalCard
-                    id="add"
-                    header="Добавить товар"
-                    onClose={() => {
-                        deleteTempImage();
-                        setActiveModal(null);
-                    }}
-                >
-                    <input
-                        placeholder="Название"
-                        value={newItem.title}
-                        onChange={e => setNewItem({ ...newItem, title: e.target.value })}
-                        style={inputStyle}
-                    />
-
-                    <textarea
-                        placeholder="Описание"
-                        value={newItem.description}
-                        onChange={e => setNewItem({ ...newItem, description: e.target.value })}
-                        style={{ ...inputStyle, height: 80 }}
-                    />
-
-                    <input
-                        placeholder="Цена"
-                        type="number"
-                        value={newItem.price}
-                        onChange={e => setNewItem({ ...newItem, price: e.target.value })}
-                        style={inputStyle}
-                    />
-
-                    <input
-                        type="file"
-                        accept="image/png, image/jpeg"
-                        onChange={e => {
-                            const file = e.target.files[0];
-                            if (!file) return;
-
-                            uploadImage(file, imagePath => {
-                                setTempImage(imagePath);
-                            });
-                        }}
-                        style={{ marginBottom: 12 }}
-                    />
-
-                    {uploading && (
-                        <CustomText style={{ marginBottom: 8 }}>Загрузка изображения…</CustomText>
-                    )}
-
-                    {tempImage && (
-                        <img
-                            src={`http://localhost:3001${tempImage}`}
-                            alt=""
-                            style={{
-                                width: 120,
-                                height: 120,
-                                objectFit: 'cover',
-                                borderRadius: 8,
-                                marginBottom: 12,
-                                border: '1px solid #ddd',
-                            }}
-                        />
-                    )}
-
-                    {/* КНОПКИ */}
-                    <Div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
-                        <Button
-                            mode="primary"
-                            stretched
-                            onClick={saveNewItem}
-                        >
-                            Сохранить
-                        </Button>
-
-                        <Button
-                            mode="secondary"
-                            stretched
-                            onClick={() => setActiveModal(null)}
-                        >
-                            Отмена
-                        </Button>
-                    </Div>
-                </ModalCard>
-
-                <ModalCard
-                    id="edit"
-                    header="Редактировать товар"
-                    onClose={async () => {
-                        // Если tempImage отличается от текущей картинки товара — удаляем её
-                        if (tempImage && tempImage !== editItem?.image) {
-                            await fetch('http://localhost:3001/api/admin/delete-temp-image', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ userId: user.id, imagePath: tempImage }),
-                            });
-                        }
-
-                        setEditItem(null);
-                        setTempImage(null);
-                        setActiveModal(null);
-                    }}
-                >
-                    <input
-                        placeholder="Название"
-                        value={editItem?.title || ''}
-                        onChange={e => setEditItem({ ...editItem, title: e.target.value })}
-                        style={inputStyle}
-                    />
-
-                    <textarea
-                        placeholder="Описание"
-                        value={editItem?.description || ''}
-                        onChange={e => setEditItem({ ...editItem, description: e.target.value })}
-                        style={{ ...inputStyle, height: 80 }}
-                    />
-
-                    <input
-                        type="number"
-                        placeholder="Цена"
-                        value={editItem?.price || ''}
-                        onChange={e => setEditItem({ ...editItem, price: e.target.value })}
-                        style={inputStyle}
-                    />
-
-                    <input
-                        type="file"
-                        accept="image/png, image/jpeg"
-                        onChange={async e => {
-                            const file = e.target.files[0];
-                            if (!file) return;
-                            if (tempImage && tempImage !== editItem?.image) {
-                                await fetch('http://localhost:3001/api/admin/delete-temp-image', {
-                                    method: 'POST',
-                                    headers: { 'Content-Type': 'application/json' },
-                                    body: JSON.stringify({ userId: user.id, imagePath: tempImage }),
-                                });
-                            }
-                            uploadImage(file, imagePath => setTempImage(imagePath));
-                        }}
-                    />
-
-                    {uploading && (
-                        <CustomText style={{ marginBottom: 8 }}>Загрузка изображения…</CustomText>
-                    )}
-
-                    {tempImage && (
-                        <img
-                            src={`http://localhost:3001${tempImage}`}
-                            alt=""
-                            style={{ width: 120, height: 120, objectFit: 'cover', borderRadius: 8, marginBottom: 12, border: '1px solid #ddd' }}
-                        />
-                    )}
-
-                    <Div style={{ display: 'flex', gap: 8 }}>
-                        <Button mode="primary" stretched onClick={saveEditItem}>
-                            Сохранить
-                        </Button>
-                        <Button mode="secondary" stretched onClick={() => setActiveModal(null)}>
-                            Отмена
-                        </Button>
-                    </Div>
-                </ModalCard>
-
-                <ModalCard
-                    id="delete"
-                    header="Удалить товар?"
-                    onClose={() => setActiveModal(null)}
-                >
-                    <CustomText style={{ marginBottom: 12 }}>
-                        Товар <b>{activeItem?.title}</b> будет удалён навсегда.
-                    </CustomText>
-
-                    <Div style={{ display: 'flex', gap: 8 }}>
-                        <Button mode="destructive" stretched onClick={deleteItem}>
-                            Удалить
-                        </Button>
-                        <Button mode="secondary" stretched onClick={() => setActiveModal(null)}>
-                            Отмена
-                        </Button>
-                    </Div>
                 </ModalCard>
 
                 <ModalCard
@@ -979,29 +638,6 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
 
             <Panel id={id} style={{backgroundColor: '#ceaeff', minHeight: '100vh'}}>
                 <Div style={{ height: 32, backgroundColor: '#ceaeff' }} />
-
-                {isAdmin && (
-                    <Div style={{ backgroundColor: '#ceaeff' }}>
-                        <Button
-                            size="s"
-                            mode="secondary"
-                            style={{ margin: 1, backgroundColor: '#fff', color: '#000' }}
-                            onClick={() => setActiveModal('add')}
-                        >
-                            ➕ Добавить
-                        </Button>
-
-                        <Button
-                            size="s"
-                            mode="secondary"
-                            style={{ margin: 1, backgroundColor: '#fff', color: '#000' }}
-                            onClick={() => go('adminPurchases')}
-                        >
-                            📦 Купленные
-                        </Button>
-                    </Div>
-                )}
-                            
                 <Div
                     style={{
                     position: 'fixed',
