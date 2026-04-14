@@ -6,7 +6,7 @@ import { CustomText } from './CustomTypography';
 import coinIcon from './imgs/coin.png'
 import boxIcon from './imgs/box1.png'
 
-export default function AdminShop({ id, user, goBack }) {
+export default function AdminShop({ id, user, goToProfile }) {
     const [items, setItems] = useState([]);
     const [activeModal, setActiveModal] = useState(null);
     const [activeItem, setActiveItem] = useState(null);
@@ -689,7 +689,7 @@ export default function AdminShop({ id, user, goBack }) {
                 mode="tertiary"
                 size="l"
                 before={<Icon28ChevronBack />}
-                onClick={goBack}
+                onClick={goToProfile}
                 style={{
                     paddingLeft: 0,
                     paddingRight: 8,

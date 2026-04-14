@@ -5,7 +5,7 @@ import { CustomText } from './CustomTypography';
 
 import shopIcon from './imgs/shop2.png'
 
-export default function AdminPurchases({ id, goBack, user, balance }) {
+export default function AdminPurchases({ id, goToProfile, user, balance }) {
   const [purchases, setPurchases] = useState([]);
 
   useEffect(() => {
@@ -68,7 +68,7 @@ export default function AdminPurchases({ id, goBack, user, balance }) {
             mode="tertiary"
             size="l"
             before={<Icon28ChevronBack />}
-            onClick={goBack}
+            onClick={goToProfile}
             style={{ 
                 paddingLeft: 0,
                 paddingRight: 8,

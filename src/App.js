@@ -1022,7 +1022,7 @@ export default function App() {
       <Profile id="profile" goBack={goBack} user={user} balance={balance} goToPurchases={goToPurchases} goToGuide={goToGuide} goToAchievements={goToAchievements} goToBalance={goToBalance} goToTasks={goToTasks} goToAdminPurchases={goToAdminPurchases} goToAdminShop={goToAdminShop} />
 
       {/* Панель админ-получения */}
-      <AdminPurchases id="adminPurchases" goBack={goBack} user={user} balance={balance} />
+      <AdminPurchases id="adminPurchases" goToProfile={goToProfile} user={user} balance={balance} />
 
       {/* Панель настроек */}
       <Purchases id="purchases" goBack={goBack} user={user} balance={balance} goToBalance={goToBalance} goToProfile={goToProfile} />
@@ -1043,7 +1043,7 @@ export default function App() {
       <AdminAnswersFeed id="answersFeed" user={user} goBack={goBack} goToTasks={goToTasks} />
 
       {/* Админка магазина */}
-      <AdminShop id="adminShop" user={user} goBack={goBack} />
+      <AdminShop id="adminShop" user={user} goToProfile={goToProfile} />
     </View>
     </div>
   )
