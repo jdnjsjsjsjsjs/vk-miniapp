@@ -1398,4 +1398,33 @@ app.get('/api/tasks/:taskId/my-answer/:userId', (req, res) => {
   );
 });
 
+// Админ — архивировать / разархивировать товар
+app.post('/api/admin/shop/:id/archive', (req, res) => {
+  const { userId, archived } = req.body;
+  const itemId = req.params.id;
+
+  // проверка админа
+  db.get('SELECT role FROM users WHERE id = ?', [userId], (err, user) => {
+    if (!user || user.role !== 'admin') {
+      return res.status(403).json({ error: 'Forbidden' });
+    }
+
+    db.run(
+      `UPDATE shop_items
+       SET archived = ?
+       WHERE id = ?`,
+      [archived ? 1 : 0, itemId],
+      function (err) {
+        if (err) return res.status(500).json({ error: err.message });
+
+        res.json({
+          success: true,
+          itemId,
+          archived: archived ? 1 : 0
+        });
+      }
+    );
+  });
+});
+
 app.listen(PORT, () => console.log(`Сервер запущен на http://localhost:${PORT}`));

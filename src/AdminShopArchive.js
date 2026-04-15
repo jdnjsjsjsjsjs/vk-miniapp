@@ -13,6 +13,7 @@ export default function AdminShop({ id, user, goToAdminShop }) {
     const [editItem, setEditItem] = useState(null);
     const [uploading, setUploading] = useState(false);
     const [tempImage, setTempImage] = useState(null);
+    const [successUnarchive, setSuccessUnarchive] = useState(false);
     const [successState, setSuccessState] = useState({
         add: false,
         edit: false,
@@ -75,6 +76,31 @@ export default function AdminShop({ id, user, goToAdminShop }) {
             <Icon24Cancel width={16} height={16} fill="#000" />
         </div>
     );
+
+    const unarchiveItem = async () => {
+        await fetch(`http://localhost:3001/api/admin/shop/${activeItem.id}/archive`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                userId: user.id,
+                archived: false,
+            }),
+        });
+
+        setItems(prev =>
+            prev.map(i =>
+                i.id === activeItem.id ? { ...i, archived: 0 } : i
+            )
+        );
+
+        setSuccessUnarchive(true);
+
+        setTimeout(() => {
+            setSuccessUnarchive(false);
+            setActiveItem(null);
+            setActiveModal(null);
+        }, 3000);
+    };
 
     const [newItem, setNewItem] = useState({
         title: '',
@@ -325,6 +351,23 @@ export default function AdminShop({ id, user, goToAdminShop }) {
                                 style={{ width: 24, height: 24 }}
                             />
                         </div>
+                    </div>
+
+                    <div
+                        onClick={unarchiveItem}
+                        style={{
+                            width: '100%',
+                            backgroundColor: successUnarchive ? '#ceaeff' : '#8c64d7',
+                            borderRadius: 999,
+                            padding: '1px 0',
+                            textAlign: 'center',
+                            cursor: 'pointer',
+                            marginTop: 7
+                        }}
+                    >
+                        <CustomText style={{ color: '#fff', fontSize: 10, fontWeight: 600 }}>
+                            {successUnarchive ? 'восстановлено' : 'восстановить'}
+                        </CustomText>
                     </div>
             </ModalCard>
             {/* Модалка добавления */}

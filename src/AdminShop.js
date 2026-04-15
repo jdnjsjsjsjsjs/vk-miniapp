@@ -13,6 +13,7 @@ export default function AdminShop({ id, user, goToAdminShopArchive, goToProfile 
     const [editItem, setEditItem] = useState(null);
     const [uploading, setUploading] = useState(false);
     const [tempImage, setTempImage] = useState(null);
+    const [successArchive, setSuccessArchive] = useState(false);
     const [successState, setSuccessState] = useState({
         add: false,
         edit: false,
@@ -87,6 +88,31 @@ export default function AdminShop({ id, user, goToAdminShopArchive, goToProfile 
     useEffect(() => {
         loadShop();
     }, [user.id]);
+
+    const archiveItem = async () => {
+        await fetch(`http://localhost:3001/api/admin/shop/${activeItem.id}/archive`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                userId: user.id,
+                archived: true, // лучше boolean
+            }),
+        });
+
+        setItems(prev =>
+            prev.map(i =>
+                i.id === activeItem.id ? { ...i, archived: 1 } : i
+            )
+        );
+
+        setSuccessArchive(true);
+
+        setTimeout(() => {
+            setSuccessArchive(false);
+            setActiveItem(null);
+            setActiveModal(null);
+        }, 3000);
+    };
 
     const deleteTempImage = async () => {
         if (!tempImage) return;
@@ -321,6 +347,23 @@ export default function AdminShop({ id, user, goToAdminShopArchive, goToProfile 
                             />
                         </div>
                     </div>
+                    
+                <div
+                    onClick={archiveItem}
+                    style={{
+                        width: '100%',
+                        backgroundColor: successArchive ? '#ceaeff' : '#8c64d7',
+                        borderRadius: 999,
+                        padding: '1px 0',
+                        textAlign: 'center',
+                        cursor: 'pointer',
+                        marginTop: 7
+                    }}
+                >
+                    <CustomText style={{ color: '#fff', fontSize: 10, fontWeight: 600 }}>
+                        {successArchive ? 'перенесено в архив' : 'в архив'}
+                    </CustomText>
+                </div>
             </ModalCard>
             {/* Модалка добавления */}
                 <ModalCard
