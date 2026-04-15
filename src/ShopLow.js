@@ -14,6 +14,7 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
     const [cartItemsFull, setCartItemsFull] = useState([]);
     const [checkoutConfirm, setCheckoutConfirm] = useState(false);
     const [checkoutSuccess, setCheckoutSuccess] = useState(false);
+    const [isClosing, setIsClosing] = useState(false);
 
     const ModalCloseButton = ({ onClick }) => (
         <div
@@ -572,42 +573,57 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
 
                 <ModalCard
                     id="checkoutConfirm"
-                    header="Подтвердить покупку?"
                     onClose={() => setCheckoutConfirm(false)}
                 >
-                    <CustomText style={{ marginBottom: 16 }}>
+                    <ModalCloseButton onClick={() => setCheckoutConfirm(false)} />
+                    <CustomText weight="1" style={{ marginBottom: 20 }}>
                         Вы подтверждаете покупку товаров?
                     </CustomText>
 
-                    <Div style={{ display: 'flex', gap: 8 }}>
-                        <Button
-                            mode="primary"
-                            stretched
+                    <div style={{ display: 'flex', gap: 6 }}>
+                        <div
                             onClick={async () => {
                                 await checkout();
                                 setCheckoutConfirm(false);
                                 setCheckoutSuccess(true);
                             }}
+                            style={{
+                            flex: 1,
+                            backgroundColor: '#8c64d7',
+                            borderRadius: 999,
+                            padding: '1px 0',
+                            textAlign: 'center',
+                            cursor: 'pointer'
+                            }}
                         >
-                            Да
-                        </Button>
+                            <CustomText style={{ color: '#fff', fontSize: 10, fontWeight: 600 }}>
+                                да
+                            </CustomText>
+                        </div>
 
-                        <Button
-                            mode="secondary"
-                            stretched
+                        <div
                             onClick={() => setCheckoutConfirm(false)}
+                            style={{
+                                flex: 1,
+                                border: '1px solid #8c64d7',
+                                borderRadius: 999,
+                                padding: '1px 0',
+                                textAlign: 'center',
+                                cursor: 'pointer'
+                            }}
                         >
-                            Отмена
-                        </Button>
-                    </Div>
+                            <CustomText style={{ color: '#8c64d7', fontSize: 10, fontWeight: 600 }}>
+                                отмена
+                            </CustomText>
+                        </div>
+                    </div>
                 </ModalCard>
 
                 <ModalCard
                     id="checkoutSuccess"
-                    header="Покупка оформлена"
                     onClose={() => setCheckoutSuccess(false)}
                 >
-                    <CustomText>
+                    <CustomText weight="1">
                         🎉 Поздравляем тебя с приобретением!
                     </CustomText>
 
@@ -625,14 +641,29 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
                         Центральная библиотека, каб. 6
                     </CustomText>
 
-                    <Button
-                        mode="primary"
-                        stretched
-                        style={{ marginTop: 16 }}
-                        onClick={() => setCheckoutSuccess(false)}
+                    <div
+                        onClick={() => {
+                            setIsClosing(true);
+
+                            setTimeout(() => {
+                                setCheckoutSuccess(false);
+                                setIsClosing(false);
+                            }, 3000);
+                        }}
+                        style={{
+                            width: '100%',
+                            backgroundColor: isClosing ? '#ceaeff' : '#8c64d7',
+                            borderRadius: 999,
+                            padding: '1px 0',
+                            textAlign: 'center',
+                            cursor: isClosing ? 'not-allowed' : 'pointer',
+                            marginTop: 7
+                        }}
                     >
-                        Понятно
-                    </Button>
+                        <CustomText style={{ color: '#fff', fontSize: 10, fontWeight: 600 }}>
+                            {isClosing ? 'закрываем...' : 'понятно'}
+                        </CustomText>
+                    </div>
                 </ModalCard>
             </ModalRoot>
 

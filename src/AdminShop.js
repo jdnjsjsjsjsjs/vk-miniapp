@@ -699,36 +699,36 @@ export default function AdminShop({ id, user, goToAdminShopArchive, goToProfile 
 
                     <div style={{ display: 'flex', gap: 6 }}>
                         <div
-                        onClick={deleteItem}
-                        style={{
-                          flex: 1,
-                          backgroundColor: '#8c64d7',
-                          borderRadius: 999,
-                          padding: '1px 0',
-                          textAlign: 'center',
-                          cursor: 'pointer'
-                        }}
-                      >
-                        <CustomText style={{ color: '#fff', fontSize: 10, fontWeight: 600 }}>
-                          удалить
-                        </CustomText>
-                      </div>
+                            onClick={deleteItem}
+                            style={{
+                            flex: 1,
+                            backgroundColor: '#8c64d7',
+                            borderRadius: 999,
+                            padding: '1px 0',
+                            textAlign: 'center',
+                            cursor: 'pointer'
+                            }}
+                        >
+                            <CustomText style={{ color: '#fff', fontSize: 10, fontWeight: 600 }}>
+                            удалить
+                            </CustomText>
+                        </div>
 
-                      <div
-                        onClick={() => setActiveModal(null)}
-                        style={{
-                          flex: 1,
-                          border: '1px solid #8c64d7',
-                          borderRadius: 999,
-                          padding: '1px 0',
-                          textAlign: 'center',
-                          cursor: 'pointer'
-                        }}
-                      >
-                        <CustomText style={{ color: '#8c64d7', fontSize: 10, fontWeight: 600 }}>
-                          отмена
-                        </CustomText>
-                      </div>
+                        <div
+                            onClick={() => setActiveModal(null)}
+                            style={{
+                            flex: 1,
+                            border: '1px solid #8c64d7',
+                            borderRadius: 999,
+                            padding: '1px 0',
+                            textAlign: 'center',
+                            cursor: 'pointer'
+                            }}
+                        >
+                            <CustomText style={{ color: '#8c64d7', fontSize: 10, fontWeight: 600 }}>
+                                отмена
+                            </CustomText>
+                        </div>
                     </div>
                 </ModalCard>
         </ModalRoot>
