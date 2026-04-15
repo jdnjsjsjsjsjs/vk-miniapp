@@ -42,7 +42,7 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
         const res = await fetch(`http://localhost:3001/api/shop?userId=${user.id}`);
         const data = await res.json();
 
-        setItems(data.items);
+        setItems(data.items.filter(item => item.archived === 0));
     };
 
     useEffect(() => {
