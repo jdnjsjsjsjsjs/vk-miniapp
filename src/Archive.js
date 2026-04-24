@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Panel, Div, Card, Button, ModalRoot, ModalCard } from '@vkontakte/vkui';
-import { Icon28ChevronBack, Icon24Cancel, Icon24Attach } from '@vkontakte/icons';
+import { Icon28ChevronBack, Icon24Cancel, Icon24Attach, Icon16Attach } from '@vkontakte/icons';
 import { CustomText } from './CustomTypography';
 
 import tasksIcon from './imgs/tasks.png';
@@ -657,8 +657,18 @@ export default function ArchiveTasks({ id, goBack, user, goToTasks }) {
                     setActiveModal('taskInfo');
                   }}
                 >
-                  <CustomText weight="2" style={{ fontSize: 10, color: '#000' }}>
-                    {task.title} {task.require_file ? '📎' : ''}
+                  <CustomText
+                    weight="2"
+                    style={{
+                      fontSize: 10,
+                      color: '#000',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 4,
+                    }}
+                  >
+                    {task.title}
+                    {task.require_file && <Icon16Attach fill="#000" width={12} height={12} />}
                   </CustomText>
 
                   <CustomText style={{ fontSize: 16, color: '#8c64d7', display: 'flex', alignItems: 'center', gap: 4, fontWeight: 1000 }}>

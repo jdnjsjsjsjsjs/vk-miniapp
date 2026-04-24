@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Panel, Div, Button, ModalRoot, ModalCard, Textarea, Card } from '@vkontakte/vkui';
 import { CustomText } from './CustomTypography';
-import { Icon28ChevronBack, Icon16Search } from '@vkontakte/icons';
+import { Icon28ChevronBack, Icon16Search, Icon16Attach } from '@vkontakte/icons';
 
 import coinIcon from './imgs/coin.png'
 import tasksIcon from './imgs/tasks.png'
@@ -346,8 +346,18 @@ export default function Tasks({ id, goBack, balance, goToBalance, user, goToTask
                                     border: '1px solid #ceaeff'
                                 }}
                             >
-                                <CustomText weight="2" style={{ fontSize: 10, color: '#000' }}>
-                                    {task.title} {task.require_file === 1 && '📎'}
+                                <CustomText
+                                    weight="2"
+                                    style={{
+                                        fontSize: 10,
+                                        color: '#000',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: 4,
+                                    }}
+                                >
+                                    {task.title}
+                                    {task.require_file && <Icon16Attach fill="#000" width={12} height={12} />}
                                 </CustomText>
 
                                 <CustomText style={{ fontSize: 16, color: '#8c64d7', display: 'flex', alignItems: 'center', gap: 4, fontWeight: 1000 }}>
