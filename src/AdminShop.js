@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Panel, Div, Button, Card, ModalRoot, ModalCard } from '@vkontakte/vkui';
-import { Icon28ChevronBack, Icon24Cancel } from '@vkontakte/icons';
+import { Icon28ChevronBack, Icon24Cancel, Icon16Attach } from '@vkontakte/icons';
 import { CustomText } from './CustomTypography';
 
 import coinIcon from './imgs/coin.png'
@@ -463,11 +463,11 @@ export default function AdminShop({ id, user, goToAdminShopArchive, goToProfile 
                                 marginTop: 7,
                             }}
                         >
+                            <Icon16Attach fill="#000" />
                             <CustomText style={{ color: '#fff', fontSize: 10 }}>
-                                📎прикрепить фото
+                                прикрепить фото
                             </CustomText>
                         </div>
-
                         <input
                             id="fileInputAdd"
                             type="file"
@@ -626,10 +626,16 @@ export default function AdminShop({ id, user, goToAdminShopArchive, goToProfile 
                                 textAlign: 'center',
                                 cursor: 'pointer',
                                 marginTop: 7,
+
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: 4,
                             }}
                         >
+                            <Icon16Attach fill="#fff" style={{ width: 12, height: 12 }}/>
                             <CustomText style={{ color: '#fff', fontSize: 10 }}>
-                                📎прикрепить фото
+                                прикрепить фото
                             </CustomText>
                         </div>
 
