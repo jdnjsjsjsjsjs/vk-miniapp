@@ -399,7 +399,7 @@ export default function AdminShop({ id, user, goToAdminShop }) {
                                 border: '1px solid #ceaeff',
                                 outline: 'none',
                                 fontSize: 12,
-                                color: '#ceaeff',
+                                color: '#000',
                                 marginBottom: 7,
                             }}
                     />
@@ -424,7 +424,7 @@ export default function AdminShop({ id, user, goToAdminShop }) {
                                 border: '1px solid #ceaeff',
                                 outline: 'none',
                                 fontSize: 12,
-                                color: '#ceaeff',
+                                color: '#000',
                                 marginBottom: 7,
                             }}
                     />
@@ -449,7 +449,7 @@ export default function AdminShop({ id, user, goToAdminShop }) {
                                 border: '1px solid #ceaeff',
                                 outline: 'none',
                                 fontSize: 12,
-                                color: '#ceaeff',
+                                color: '#000',
                                 marginBottom: 7,
                             }}
                     />
@@ -565,7 +565,7 @@ export default function AdminShop({ id, user, goToAdminShop }) {
                                 border: '1px solid #ceaeff',
                                 outline: 'none',
                                 fontSize: 12,
-                                color: '#ceaeff',
+                                color: '#000',
                                 marginBottom: 7,
                             }}
                     />
@@ -590,7 +590,7 @@ export default function AdminShop({ id, user, goToAdminShop }) {
                                 border: '1px solid #ceaeff',
                                 outline: 'none',
                                 fontSize: 12,
-                                color: '#ceaeff',
+                                color: '#000',
                                 marginBottom: 7,
                             }}
                     />
@@ -615,7 +615,7 @@ export default function AdminShop({ id, user, goToAdminShop }) {
                                 border: '1px solid #ceaeff',
                                 outline: 'none',
                                 fontSize: 12,
-                                color: '#ceaeff',
+                                color: '#000',
                                 marginBottom: 7,
                             }}
                     />
@@ -847,7 +847,7 @@ export default function AdminShop({ id, user, goToAdminShop }) {
                     border: '1px solid #ceaeff',
                     outline: 'none',
                     fontSize: 12,
-                    color: '#ceaeff',
+                    color: '#000',
                 }}
                 />
             </div>

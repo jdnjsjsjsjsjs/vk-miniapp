@@ -113,7 +113,7 @@ export default function TaskPage({ id, goBack, task, balance, goToBalance, user 
             border: 1px solid #ceaeff;
             outline: none;
             font-size: 12px;
-            color: #ceaeff;
+            color: #000;
             background-color: #fff;
         }
 

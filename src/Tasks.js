@@ -315,7 +315,7 @@ export default function Tasks({ id, goBack, balance, goToBalance, user, goToTask
                                     border: '1px solid #ceaeff',
                                     outline: 'none',
                                     fontSize: 12,
-                                    color: '#ceaeff',
+                                    color: '#000',
                                 }}
                             />
                         </div>

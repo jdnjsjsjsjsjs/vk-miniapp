@@ -394,7 +394,7 @@ export default function AdminShop({ id, user, goToAdminShopArchive, goToProfile 
                                 border: '1px solid #ceaeff',
                                 outline: 'none',
                                 fontSize: 12,
-                                color: '#ceaeff',
+                                color: '#000',
                                 marginBottom: 7,
                             }}
                     />
@@ -419,7 +419,7 @@ export default function AdminShop({ id, user, goToAdminShopArchive, goToProfile 
                                 border: '1px solid #ceaeff',
                                 outline: 'none',
                                 fontSize: 12,
-                                color: '#ceaeff',
+                                color: '#000',
                                 marginBottom: 7,
                             }}
                     />
@@ -444,7 +444,7 @@ export default function AdminShop({ id, user, goToAdminShopArchive, goToProfile 
                                 border: '1px solid #ceaeff',
                                 outline: 'none',
                                 fontSize: 12,
-                                color: '#ceaeff',
+                                color: '#000',
                                 marginBottom: 7,
                             }}
                     />
@@ -461,9 +461,14 @@ export default function AdminShop({ id, user, goToAdminShopArchive, goToProfile 
                                 textAlign: 'center',
                                 cursor: 'pointer',
                                 marginTop: 7,
+
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: 4,
                             }}
                         >
-                            <Icon16Attach fill="#000" />
+                            <Icon16Attach fill="#fff" style={{ width: 12, height: 12 }}/>
                             <CustomText style={{ color: '#fff', fontSize: 10 }}>
                                 прикрепить фото
                             </CustomText>
@@ -559,7 +564,7 @@ export default function AdminShop({ id, user, goToAdminShopArchive, goToProfile 
                                 border: '1px solid #ceaeff',
                                 outline: 'none',
                                 fontSize: 12,
-                                color: '#ceaeff',
+                                color: '#000',
                                 marginBottom: 7,
                             }}
                     />
@@ -584,7 +589,7 @@ export default function AdminShop({ id, user, goToAdminShopArchive, goToProfile 
                                 border: '1px solid #ceaeff',
                                 outline: 'none',
                                 fontSize: 12,
-                                color: '#ceaeff',
+                                color: '#000',
                                 marginBottom: 7,
                             }}
                     />
@@ -609,7 +614,7 @@ export default function AdminShop({ id, user, goToAdminShopArchive, goToProfile 
                                 border: '1px solid #ceaeff',
                                 outline: 'none',
                                 fontSize: 12,
-                                color: '#ceaeff',
+                                color: '#000',
                                 marginBottom: 7,
                             }}
                     />

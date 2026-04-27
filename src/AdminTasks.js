@@ -179,7 +179,7 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance, goT
               border: '1px solid #ceaeff',
               outline: 'none',
               fontSize: 12,
-              color: '#ceaeff',
+              color: '#000',
               marginBottom: 14,
             }}
           />
@@ -208,7 +208,7 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance, goT
               border: '1px solid #ceaeff',
               outline: 'none',
               fontSize: 12,
-              color: '#ceaeff',
+              color: '#000',
               marginBottom: 1, 
               resize: 'none'
             }}
@@ -268,7 +268,7 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance, goT
               border: '1px solid #ceaeff',
               outline: 'none',
               fontSize: 12,
-              color: '#ceaeff',
+              color: '#000',
               marginBottom: 14
             }}
           />
@@ -534,7 +534,7 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance, goT
               border: '1px solid #ceaeff',
               outline: 'none',
               fontSize: 12,
-              color: '#ceaeff',
+              color: '#000',
               marginBottom: 14,
             }}
           />
@@ -563,7 +563,7 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance, goT
               border: '1px solid #ceaeff',
               outline: 'none',
               fontSize: 12,
-              color: '#ceaeff',
+              color: '#000',
               marginBottom: 1, 
               resize: 'none'
             }}
@@ -633,7 +633,7 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance, goT
               border: '1px solid #ceaeff',
               outline: 'none',
               fontSize: 12,
-              color: '#ceaeff',
+              color: '#000',
               marginBottom: 14
             }}
           />
@@ -950,7 +950,7 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance, goT
                     border: '1px solid #ceaeff',
                     outline: 'none',
                     fontSize: 12,
-                    color: '#ceaeff',
+                    color: '#000',
                   }}
                 />
               </div>

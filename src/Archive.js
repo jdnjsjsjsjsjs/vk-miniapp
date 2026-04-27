@@ -255,7 +255,7 @@ export default function ArchiveTasks({ id, goBack, user, goToTasks }) {
               border: '1px solid #ceaeff',
               outline: 'none',
               fontSize: 12,
-              color: '#ceaeff',
+              color: '#000',
               marginBottom: 14
             }}
           />
@@ -280,7 +280,7 @@ export default function ArchiveTasks({ id, goBack, user, goToTasks }) {
               border: '1px solid #ceaeff',
               outline: 'none',
               fontSize: 12,
-              color: '#ceaeff',
+              color: '#000',
               marginBottom: 1,
               resize: 'none'
             }}
@@ -331,7 +331,7 @@ export default function ArchiveTasks({ id, goBack, user, goToTasks }) {
               border: '1px solid #ceaeff',
               outline: 'none',
               fontSize: 12,
-              color: '#ceaeff',
+              color: '#000',
               marginBottom: 14
             }}
           />

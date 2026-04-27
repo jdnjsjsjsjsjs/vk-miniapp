@@ -80,7 +80,7 @@ export default function Guide({ id, goBack }) {
                 border: '1px solid #ceaeff',
                 outline: 'none',
                 fontSize: 12,
-                color: '#ceaeff'
+                color: '#000'
               }}
             />
           </div>
