@@ -480,6 +480,7 @@ export default function App() {
           <Card
             mode="shadow"
             style={{
+              gridRow: '1 / span 2', // 👈 ВОТ ЭТО КЛЮЧ
               borderRadius: 12,
               padding: '12px 12px 7px 12px',
               backgroundColor: '#ffffff',
