@@ -30,7 +30,7 @@ export default function TaskPage({ id, goBack, task, balance, goToBalance, user 
     useEffect(() => {
         if (!user?.id || !task?.id) return;
 
-        fetch(`http://localhost:3001/api/tasks/${task.id}/my-answer/${user.id}`)
+        fetch(`https://ivanovskiystyle.ru/api/tasks/${task.id}/my-answer/${user.id}`)
             .then(res => res.json())
             .then(setMyAnswer)
             .catch(() => {});
@@ -69,7 +69,7 @@ export default function TaskPage({ id, goBack, task, balance, goToBalance, user 
                 });
 
                 await fetch(
-                    `http://localhost:3001/api/tasks/${task.id}/answer-with-file`,
+                    `https://ivanovskiystyle.ru/api/tasks/${task.id}/answer-with-file`,
                     {
                         method: 'POST',
                         body: formData
@@ -79,7 +79,7 @@ export default function TaskPage({ id, goBack, task, balance, goToBalance, user 
             } else {
 
                 await fetch(
-                    `http://localhost:3001/api/tasks/${task.id}/answer`,
+                    `https://ivanovskiystyle.ru/api/tasks/${task.id}/answer`,
                     {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },

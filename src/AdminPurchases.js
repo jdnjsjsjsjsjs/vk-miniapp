@@ -9,7 +9,7 @@ export default function AdminPurchases({ id, goToProfile, user, balance }) {
   const [purchases, setPurchases] = useState([]);
 
   useEffect(() => {
-    fetch(`http://localhost:3001/api/admin/purchases?userId=${user.id}`)
+    fetch(`https://ivanovskiystyle.ru/api/admin/purchases?userId=${user.id}`)
       .then(res => res.json())
       .then(setPurchases);
   }, [user.id]);
@@ -17,7 +17,7 @@ export default function AdminPurchases({ id, goToProfile, user, balance }) {
   const markReceived = async (orderId) => {
     try {
       // Отмечаем заказ полученным на сервере
-      await fetch('http://localhost:3001/api/admin/purchases/mark-received', {
+      await fetch('https://ivanovskiystyle.ru/api/admin/purchases/mark-received', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: user.id, orderId }),

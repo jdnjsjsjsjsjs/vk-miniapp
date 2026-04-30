@@ -31,7 +31,7 @@ export default function Gift({ id, goBack, balance, goToBalance}) {
     useEffect(() => {
         if (!userId) return;
 
-        fetch(`http://localhost:3001/api/user/${userId}`)
+        fetch(`https://ivanovskiystyle.ru/api/user/${userId}`)
             .then(res => res.json())
             .then(data => {
                 setGiftDay(data.gift_day);
@@ -43,7 +43,7 @@ export default function Gift({ id, goBack, balance, goToBalance}) {
 
     const claimGift = async () => {
         const res = await fetch(
-            `http://localhost:3001/api/user/${userId}/claimGift`,
+            `https://ivanovskiystyle.ru/api/user/${userId}/claimGift`,
             { method: 'POST' }
         );
 

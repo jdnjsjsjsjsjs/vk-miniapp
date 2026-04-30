@@ -14,12 +14,12 @@ export default function Purchases({ id, goBack, user, balance, goToBalance, goTo
     useEffect(() => {
         const loadPurchases = async () => {
             // Получаем покупки пользователя
-            const resPurchases = await fetch(`http://localhost:3001/api/user/${user.id}/purchases`);
+            const resPurchases = await fetch(`https://ivanovskiystyle.ru/api/user/${user.id}/purchases`);
             const purchasesData = await resPurchases.json();
             setPurchases(purchasesData);
 
             // Получаем товары магазина (чтобы отобразить картинки и названия)
-            const resItems = await fetch('http://localhost:3001/api/shop');
+            const resItems = await fetch('https://ivanovskiystyle.ru/api/shop');
             const itemsData = await resItems.json();
             setItems(itemsData.items || itemsData);
         };
@@ -178,7 +178,7 @@ export default function Purchases({ id, goBack, user, balance, goToBalance, goTo
                                         >
                                             {item.image ? (
                                                 <img
-                                                    src={`http://localhost:3001${item.image}`}
+                                                    src={`https://ivanovskiystyle.ru${item.image}`}
                                                     alt=""
                                                     style={{
                                                         width: '100%',
@@ -318,7 +318,7 @@ export default function Purchases({ id, goBack, user, balance, goToBalance, goTo
                                         >
                                             {item.image ? (
                                                 <img
-                                                    src={`http://localhost:3001${item.image}`}
+                                                    src={`https://ivanovskiystyle.ru${item.image}`}
                                                     alt=""
                                                     style={{
                                                         width: '100%',

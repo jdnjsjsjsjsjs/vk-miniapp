@@ -21,7 +21,7 @@ export default function Balance({ id, goBack, balance, goToBalance }) {
     }, []);
 
     useEffect(() => {
-        fetch('http://localhost:3001/api/users') // endpoint для всех пользователей
+        fetch('https://ivanovskiystyle.ru/api/users') // endpoint для всех пользователей
             .then(res => res.json())
             .then(data => {
                 const sorted = data.sort((a, b) => b.totalEarned - a.totalEarned);

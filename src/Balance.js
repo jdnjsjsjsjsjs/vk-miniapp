@@ -12,7 +12,7 @@ export default function Balance({ id, goBack, balance, goToTasks, totalEarned, u
   useEffect(() => {
     async function fetchTransactions() {
       try {
-        const res = await fetch(`http://localhost:3001/api/user/${userId}/transactions`);
+        const res = await fetch(`https://ivanovskiystyle.ru/api/user/${userId}/transactions`);
         const data = await res.json();
 
         const grouped = data.reduce((acc, tx) => {

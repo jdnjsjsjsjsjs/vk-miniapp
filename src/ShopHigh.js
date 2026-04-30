@@ -40,7 +40,7 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
     );
 
     const loadShop = async () => {
-        const res = await fetch(`http://localhost:3001/api/shop?userId=${user.id}`);
+        const res = await fetch(`https://ivanovskiystyle.ru/api/shop?userId=${user.id}`);
         const data = await res.json();
 
         setItems(data.items.filter(item => item.archived === 0));
@@ -55,7 +55,7 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
     }, [user.id]);
 
     const addToCart = async (itemId) => {
-        await fetch('http://localhost:3001/api/cart/add', {
+        await fetch('https://ivanovskiystyle.ru/api/cart/add', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ userId: user.id, itemId, quantity: 1 }),
@@ -65,7 +65,7 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
     };
 
     const removeFromCart = async (itemId) => {
-        await fetch('http://localhost:3001/api/cart/decrease', {
+        await fetch('https://ivanovskiystyle.ru/api/cart/decrease', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ userId: user.id, itemId }),
@@ -75,7 +75,7 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
     };
 
     const loadCart = async () => {
-        const res = await fetch(`http://localhost:3001/api/cart/${user.id}`);
+        const res = await fetch(`https://ivanovskiystyle.ru/api/cart/${user.id}`);
         const data = await res.json();
 
         const cartObj = {};
@@ -88,7 +88,7 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
     };
 
     const checkout = async () => {
-        const res = await fetch('http://localhost:3001/api/cart/checkout', {
+        const res = await fetch('https://ivanovskiystyle.ru/api/cart/checkout', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ userId: user.id }),
@@ -153,7 +153,7 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
                     {/* Фото */}
                     {activeItem?.image ? (
                         <img
-                        src={`http://localhost:3001${activeItem.image}`}
+                        src={`https://ivanovskiystyle.ru${activeItem.image}`}
                         alt=""
                         style={{
                             width: '100%',
@@ -389,7 +389,7 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
                                         {/* Фото */}
                                         {item.image ? (
                                             <img
-                                                src={`http://localhost:3001${item.image}`}
+                                                src={`https://ivanovskiystyle.ru${item.image}`}
                                                 alt=""
                                                 style={{
                                                     width: 50,
@@ -842,7 +842,7 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
                                 >
                                     {item.image ? (
                                         <img
-                                            src={`http://localhost:3001${item.image}`}
+                                            src={`https://ivanovskiystyle.ru${item.image}`}
                                             alt=""
                                             style={{
                                                 width: '100%',

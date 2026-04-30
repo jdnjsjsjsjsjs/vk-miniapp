@@ -30,7 +30,7 @@ export default function AdminAnswersFeed({ id, user, goBack, goToTasks }) {
   useEffect(() => {
     if (!user?.id) return;
 
-    fetch(`http://localhost:3001/api/admin/answers-feed?userId=${user.id}`)
+    fetch(`https://ivanovskiystyle.ru/api/admin/answers-feed?userId=${user.id}`)
       .then(res => res.json())
       .then(data => {
         const normalized = data.map(a => ({
@@ -55,7 +55,7 @@ export default function AdminAnswersFeed({ id, user, goBack, goToTasks }) {
 
   async function handleAnswer(action) {
     await fetch(
-      `http://localhost:3001/api/admin/answers/${activeAnswer.id}`,
+      `https://ivanovskiystyle.ru/api/admin/answers/${activeAnswer.id}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -69,7 +69,7 @@ export default function AdminAnswersFeed({ id, user, goBack, goToTasks }) {
 
     // обновляем список
     const res = await fetch(
-      `http://localhost:3001/api/admin/answers-feed?userId=${user.id}`
+      `https://ivanovskiystyle.ru/api/admin/answers-feed?userId=${user.id}`
     );
     const data = await res.json();
 
@@ -166,7 +166,7 @@ export default function AdminAnswersFeed({ id, user, goBack, goToTasks }) {
               {activeAnswer.files.map((f, i) => (
                 <a
                   key={i}
-                  href={`http://localhost:3001${f}`}
+                  href={`https://ivanovskiystyle.ru${f}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   download
@@ -299,7 +299,7 @@ export default function AdminAnswersFeed({ id, user, goBack, goToTasks }) {
                 return isPdf ? (
                   <a
                     key={i}
-                    href={`http://localhost:3001${f}`}
+                    href={`https://ivanovskiystyle.ru${f}`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -308,7 +308,7 @@ export default function AdminAnswersFeed({ id, user, goBack, goToTasks }) {
                 ) : (
                   <img
                     key={i}
-                    src={`http://localhost:3001${f}`}
+                    src={`https://ivanovskiystyle.ru${f}`}
                     alt="Ответ"
                     style={{
                       width: '100%',

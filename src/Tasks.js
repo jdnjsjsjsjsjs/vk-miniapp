@@ -17,7 +17,7 @@ export default function Tasks({ id, goBack, balance, goToBalance, user, goToTask
     useEffect(() => {
         if (!user?.id) return;
 
-        fetch(`http://localhost:3001/api/tasks/${user.id}`)
+        fetch(`https://ivanovskiystyle.ru/api/tasks/${user.id}`)
             .then(res => res.json())
             .then(data => {
                 setTasks(data);
@@ -99,7 +99,7 @@ export default function Tasks({ id, goBack, balance, goToBalance, user, goToTask
                                         formData.append('file', selectedFile);
 
                                         await fetch(
-                                            `http://localhost:3001/api/tasks/${activeTask.id}/answer-with-file`,
+                                            `https://ivanovskiystyle.ru/api/tasks/${activeTask.id}/answer-with-file`,
                                             {
                                                 method: 'POST',
                                                 body: formData
@@ -107,7 +107,7 @@ export default function Tasks({ id, goBack, balance, goToBalance, user, goToTask
                                         );
                                     } else {
                                         await fetch(
-                                            `http://localhost:3001/api/tasks/${activeTask.id}/answer`,
+                                            `https://ivanovskiystyle.ru/api/tasks/${activeTask.id}/answer`,
                                             {
                                                 method: 'POST',
                                                 headers: { 'Content-Type': 'application/json' },
@@ -123,7 +123,7 @@ export default function Tasks({ id, goBack, balance, goToBalance, user, goToTask
                                     setAnswer('');
                                     setSelectedFile(null);
 
-                                    const res = await fetch(`http://localhost:3001/api/tasks/${user.id}`);
+                                    const res = await fetch(`https://ivanovskiystyle.ru/api/tasks/${user.id}`);
                                     const data = await res.json();
                                     setTasks(data);
 
