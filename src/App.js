@@ -103,7 +103,7 @@ export default function App() {
         const userInfo = await bridge.send('VKWebAppGetUserInfo');
         setUser(userInfo);
 
-        await fetch(`http://ivanovskiystyle.ru/api/user/${userInfo.id}/updateName`, {
+        await fetch(`https://ivanovskiystyle.ru/api/user/${userInfo.id}/updateName`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -123,7 +123,7 @@ export default function App() {
     if (!user) return;
 
     async function fetchAll() {
-      const res = await fetch(`http://ivanovskiystyle.ru/api/user/${user.id}`);
+      const res = await fetch(`https://ivanovskiystyle.ru/api/user/${user.id}`);
       const data = await res.json();
 
       setUser(prev => ({
@@ -168,7 +168,7 @@ export default function App() {
 
   const fetchUsers = async () => {
     try {
-      const res = await fetch('http://ivanovskiystyle.ru/api/users');
+      const res = await fetch('https://ivanovskiystyle.ru/api/users');
       const data = await res.json();
       setUsersList(data);
     } catch (error) {
@@ -185,7 +185,7 @@ export default function App() {
 
     async function fetchLastTasks() {
       try {
-        const res = await fetch(`http://ivanovskiystyle.ru/api/tasks/${user.id}`);
+        const res = await fetch(`https://ivanovskiystyle.ru/api/tasks/${user.id}`);
         const data = await res.json();
 
         const moscowNow = getMoscowTime();
