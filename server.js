@@ -182,10 +182,10 @@ const adminId = 382210259;
 db.run(`
   INSERT INTO users (id, role)
   VALUES (?, 'admin')
-  ON CONFLICT(id) DO UPDATE SET role = 'user'
+  ON CONFLICT(id) DO UPDATE SET role = 'admin'
 `, [adminId], (err) => {
   if (err) return console.error('Ошибка при присвоении админки:', err.message);
-  console.log(`Пользователь ${adminId} назначен user`);
+  console.log(`Пользователь ${adminId} назначен admin`);
 });
 
 db.run(`
@@ -257,10 +257,15 @@ db.run(`
 app.get('/api/user/:id', async (req, res) => {
   const userId = req.params.id;
 
+  console.log("🔥 /api/user HIT");
+  console.log("➡️ params:", req.params);
+  console.log("➡️ userId raw:", req.params.id, typeof req.params.id);
+
   db.get('SELECT * FROM users WHERE id = ?', [userId], async (err, row) => {
     if (err) return res.status(500).json({ error: err.message });
 
     if (!row) {
+      console.log("💾 INSERT TRIGGERED for:", userId);
       const today = new Date().toISOString().slice(0, 10);
       db.run(
         `INSERT INTO users 
@@ -291,6 +296,7 @@ app.get('/api/user/:id', async (req, res) => {
         }
       );
     } else {
+      console.log("♻️ USER EXISTS:", userId);
       const result = updateLoginStreak(row);
       db.run(
         `UPDATE users
