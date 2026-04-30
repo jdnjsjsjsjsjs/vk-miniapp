@@ -8,7 +8,17 @@ const path = require('path');
 const fs = require('fs');
 
 const app = express();
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
+
+const ensureDir = (dir) => {
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+};
+
+ensureDir(path.join(__dirname, 'uploads'));
+ensureDir(path.join(__dirname, 'uploads', 'shop'));
+ensureDir(path.join(__dirname, 'uploads', 'task-answers'));
 
 // Middleware
 app.use(cors());
@@ -725,89 +735,6 @@ app.get('/api/tasks/task/:id', (req, res) => {
   });
 });
 
-// СОЗДАНИЕ ТЕСТОВЫХ ЮЗЕРОВ
-app.get('/api/createTestUsers', (req, res) => {
-  const testUsers = [
-    
-    { id: 103991, first_name: 'Сергей', last_name: 'Сергеев', totalEarned: 1 },
-    { id: 10391, first_name: 'Сергей', last_name: 'Сергеев', totalEarned: 1 },
-    { id: 10381, first_name: 'Сергей', last_name: 'Сергеев', totalEarned: 1 },
-    { id: 103771, first_name: 'Сергей', last_name: 'Сергеев', totalEarned: 1 },
-    { id: 103661, first_name: 'Сергей', last_name: 'Сергеев', totalEarned: 1 },
-    { id: 103551, first_name: 'Сергей', last_name: 'Сергеев', totalEarned: 1 },
-    { id: 103441, first_name: 'Сергей', last_name: 'Сергеев', totalEarned: 1 },
-    { id: 103331, first_name: 'Сергей', last_name: 'Сергеев', totalEarned: 1 },
-    { id: 103221, first_name: 'Сергей', last_name: 'Сергеев', totalEarned: 1 },
-    { id: 103000, first_name: 'Сергей', last_name: 'Сергеев', totalEarned: 1 },
-    { id: 103999, first_name: 'Сергей', last_name: 'Сергеев', totalEarned: 1 },
-    { id: 1039, first_name: 'Сергей', last_name: 'Сергеев', totalEarned: 1 },
-    { id: 1038, first_name: 'Сергей', last_name: 'Сергеев', totalEarned: 1 },
-    { id: 103777, first_name: 'Сергей', last_name: 'Сергеев', totalEarned: 1 },
-    { id: 103666, first_name: 'Сергей', last_name: 'Сергеев', totalEarned: 1 },
-    { id: 103555, first_name: 'Сергей', last_name: 'Сергеев', totalEarned: 1 },
-    { id: 103444, first_name: 'Сергей', last_name: 'Сергеев', totalEarned: 1 },
-    { id: 103333, first_name: 'Сергей', last_name: 'Сергеев', totalEarned: 1 },
-    { id: 103222, first_name: 'Сергей', last_name: 'Сергеев', totalEarned: 1 },
-    { id: 103111, first_name: 'Сергей', last_name: 'Сергеев', totalEarned: 1 },
-    { id: 10312345, first_name: 'Сергей', last_name: 'Сергеев', totalEarned: 1 },
-    { id: 1031234, first_name: 'Сергей', last_name: 'Сергеев', totalEarned: 1 },
-    { id: 103123, first_name: 'Сергей', last_name: 'Сергеев', totalEarned: 1 },
-    { id: 103121, first_name: 'Сергей', last_name: 'Сергеев', totalEarned: 1 },
-    { id: 104, first_name: 'Анна', last_name: 'Ананьева', totalEarned: 15 },
-    { id: 105, first_name: 'Мария', last_name: 'Миронова', totalEarned: 20 },
-    { id: 106, first_name: 'Мария', last_name: 'Миронова', totalEarned: 20 },
-    { id: 107, first_name: 'Мария', last_name: 'Миронова', totalEarned: 20 },
-    { id: 1075, first_name: 'Мария', last_name: 'Миронова', totalEarned: 20 },
-    { id: 10545, first_name: 'Мария', last_name: 'Миронова', totalEarned: 20 },
-    { id: 1053, first_name: 'Мария', last_name: 'Миронова', totalEarned: 20 },
-    { id: 105234, first_name: 'Мария', last_name: 'Миронова', totalEarned: 20 },
-    { id: 105654, first_name: 'Мария', last_name: 'Миронова', totalEarned: 20 },
-    { id: 105234, first_name: 'Мария', last_name: 'Миронова', totalEarned: 20 },
-    { id: 105241, first_name: 'Мария', last_name: 'Миронова', totalEarned: 20 },
-    { id: 1054566, first_name: 'Мария', last_name: 'Миронова', totalEarned: 20 },
-    { id: 105123, first_name: 'Мария', last_name: 'Миронова', totalEarned: 20 },
-    { id: 105987, first_name: 'Мария', last_name: 'Миронова', totalEarned: 20 },
-    { id: 105876, first_name: 'Мария', last_name: 'Миронова', totalEarned: 20 },
-    { id: 105765, first_name: 'Мария', last_name: 'Миронова', totalEarned: 20 },
-    { id: 105654, first_name: 'Мария', last_name: 'Миронова', totalEarned: 20 },
-    { id: 105543, first_name: 'Мария', last_name: 'Миронова', totalEarned: 20 },
-    { id: 105545, first_name: 'Мария', last_name: 'Миронова', totalEarned: 20 },
-    { id: 105434, first_name: 'Мария', last_name: 'Миронова', totalEarned: 20 },
-    { id: 105432, first_name: 'Мария', last_name: 'Миронова', totalEarned: 20 },
-    { id: 1053121, first_name: 'Мария', last_name: 'Миронова', totalEarned: 20 },
-    { id: 105546, first_name: 'Мария', last_name: 'Миронова', totalEarned: 20 },
-    { id: 105121, first_name: 'Мария', last_name: 'Миронова', totalEarned: 20 },
-    { id: 105232, first_name: 'Мария', last_name: 'Миронова', totalEarned: 20 },
-    { id: 105343, first_name: 'Мария', last_name: 'Миронова', totalEarned: 20 },
-    { id: 105454, first_name: 'Мария', last_name: 'Миронова', totalEarned: 20 },
-    { id: 105667, first_name: 'Мария', last_name: 'Миронова', totalEarned: 20 },
-    { id: 106, first_name: 'Марьян', last_name: 'Игорев', totalEarned: 25 },
-    { id: 107, first_name: 'Игорь', last_name: 'Жежков', totalEarned: 300 },
-  ];
-
-  let completed = 0;
-
-  testUsers.forEach(u => {
-    db.get('SELECT * FROM users WHERE id = ?', [u.id], (err, row) => {
-      if (err) return res.status(500).json({ error: err.message });
-
-      if (!row) {
-        db.run(
-          'INSERT INTO users (id, balance, totalEarned, first_name, last_name) VALUES (?, ?, ?, ?, ?)',
-          [u.id, 0, u.totalEarned, u.first_name, u.last_name],
-          () => {
-            completed++;
-            if (completed === testUsers.length) res.json({ message: 'Test users added!' });
-          }
-        );
-      } else {
-        completed++;
-        if (completed === testUsers.length) res.json({ message: 'Test users added!' });
-      }
-    });
-  });
-});
-
 // Получить товары магазина + купленные предметы пользователя
 app.get('/api/shop', (req, res) => {
   const { userId } = req.query;
@@ -1425,6 +1352,12 @@ app.post('/api/admin/shop/:id/archive', (req, res) => {
       }
     );
   });
+});
+
+app.use(express.static(path.join(__dirname, 'build')));
+
+app.use((req, res) => {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 
 app.listen(PORT, () => console.log(`Сервер запущен на http://localhost:${PORT}`));
