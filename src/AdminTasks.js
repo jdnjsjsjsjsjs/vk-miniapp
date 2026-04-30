@@ -32,7 +32,7 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance, goT
   useEffect(() => {
     if (!user?.id) return;
 
-    fetch(`http://localhost:3001/api/admin/tasks?userId=${user.id}`)
+    fetch(`https://ivanovskiystyle.ru/api/admin/tasks?userId=${user.id}`)
       .then(res => res.json())
       .then(setTasks)
       .catch(err => console.error('Ошибка загрузки админ-заданий', err));
@@ -84,7 +84,7 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance, goT
   // Функции для сохранения редактирования и удаления
   const saveEditTask = async () => {
     try {
-      await fetch(`http://localhost:3001/api/admin/tasks/${editTask.id}`, {
+      await fetch(`https://ivanovskiystyle.ru/api/admin/tasks/${editTask.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -112,7 +112,7 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance, goT
 
   const deleteTask = async () => {
     try {
-      await fetch(`http://localhost:3001/api/admin/tasks/${deleteTaskTarget.id}`, {
+      await fetch(`https://ivanovskiystyle.ru/api/admin/tasks/${deleteTaskTarget.id}`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: user.id }),
@@ -370,7 +370,7 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance, goT
               if (!title || !question || !reward || isCreated) return;
 
               try {
-                await fetch('http://localhost:3001/api/admin/tasks', {
+                await fetch('https://ivanovskiystyle.ru/api/admin/tasks', {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
                   body: JSON.stringify({
@@ -385,7 +385,7 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance, goT
                 });
 
                 const res = await fetch(
-                  `http://localhost:3001/api/admin/tasks?userId=${user.id}`
+                  `https://ivanovskiystyle.ru/api/admin/tasks?userId=${user.id}`
                 );
                 const data = await res.json();
                 setTasks(data);
