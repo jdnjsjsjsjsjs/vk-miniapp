@@ -374,13 +374,6 @@ export default function App() {
           borderTopLeftRadius: 16,
           borderTopRightRadius: 16,
         }}>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '12px',
-            }}
-          >
             {/* Баланс */}
             <Card
               mode="shadow"
@@ -478,7 +471,6 @@ export default function App() {
                 style={{ width: window.innerWidth < 768 ? 75 : 90, height: window.innerWidth < 768 ? 75 : 90, objectFit: 'contain', paddingLeft: '100px', position: 'absolute', right: -3, bottom: window.innerWidth < 768 ? -5 : -11 }}
               />
             </Card>
-          </div>
           
           <Card
             mode="shadow"
