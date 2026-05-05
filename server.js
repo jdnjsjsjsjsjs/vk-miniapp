@@ -178,7 +178,6 @@ db.run(`
 
 // Даём админку нужному пользователю
 const adminId = 382210259;
-
 db.run(`
   INSERT INTO users (id, role)
   VALUES (?, 'admin')
@@ -186,6 +185,26 @@ db.run(`
 `, [adminId], (err) => {
   if (err) return console.error('Ошибка при присвоении админки:', err.message);
   console.log(`Пользователь ${adminId} назначен admin`);
+});
+
+const adminId1 = 170532879;
+db.run(`
+  INSERT INTO users (id, role)
+  VALUES (?, 'admin')
+  ON CONFLICT(id) DO UPDATE SET role = 'admin'
+`, [adminId1], (err) => {
+  if (err) return console.error('Ошибка при присвоении админки:', err.message);
+  console.log(`Пользователь ${adminId1} назначен admin`);
+});
+
+const adminId2 = 170532879;
+db.run(`
+  INSERT INTO users (id, role)
+  VALUES (?, 'admin')
+  ON CONFLICT(id) DO UPDATE SET role = 'admin'
+`, [adminId2], (err) => {
+  if (err) return console.error('Ошибка при присвоении админки:', err.message);
+  console.log(`Пользователь ${adminId2} назначен admin`);
 });
 
 db.run(`
