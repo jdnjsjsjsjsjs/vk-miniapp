@@ -197,7 +197,7 @@ db.run(`
   console.log(`Пользователь ${adminId1} назначен admin`);
 });
 
-const adminId2 = 170532879;
+const adminId2 = 136685474;
 db.run(`
   INSERT INTO users (id, role)
   VALUES (?, 'admin')
