@@ -367,14 +367,13 @@ export default function App() {
           backgroundColor: '#ceaeff',
           display: 'grid',
           gridTemplateColumns: '1fr 1fr',
-          gridTemplateRows: 'auto auto',
+          gridTemplateRows: '1fr 1fr', // 👈 важно
           gap: '12px',
-          position: 'relative',
           marginTop: '-40px',
           zIndex: 10,
           borderTopLeftRadius: 16,
           borderTopRightRadius: 16,
-         }}>
+        }}>
           <div
             style={{
               display: 'flex',
@@ -386,6 +385,8 @@ export default function App() {
             <Card
               mode="shadow"
               style={{
+                gridColumn: '1',
+                gridRow: '1',
                 borderRadius: 12,
                 padding: '8px 10px 20px 18px',
                 display: 'flex',
@@ -415,6 +416,8 @@ export default function App() {
             <Card
               mode="shadow"
               style={{
+                gridColumn: '1',
+                gridRow: '2',
                 borderRadius: 12,
                 padding: '8px 10px 14px 18px',
                 display: 'flex',
@@ -480,7 +483,8 @@ export default function App() {
           <Card
             mode="shadow"
             style={{
-              gridRow: '1 / span 2', // 👈 ВОТ ЭТО КЛЮЧ
+              gridColumn: '2',
+              gridRow: '1 / span 2',
               borderRadius: 12,
               padding: '12px 12px 7px 12px',
               backgroundColor: '#ffffff',
