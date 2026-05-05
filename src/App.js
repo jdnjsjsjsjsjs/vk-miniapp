@@ -363,7 +363,7 @@ export default function App() {
         </Div>
 
         <Div style={{ 
-          padding: '16px 16px 0px 16px',
+          padding: '16px 16px 16px 16px',
           backgroundColor: '#ceaeff',
           display: 'grid',
           gridTemplateColumns: '1fr 1fr',
