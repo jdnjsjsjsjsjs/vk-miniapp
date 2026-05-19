@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import { View, 
   Panel,
   Div, 
-  Gallery,
   Card,
   Accordion,
   Separator } from '@vkontakte/vkui';
@@ -340,26 +339,16 @@ export default function App() {
 
         { /* Галерея с 2 картинками сверху */ }
         <Div style={{ padding: 0 }}>
-          <Gallery
-            slideWidth="100%"
-            bullets="light"
-            style={{ height: window.innerWidth < 768 ? 250 : 400 }}
-            timeout={4000}
-            looped
-          >
-            {images.map((src, i) => (
-              <img
-                key={i}
-                src={src}
-                alt={`Slide ${i + 1}`}
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'cover',
-                }}
-              />
-            ))}
-          </Gallery>
+          <img
+            src={images[0]}
+            alt="Banner"
+            style={{
+              width: '100%',
+              height: window.innerWidth < 768 ? 260 : 400,
+              objectFit: 'cover',
+              display: 'block',
+            }}
+          />
         </Div>
 
         <Div style={{ 
@@ -390,7 +379,7 @@ export default function App() {
             >
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <div>
-                  <CustomText weight="1" style={{ fontSize: window.innerWidth < 768 ? 9 : 12, color: '#000', paddingBottom: 3 }}>
+                  <CustomText weight="1" style={{ fontWeight: 700, fontSize: window.innerWidth < 768 ? 10 : 13, color: '#000', paddingBottom: 4 }}>
                     Баланс
                   </CustomText>
                   <CustomText style={{ fontSize: window.innerWidth < 768 ? 25 : 30, fontWeight: 1000, color: '#8c64d7' }}>
@@ -427,7 +416,7 @@ export default function App() {
                   zIndex: 2,
                 }}
               >
-                <CustomText weight="1" style={{ fontSize: window.innerWidth < 768 ? 9 : 12, color: '#000', paddingBottom: 2 }}>
+                <CustomText weight="1" style={{ fontWeight: 700, fontSize: window.innerWidth < 768 ? 10 : 13, color: '#000', paddingBottom: 4 }}>
                   Ежедневный вход
                 </CustomText>
 
@@ -455,7 +444,7 @@ export default function App() {
                 ) : (
                   <CustomText
                     style={{
-                      fontSize: window.innerWidth < 768 ? 19 : 30,
+                      fontSize: window.innerWidth < 768 ? 20 : 27,
                       color: '#8c64d7',
                       fontWeight: 1000,
                     }}
@@ -505,10 +494,13 @@ export default function App() {
             <CustomText
               weight="1"
               style={{
-                fontSize: window.innerWidth < 768 ? 9 : 12,
+                fontSize: window.innerWidth < 768 ? 11 : 13,
                 color: '#000',
-                marginTop: 109,
+                fontWeight: 700,
+                marginBottom: 12,
                 marginLeft: 4,
+                position: 'absolute',
+                bottom: 0,
               }}
             >
               Достижения
@@ -554,7 +546,7 @@ export default function App() {
               {/* Заголовок */}
               <CustomText
                 weight="1"
-                style={{ fontSize: window.innerWidth < 768 ? 9 : 12, color: '#000', paddingBottom: 3 }}
+                style={{ fontWeight: 700, fontSize: window.innerWidth < 768 ? 12 : 13, color: '#000', paddingBottom: 3 }}
               >
                 Задания
               </CustomText>
@@ -570,7 +562,7 @@ export default function App() {
                   justifyContent: 'center',
 
                   height: window.innerWidth < 768 ? 18 : 22,
-                  padding: '0 8px',
+                  padding: '1px 10px',
 
                   backgroundColor: '#8c64d7',
                   borderRadius: 999,
@@ -580,7 +572,7 @@ export default function App() {
               >
                 <span
                   style={{
-                    fontSize: window.innerWidth < 768 ? 8 : 10,
+                    fontSize: window.innerWidth < 768 ? 9 : 10,
                     color: '#fff',
                     fontWeight: 600,
                     lineHeight: 1,
@@ -593,7 +585,7 @@ export default function App() {
               {/* Последние задания */}
               <div style={{ marginTop: window.innerWidth < 768 ? 3 : 10, display: 'flex', flexDirection: 'column', gap: 6, width: '100%', paddingBottom: 15 }}>
                 {lastTasks.length === 0 ? (
-                  <CustomText weight='1' style={{ fontSize: 14, color: '#000', textAlign: 'center', marginTop: 35 }}>
+                  <CustomText weight='1' style={{ fontSize: 11, color: '#6c6c6c', textAlign: 'center', marginTop: 35 }}>
                     Заданий пока нет
                   </CustomText>
                 ) : (
@@ -687,7 +679,8 @@ export default function App() {
               <CustomText
                 weight="1"
                 style={{
-                  fontSize: window.innerWidth < 768 ? 10 : 12,
+                  fontWeight: 700,
+                  fontSize: window.innerWidth < 768 ? 12 : 13,
                   color: '#000',
                 }}
               >
@@ -766,7 +759,7 @@ export default function App() {
               padding: '12px',
             }}
           >
-            <CustomText weight="1" style={{ fontSize: window.innerWidth < 768 ? 10 : 12, color: '#000', lineHeight: window.innerWidth < 768 ? '12px' : '16px' }}>
+            <CustomText weight="1" style={{ fontWeight: 700, fontSize: window.innerWidth < 768 ? 12 : 13, color: '#000', lineHeight: '14px' }}>
               Магазин артефактов
             </CustomText>
 
@@ -816,7 +809,7 @@ export default function App() {
                   pointerEvents: 'none',
                 }}
               />
-              <CustomText weight='1' style={{fontSize: window.innerWidth < 768 ? 10 : 14, color: '#000', lineHeight: window.innerWidth < 768 ? '11px' : '14px' }} >от 100</CustomText>
+              <CustomText weight='1' style={{fontSize: window.innerWidth < 768 ? 11 : 14, color: '#000', lineHeight: window.innerWidth < 768 ? '11px' : '14px' }} ><span style={{ fontWeight: '500' }}>от</span> <span style={{ fontWeight: '1000', fontSize: window.innerWidth < 768 ? 13 : 14 }}>100</span></CustomText>
               <CustomText style={{fontSize: window.innerWidth < 768 ? 9 : 12, color: '#000', lineHeight: window.innerWidth < 768 ? '11px' : '14px' }}>капиталов</CustomText>
             </Card>
 
@@ -844,7 +837,7 @@ export default function App() {
                   pointerEvents: 'none',
                 }}
               />
-              <CustomText weight='1' style={{fontSize: window.innerWidth < 768 ? 10 : 14, color: '#000', lineHeight: window.innerWidth < 768 ? '11px' : '14px' }} >от 500</CustomText>
+              <CustomText weight='1' style={{fontSize: window.innerWidth < 768 ? 11 : 14, color: '#000', lineHeight: window.innerWidth < 768 ? '11px' : '14px' }} ><span style={{ fontWeight: '500' }}>от</span> <span style={{ fontWeight: '1000', fontSize: window.innerWidth < 768 ? 13 : 14 }}>500</span></CustomText>
               <CustomText style={{fontSize: window.innerWidth < 768 ? 9 : 12, color: '#000', lineHeight: window.innerWidth < 768 ? '11px' : '14px' }}>капиталов</CustomText>
             </Card>
 
@@ -872,7 +865,7 @@ export default function App() {
                   pointerEvents: 'none',
                 }}
               />
-              <CustomText weight='1' style={{fontSize: window.innerWidth < 768 ? 10 : 14, color: '#000', lineHeight: window.innerWidth < 768 ? '11px' : '14px' }} >от 1000</CustomText>
+              <CustomText weight='1' style={{fontSize: window.innerWidth < 768 ? 11 : 14, color: '#000', lineHeight: window.innerWidth < 768 ? '11px' : '14px' }} ><span style={{ fontWeight: '500' }}>от</span> <span style={{ fontWeight: '1000', fontSize: window.innerWidth < 768 ? 13 : 14 }}>1000</span></CustomText>
               <CustomText style={{fontSize: window.innerWidth < 768 ? 10 : 12, color: '#000', lineHeight: window.innerWidth < 768 ? '11px' : '14px' }}>капиталов</CustomText>
             </Card>
           </Div>
@@ -900,7 +893,7 @@ export default function App() {
                 justifyContent: 'center',
 
                 height: window.innerWidth < 768 ? 18 : 22,
-                padding: '0 10px',
+                padding: '1px 10px',
 
                 backgroundColor: '#8c64d7',
                 borderRadius: 999,
@@ -909,7 +902,7 @@ export default function App() {
             >
               <span
                 style={{
-                  fontSize: window.innerWidth < 768 ? 8 : 10,
+                  fontSize: window.innerWidth < 768 ? 9 : 10,
                   color: '#fff',
                   fontWeight: 600,
                   lineHeight: 1,
@@ -918,7 +911,7 @@ export default function App() {
                 справочник
               </span>
             </div>
-            <CustomText weight="1" style={{ fontSize: window.innerWidth < 768 ? 11 : 14, color: '#000' }}>
+            <CustomText weight="1" style={{ fontWeight: 700, fontSize: window.innerWidth < 768 ? 12 : 13, color: '#000', marginLeft: 6 }}>
               Вопросы и ответы
             </CustomText>
             {/* Вопрос 1 */}
@@ -927,13 +920,13 @@ export default function App() {
               onChange={() => setOpenedFaq(openedFaq === 1 ? null : 1)}
             >
               <Accordion.Summary>
-                <CustomText weight="3" style={{ fontSize: window.innerWidth < 768 ? 10 : 13, color: '#000' }}>
+                <CustomText weight="3" style={{ fontSize: window.innerWidth < 768 ? 12 : 13, color: '#000' }}>
                   Как получить капиталы?
                 </CustomText>
               </Accordion.Summary>
               <Accordion.Content>
                 <Div>
-                  <CustomText style={{ fontSize: window.innerWidth < 768 ? 9 : 11, color: '#000', lineHeight: '12px' }}>
+                  <CustomText style={{ fontSize: window.innerWidth < 768 ? 11 : 12, color: '#000', lineHeight: '12px' }}>
                     Капиталы начисляются за выполнение заданий и активность в приложении.
                   </CustomText>
                 </Div>
@@ -950,13 +943,13 @@ export default function App() {
               onChange={() => setOpenedFaq(openedFaq === 2 ? null : 2)}
             >
               <Accordion.Summary>
-                <CustomText weight="3" style={{ fontSize: window.innerWidth < 768 ? 10 : 13, color: '#000' }}>
-                  где посмотреть мои достижения?
+                <CustomText weight="3" style={{ fontSize: window.innerWidth < 768 ? 12 : 13, color: '#000' }}>
+                  Где посмотреть мои достижения?
                 </CustomText>
               </Accordion.Summary>
               <Accordion.Content>
                 <Div>
-                  <CustomText style={{ fontSize: window.innerWidth < 768 ? 9 : 11, color: '#000', lineHeight: '12px' }}>
+                  <CustomText style={{ fontSize: window.innerWidth < 768 ? 11 : 12, color: '#000', lineHeight: '12px' }}>
                     Твои достижения в профиле!
                   </CustomText>
                 </Div>
@@ -973,13 +966,13 @@ export default function App() {
               onChange={() => setOpenedFaq(openedFaq === 3 ? null : 3)}
             >
               <Accordion.Summary>
-                <CustomText weight="3" style={{ fontSize: window.innerWidth < 768 ? 10 : 13, color: '#000' }}>
-                  как обменять капиталы на подарки?
+                <CustomText weight="3" style={{ fontSize: window.innerWidth < 768 ? 12 : 13, color: '#000' }}>
+                  Как обменять капиталы на подарки?
                 </CustomText>
               </Accordion.Summary>
               <Accordion.Content>
                 <Div>
-                  <CustomText style={{ fontSize: window.innerWidth < 768 ? 9 : 11, color: '#000', lineHeight: '12px' }}>
+                  <CustomText style={{ fontSize: window.innerWidth < 768 ? 11 : 12, color: '#000', lineHeight: '12px' }}>
                     Выберите подарок и следуйте инструкции по обмену капиталов.
                   </CustomText>
                 </Div>

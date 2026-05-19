@@ -91,12 +91,11 @@ export default function Balance({ id, goBack, balance, goToTasks, totalEarned, u
         >
           {/* Левый блок: Баланс + кнопка */}
           <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <CustomText style={{ fontSize: 10, color: '#000', fontWeight: 600 }}>
+            <CustomText style={{ fontSize: window.innerWidth < 768 ? 12 : 13, color: '#000', fontWeight: 700 }}>
               Баланс капиталов
             </CustomText>
             <CustomText
-              weight="3"
-              style={{ marginTop: 6, fontSize: 32, color: '#8c64d7', fontWeight: 1000, marginBottom: 10 }}
+              style={{ marginTop: 16, fontSize: 50, color: '#8c64d7', fontWeight: 1500, marginBottom: 14 }}
             >
               {balance}
             </CustomText>
@@ -116,32 +115,32 @@ export default function Balance({ id, goBack, balance, goToTasks, totalEarned, u
                 width: 'fit-content',
               }}
             >
-              <CustomText weight="1" style={{ fontSize: 10, color: '#fff' }}>
-                Перейти к заданиям
+              <CustomText weight="1" style={{ fontSize: 11, color: '#fff' }}>
+                перейти к заданиям
               </CustomText>
             </div>
           </div>
 
           {/* Правый блок: Заработано + Потрачено */}
-          <div style={{ textAlign: 'left', display: 'flex', flexDirection: 'column', marginLeft: 20 }}>
+          <div style={{ textAlign: 'left', display: 'flex', flexDirection: 'column', marginLeft: window.innerWidth < 425 ? 20 : window.innerWidth > 500 ? 100 : 60 }}>
             <div>
-              <CustomText style={{ fontSize: 10, color: '#000', fontWeight: 300 }}>
+              <CustomText style={{ fontSize: window.innerWidth < 768 ? 12 : 13, color: '#000', fontWeight: 300 }}>
                 Заработано
               </CustomText>
               <CustomText
                 weight="3"
-                style={{ marginTop: 3, fontSize: 22, color: '#ceaeff', fontWeight: 900 }}
+                style={{ marginTop: 5, fontSize: 32, color: '#ceaeff', fontWeight: 900 }}
               >
                 {totalEarned}
               </CustomText>
             </div>
-            <div style={{ marginTop: 8 }}>
-              <CustomText style={{ fontSize: 10, color: '#000', fontWeight: 300 }}>
+            <div style={{ marginTop: 14 }}>
+              <CustomText style={{ fontSize: window.innerWidth < 768 ? 12 : 13, color: '#000', fontWeight: 300 }}>
                 Потрачено
               </CustomText>
               <CustomText
                 weight="3"
-                style={{ marginTop: 3, fontSize: 22, color: '#ceaeff', fontWeight: 900 }}
+                style={{ marginTop: 5, fontSize: 32, color: '#ceaeff', fontWeight: 900 }}
               >
                 {totalSpent}
               </CustomText>
@@ -158,7 +157,7 @@ export default function Balance({ id, goBack, balance, goToTasks, totalEarned, u
               position: 'absolute',
               objectFit: 'contain',
               right: -15,
-              bottom: -15,
+              bottom: 0,
             }}
           />
         </Card>
@@ -173,14 +172,7 @@ export default function Balance({ id, goBack, balance, goToTasks, totalEarned, u
             overflow: 'hidden',
           }}
         >
-          <CustomText
-            style={{
-              fontSize: 10,
-              fontWeight: 700,
-              marginBottom: 5,
-              color: '#000',
-            }}
-          >
+          <CustomText style={{ fontSize: window.innerWidth < 768 ? 13 : 14, color: '#000', fontWeight: 700, marginBottom: 5 }}>
             История
           </CustomText>
 

@@ -59,10 +59,10 @@ export default function AdminShop({ id, user, goToAdminShop }) {
             onClick={onClick}
             style={{
                 position: 'absolute',
-                top: 10,
-                right: 18,
-                width: 24,
-                height: 24,
+                top: 12,
+                right: 20,
+                width: 26,
+                height: 26,
                 borderRadius: '50%',
                 border: '1px solid #d9d9d9',
                 backgroundColor: '#fff',
@@ -73,7 +73,7 @@ export default function AdminShop({ id, user, goToAdminShop }) {
                 zIndex: 10,
             }}
         >
-            <Icon24Cancel width={16} height={16} fill="#000" />
+            <Icon24Cancel width={18} height={18} fill="#000" />
         </div>
     );
 
