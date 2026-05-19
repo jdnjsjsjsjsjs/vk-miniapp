@@ -22,6 +22,26 @@ export default function Gift({ id, goBack, balance, goToBalance}) {
     const [timeLeft, setTimeLeft] = useState('00:00:00');
     const [canClaim, setCanClaim] = useState(false);
 
+    const responsiveFont = (base) => {
+        const screen = window.innerWidth;
+        if (screen >= 650) return base + 6;
+        if (screen >= 600) return base + 5;
+        if (screen >= 550) return base + 4;
+        if (screen >= 500) return base + 3;
+        if (screen >= 450) return base + 2;
+        if (screen >= 400) return base + 1;
+        return base;
+    };
+
+    const responsiveRecFont = (base) => {
+        const screen = window.innerWidth;
+        if (screen >= 650) return base + 3;
+        if (screen >= 550) return base + 2;
+        if (screen >= 450) return base + 1;
+
+        return base;
+    };
+
     useEffect(() => {
         bridge.send('VKWebAppGetUserInfo').then(user => {
             setUserId(user.id);
@@ -156,7 +176,7 @@ export default function Gift({ id, goBack, balance, goToBalance}) {
                 mode="shadow"
                 style={{
                     borderRadius: 12,
-                    padding: '12px',
+                    padding: '12px 16px 12px 16px',
                     display: 'flex',
                     flexDirection: 'row',
                     alignItems: 'center',
@@ -168,10 +188,10 @@ export default function Gift({ id, goBack, balance, goToBalance}) {
             >
                 {/* Левый блок: заголовок */}
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <CustomText style={{ fontSize: 12, color: '#000', fontWeight: 600 }}>
-                        Заходи 30 дней подряд
+                    <CustomText style={{ fontSize: 14, color: '#000', fontWeight: 300, marginBottom: 3 }}>
+                        Заходи <span style={{ fontWeight: 700, fontSize: 15 }}>30 дней</span> подряд
                     </CustomText>
-                    <CustomText style={{ fontSize: 10, color: '#000', lineHeight: 1 }}>
+                    <CustomText style={{ fontSize: 14, color: '#000', fontWeight: 300, lineHeight: '13px', marginBottom: 4 }}>
                         и получай капиталы
                     </CustomText>
                 </div>
@@ -194,7 +214,7 @@ export default function Gift({ id, goBack, balance, goToBalance}) {
                 style={{
                     display: 'grid',
                     gridTemplateColumns: 'repeat(5, 1fr)',
-                    gap: 3,
+                    gap: window.innerWidth < 425 ? 5 : window.innerWidth > 500 ? 12 : 8,
                     backgroundColor: '#ceaeff',
                 }}
                 >
@@ -236,15 +256,15 @@ export default function Gift({ id, goBack, balance, goToBalance}) {
                                 filter: isLocked ? 'blur(2px)' : 'none'
                             }}
                         >
-                        <CustomText weight="1" style={{ fontSize: 8, color: isFifth ? '#fff' : '#000' }}>
+                        <CustomText weight="1" style={{ fontSize: responsiveFont(8), color: isFifth ? '#fff' : '#000', marginBottom: window.innerWidth > 600 ? 3 : 0 }}>
                             День {day}
                         </CustomText>
 
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                            <CustomText style={{ fontWeight: 1000, fontSize: 14, color: textColor }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 2, marginBottom: window.innerWidth > 600 ? 3 : 2 }}>
+                            <CustomText style={{ fontWeight: 1000, fontSize: responsiveFont(14), color: textColor }}>
                             +{reward}
                             </CustomText>
-                            <img src={coinIcon} alt="coins" style={{ width: 20, height: 20 }} />
+                            <img src={coinIcon} alt="coins" style={{ width: responsiveFont(20), height: responsiveFont(20) }} />
                         </div>
 
                         {/* Кнопка или галочка */}
@@ -279,14 +299,15 @@ export default function Gift({ id, goBack, balance, goToBalance}) {
                             onClick={claimGift}
                             style={{
                                 marginTop: 2,
-                                padding: '0px 5px',
+                                padding: window.innerWidth > 450 ? '2px 7px' : '0px 5px',
                                 backgroundColor: isFifth ? '#ffffff' : '#8c64d7',
                                 color: isFifth ? '#8c64d7' : '#fff',
                                 borderRadius: 999,
                                 cursor: 'pointer',
+                                width: '60%',
                             }}
                             >
-                            <CustomText weight="1" style={{ fontSize: 8 }}>
+                            <CustomText weight="1" style={{ fontSize: responsiveRecFont(8), lineHeight: '18px' }}>
                                 получить
                             </CustomText>
                             </div>
@@ -294,14 +315,15 @@ export default function Gift({ id, goBack, balance, goToBalance}) {
                             <div
                             style={{
                                 marginTop: 2,
-                                padding: '0px 5px',
+                                padding: window.innerWidth > 450 ? '2px 7px' : '0px 5px',
                                 backgroundColor: isFifth ? '#ffffff' : '#8c64d7',
                                 borderRadius: 999,
                                 opacity: 0.5,
                                 cursor: 'not-allowed',
+                                width: '60%',
                             }}
                             >
-                            <CustomText weight="1" style={{ fontSize: 8, color: isFifth ? '#8c64d7' : '#fff' }}>
+                            <CustomText weight="1" style={{ fontSize: responsiveRecFont(8), color: isFifth ? '#8c64d7' : '#fff', lineHeight: '18px' }}>
                                 получить
                             </CustomText>
                             </div>
