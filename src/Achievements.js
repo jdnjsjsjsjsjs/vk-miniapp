@@ -113,14 +113,13 @@ export default function Achievements({ id, goBack, balance, goToBalance, user, t
                                 value = user.vk_subscribed ? 1 : 0;
                             }
 
-                            const unlocked = value >= (selectedAchievement.target ?? 1);
                             const progress = selectedAchievement.type === 'vk_subscribed' ? (value ? 100 : 0) : Math.min(100, (value / selectedAchievement.target) * 100);
 
                             return (
                                 <Div style={{ textAlign: 'center', padding: 20, position: 'relative' }}>
                                     {/* Картинка */}
                                     <img
-                                        src={unlocked ? selectedAchievement.icon : lockIcon}
+                                        src={selectedAchievement.icon}
                                         alt=""
                                         style={{ width: 130, height: 130, position: 'absolute', top: 0, right: '30%' }}
                                     />
@@ -314,7 +313,7 @@ export default function Achievements({ id, goBack, balance, goToBalance, user, t
                 <Div
                     style={{
                         display: 'grid',
-                        gridTemplateColumns: 'repeat(4, 1fr)',
+                        gridTemplateColumns: window.innerWidth < 425 ? 'repeat(4, 1fr)' : 'repeat(5, 1fr)',
                         gap: 10,
                         width: '100%',
                         boxSizing: 'border-box',
@@ -331,7 +330,6 @@ export default function Achievements({ id, goBack, balance, goToBalance, user, t
                             value = user.vk_subscribed ? 1 : 0; 
                         }
 
-                        const unlocked = value >= (ach.target ?? 1); 
                         const progress = ach.type === 'vk_subscribed' ? (value ? 100 : 0) : Math.min(100, (value / ach.target) * 100);
 
                         return (
@@ -356,19 +354,17 @@ export default function Achievements({ id, goBack, balance, goToBalance, user, t
                                         transform: 'translate(-50%, -60%)'
                                     }}
                                 >
-                                    {unlocked
-                                        ? <img src={ach.icon} alt="" style={{ width: window.innerWidth > 768 ? 200 : 60, height: window.innerWidth > 768 ? 200 : 60 }} />
-                                        : <img src={lockIcon} alt="" style={{ width: window.innerWidth > 768 ? 200 : 65, height: window.innerWidth > 768 ? 200 : 65 }} />}
+                                    <img src={ach.icon} alt="" style={{ width: window.innerWidth > 600 ? 100 : 65, height: window.innerWidth > 600 ? 100 : 65 }} />
                                 </div>
 
                                 {/* Кастомный прогресс-бар */}
                                 <div
                                     style={{
                                         position: 'absolute',
-                                        bottom: window.innerWidth > 768 ? 12 : 6,
+                                        bottom: window.innerWidth > 600 ? 10 : 7,
                                         left: 8,
                                         right: 8,
-                                        height: window.innerWidth > 768 ? 7 : 5,
+                                        height: window.innerWidth > 600 ? 7 : 7,
                                         backgroundColor: '#ddd',
                                         borderRadius: 3,
                                         overflow: 'hidden'
@@ -387,9 +383,9 @@ export default function Achievements({ id, goBack, balance, goToBalance, user, t
                                 <CustomText
                                     style={{
                                         position: 'absolute',
-                                        bottom: window.innerWidth > 768 ? 24 : 15,
+                                        bottom: window.innerWidth > 600 ? 24 : 17,
                                         width: '100%',
-                                        fontSize: window.innerWidth > 768 ? 12 : 9,
+                                        fontSize: window.innerWidth > 550 ? 11 : 9,
                                         textAlign: 'center',
                                         lineHeight: 1,
                                     }}
