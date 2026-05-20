@@ -96,7 +96,7 @@ export default function Balance({ id, goBack, balance, goToTasks, totalEarned, u
               Баланс капиталов
             </CustomText>
             <CustomText
-              style={{ marginTop: 16, fontSize: 50, color: '#8c64d7', fontWeight: 1500, marginBottom: 14 }}
+              style={{ marginTop: 16, fontSize: 50, color: '#8c64d7', fontWeight: 1000, marginBottom: 14 }}
             >
               {balance}
             </CustomText>

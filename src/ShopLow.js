@@ -812,7 +812,9 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
                     <Div
                         style={{
                             display: 'grid',
-                            gridTemplateColumns: 'repeat(auto-fill, minmax(90px, 1fr))',
+                            gridTemplateColumns: window.innerWidth < 500
+                            ? 'repeat(3, 1fr)'
+                            : 'repeat(4, 1fr)',
                             gap: 8,
                         }}
                     >
@@ -884,7 +886,7 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
                                             </CustomText>
                                         </div>
                                     )}
-                                    <CustomText weight="3" style={{ fontSize: 12, paddingTop: 3 }}>{item.title}</CustomText>
+                                    <CustomText weight="3" style={{ fontSize: 12, paddingTop: 8 }}>{item.title}</CustomText>
                                     <div
                                         style={{                                            display: 'flex',
                                             alignItems: 'center',
@@ -896,6 +898,7 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
                                                 fontSize: 14,
                                                 color: '#8c64d7',
                                                 lineHeight: '18px',
+                                                fontWeight: 1000,
                                             }}
                                         >
                                             {item.price}
