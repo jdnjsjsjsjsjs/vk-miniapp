@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Div, Button, Panel, Card } from '@vkontakte/vkui';
 import { Icon28ChevronBack } from '@vkontakte/icons';
 import { CustomText } from './CustomTypography';
+import API_URL from './config';
 
 import shopIcon from './imgs/shop2.png'
 
@@ -9,7 +10,7 @@ export default function AdminPurchases({ id, goToProfile, user, balance }) {
   const [purchases, setPurchases] = useState([]);
 
   useEffect(() => {
-    fetch(`https://ivanovskiystyle.ru/api/admin/purchases?userId=${user.id}`)
+    fetch(`${API_URL}/api/admin/purchases?userId=${user.id}`)
       .then(res => res.json())
       .then(setPurchases);
   }, [user.id]);
@@ -17,7 +18,7 @@ export default function AdminPurchases({ id, goToProfile, user, balance }) {
   const markReceived = async (orderId) => {
     try {
       // Отмечаем заказ полученным на сервере
-      await fetch('https://ivanovskiystyle.ru/api/admin/purchases/mark-received', {
+      await fetch(`${API_URL}/api/admin/purchases/mark-received`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: user.id, orderId }),

@@ -3,6 +3,7 @@ import bridge from '@vkontakte/vk-bridge';
 import { Panel, Div, Button, Card } from '@vkontakte/vkui';
 import { CustomText } from './CustomTypography';
 import { Icon28ChevronBack } from '@vkontakte/icons';
+import API_URL from './config';
 
 import coinIcon from './imgs/coin.png'
 import lockIcon from './imgs/lock.png'
@@ -51,7 +52,7 @@ export default function Gift({ id, goBack, balance, goToBalance}) {
     useEffect(() => {
         if (!userId) return;
 
-        fetch(`https://ivanovskiystyle.ru/api/user/${userId}`)
+        fetch(`${API_URL}/api/user/${userId}`)
             .then(res => res.json())
             .then(data => {
                 setGiftDay(data.gift_day);
@@ -63,7 +64,7 @@ export default function Gift({ id, goBack, balance, goToBalance}) {
 
     const claimGift = async () => {
         const res = await fetch(
-            `https://ivanovskiystyle.ru/api/user/${userId}/claimGift`,
+            `${API_URL}/api/user/${userId}/claimGift`,
             { method: 'POST' }
         );
 

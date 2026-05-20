@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { Panel, Div, Button, ModalRoot, ModalCard, Card } from '@vkontakte/vkui';
 import { Icon28ChevronBack, Icon16Search, Icon24Cancel, Icon24Attach, Icon16Attach } from '@vkontakte/icons';
 import { CustomText } from './CustomTypography';
+import API_URL from './config';
 
 import coinIcon from './imgs/coin.png'
 import tasksIcon from './imgs/tasks.png'
@@ -32,7 +33,7 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance, goT
   useEffect(() => {
     if (!user?.id) return;
 
-    fetch(`https://ivanovskiystyle.ru/api/admin/tasks?userId=${user.id}`)
+    fetch(`${API_URL}/api/admin/tasks?userId=${user.id}`)
       .then(res => res.json())
       .then(setTasks)
       .catch(err => console.error('Ошибка загрузки админ-заданий', err));
@@ -84,7 +85,7 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance, goT
   // Функции для сохранения редактирования и удаления
   const saveEditTask = async () => {
     try {
-      await fetch(`https://ivanovskiystyle.ru/api/admin/tasks/${editTask.id}`, {
+      await fetch(`${API_URL}/api/admin/tasks/${editTask.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -112,7 +113,7 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance, goT
 
   const deleteTask = async () => {
     try {
-      await fetch(`https://ivanovskiystyle.ru/api/admin/tasks/${deleteTaskTarget.id}`, {
+      await fetch(`${API_URL}/api/admin/tasks/${deleteTaskTarget.id}`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: user.id }),
@@ -370,7 +371,7 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance, goT
               if (!title || !question || !reward || isCreated) return;
 
               try {
-                await fetch('https://ivanovskiystyle.ru/api/admin/tasks', {
+                await fetch(`${API_URL}/api/admin/tasks`, {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
                   body: JSON.stringify({
@@ -385,7 +386,7 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance, goT
                 });
 
                 const res = await fetch(
-                  `https://ivanovskiystyle.ru/api/admin/tasks?userId=${user.id}`
+                  `${API_URL}/api/admin/tasks?userId=${user.id}`
                 );
                 const data = await res.json();
                 setTasks(data);

@@ -9,6 +9,7 @@ import {
 } from '@vkontakte/vkui';
 import { Icon28ChevronBack, Icon24Cancel } from '@vkontakte/icons';
 import { CustomText } from './CustomTypography';
+import API_URL from './config';
 
 import tasksIcon from './imgs/tasks.png'
 
@@ -30,7 +31,7 @@ export default function AdminAnswersFeed({ id, user, goBack, goToTasks }) {
   useEffect(() => {
     if (!user?.id) return;
 
-    fetch(`https://ivanovskiystyle.ru/api/admin/answers-feed?userId=${user.id}`)
+    fetch(`${API_URL}/api/admin/answers-feed?userId=${user.id}`)
       .then(res => res.json())
       .then(data => {
         const normalized = data.map(a => ({
@@ -55,7 +56,7 @@ export default function AdminAnswersFeed({ id, user, goBack, goToTasks }) {
 
   async function handleAnswer(action) {
     await fetch(
-      `https://ivanovskiystyle.ru/api/admin/answers/${activeAnswer.id}`,
+      `${API_URL}/api/admin/answers/${activeAnswer.id}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -69,7 +70,7 @@ export default function AdminAnswersFeed({ id, user, goBack, goToTasks }) {
 
     // обновляем список
     const res = await fetch(
-      `https://ivanovskiystyle.ru/api/admin/answers-feed?userId=${user.id}`
+      `${API_URL}/api/admin/answers-feed?userId=${user.id}`
     );
     const data = await res.json();
 
@@ -166,7 +167,7 @@ export default function AdminAnswersFeed({ id, user, goBack, goToTasks }) {
               {activeAnswer.files.map((f, i) => (
                 <a
                   key={i}
-                  href={`https://ivanovskiystyle.ru${f}`}
+                  href={`${API_URL}${f}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   download
@@ -299,7 +300,7 @@ export default function AdminAnswersFeed({ id, user, goBack, goToTasks }) {
                 return isPdf ? (
                   <a
                     key={i}
-                    href={`https://ivanovskiystyle.ru${f}`}
+                    href={`${API_URL}${f}`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -308,7 +309,7 @@ export default function AdminAnswersFeed({ id, user, goBack, goToTasks }) {
                 ) : (
                   <img
                     key={i}
-                    src={`https://ivanovskiystyle.ru${f}`}
+                    src={`${API_URL}${f}`}
                     alt="Ответ"
                     style={{
                       width: '100%',

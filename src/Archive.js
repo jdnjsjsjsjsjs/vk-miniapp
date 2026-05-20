@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Panel, Div, Card, Button, ModalRoot, ModalCard } from '@vkontakte/vkui';
 import { Icon28ChevronBack, Icon24Cancel, Icon24Attach, Icon16Attach } from '@vkontakte/icons';
 import { CustomText } from './CustomTypography';
+import API_URL from './config';
 
 import tasksIcon from './imgs/tasks.png';
 import coinIcon from './imgs/coin.png';
@@ -40,7 +41,7 @@ export default function ArchiveTasks({ id, goBack, user, goToTasks }) {
   useEffect(() => {
     if (!user?.id) return;
 
-    fetch(`https://ivanovskiystyle.ru/api/admin/tasks/archive?userId=${user.id}`)
+    fetch(`${API_URL}/api/admin/tasks/archive?userId=${user.id}`)
       .then(res => res.json())
       .then(data => {
         const moscowNow = getMoscowTime();
@@ -63,7 +64,7 @@ export default function ArchiveTasks({ id, goBack, user, goToTasks }) {
 
   const saveEditTask = async () => {
     try {
-      await fetch(`https://ivanovskiystyle.ru/api/admin/tasks/${editTask.id}`, {
+      await fetch(`${API_URL}/api/admin/tasks/${editTask.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -91,7 +92,7 @@ export default function ArchiveTasks({ id, goBack, user, goToTasks }) {
         ? new Date(newExpires).toISOString()
         : null; // ← бессрочно
 
-      await fetch(`https://ivanovskiystyle.ru/api/admin/tasks/${restoreTask.id}`, {
+      await fetch(`${API_URL}/api/admin/tasks/${restoreTask.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

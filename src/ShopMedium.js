@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Panel, Div, Button, ModalCard, ModalRoot, Card } from '@vkontakte/vkui';
 import { CustomText } from './CustomTypography';
 import { Icon28ChevronBack, Icon28ShoppingCartOutline, Icon24Cancel } from '@vkontakte/icons';
+import API_URL from './config';
 
 import coinIcon from './imgs/coin.png'
 import box2Icon from './imgs/box2.png'
@@ -40,7 +41,7 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
     );
 
     const loadShop = async () => {
-        const res = await fetch(`https://ivanovskiystyle.ru/api/shop?userId=${user.id}`);
+        const res = await fetch(`${API_URL}/api/shop?userId=${user.id}`);
         const data = await res.json();
 
         setItems(data.items.filter(item => item.archived === 0));
@@ -55,7 +56,7 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
     }, [user.id]);
 
     const addToCart = async (itemId) => {
-        await fetch('https://ivanovskiystyle.ru/api/cart/add', {
+        await fetch(`${API_URL}/api/cart/add`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ userId: user.id, itemId, quantity: 1 }),
@@ -65,7 +66,7 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
     };
 
     const removeFromCart = async (itemId) => {
-        await fetch('https://ivanovskiystyle.ru/api/cart/decrease', {
+        await fetch(`${API_URL}/api/cart/decrease`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ userId: user.id, itemId }),
@@ -75,7 +76,7 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
     };
 
     const loadCart = async () => {
-        const res = await fetch(`https://ivanovskiystyle.ru/api/cart/${user.id}`);
+        const res = await fetch(`${API_URL}/api/cart/${user.id}`);
         const data = await res.json();
 
         const cartObj = {};
@@ -88,7 +89,7 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
     };
 
     const checkout = async () => {
-        const res = await fetch('https://ivanovskiystyle.ru/api/cart/checkout', {
+        const res = await fetch(`${API_URL}/api/cart/checkout`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ userId: user.id }),
@@ -152,7 +153,7 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
                     {/* Фото */}
                     {activeItem?.image ? (
                         <img
-                        src={`https://ivanovskiystyle.ru${activeItem.image}`}
+                        src={`${API_URL}${activeItem.image}`}
                         alt=""
                         style={{
                             width: '100%',
@@ -389,7 +390,7 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
                                         {/* Фото */}
                                         {item.image ? (
                                             <img
-                                                src={`https://ivanovskiystyle.ru${item.image}`}
+                                                src={`${API_URL}${item.image}`}
                                                 alt=""
                                                 style={{
                                                     width: 50,
@@ -842,7 +843,7 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
                                 >
                                     {item.image ? (
                                         <img
-                                            src={`https://ivanovskiystyle.ru${item.image}`}
+                                            src={`${API_URL}${item.image}`}
                                             alt=""
                                             style={{
                                                 width: '100%',

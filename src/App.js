@@ -7,6 +7,7 @@ import { View,
   Accordion,
   Separator } from '@vkontakte/vkui';
 import { CustomText } from './CustomTypography';
+import API_URL from './config';
 
 import Balance from './Balance';
 import Gift from './Gift';
@@ -102,7 +103,7 @@ export default function App() {
         const userInfo = await bridge.send('VKWebAppGetUserInfo');
         setUser(userInfo);
 
-        await fetch(`https://ivanovskiystyle.ru/api/user/${userInfo.id}/updateName`, {
+        await fetch(`${API_URL}/api/user/${userInfo.id}/updateName`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -122,7 +123,7 @@ export default function App() {
     if (!user) return;
 
     async function fetchAll() {
-      const res = await fetch(`https://ivanovskiystyle.ru/api/user/${user.id}`);
+      const res = await fetch(`${API_URL}/api/user/${user.id}`);
       const data = await res.json();
 
       setUser(prev => ({
@@ -167,7 +168,7 @@ export default function App() {
 
   const fetchUsers = async () => {
     try {
-      const res = await fetch('https://ivanovskiystyle.ru/api/users');
+      const res = await fetch(`${API_URL}/api/users`);
       const data = await res.json();
       setUsersList(data);
     } catch (error) {
@@ -184,7 +185,7 @@ export default function App() {
 
     async function fetchLastTasks() {
       try {
-        const res = await fetch(`https://ivanovskiystyle.ru/api/tasks/${user.id}`);
+        const res = await fetch(`${API_URL}/api/tasks/${user.id}`);
         const data = await res.json();
 
         const moscowNow = getMoscowTime();

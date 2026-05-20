@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Panel, Div, Button, ModalRoot, ModalCard, Textarea, Card } from '@vkontakte/vkui';
 import { CustomText } from './CustomTypography';
 import { Icon28ChevronBack, Icon16Search, Icon16Attach } from '@vkontakte/icons';
+import API_URL from './config';
 
 import coinIcon from './imgs/coin.png'
 import tasksIcon from './imgs/tasks.png'
@@ -17,7 +18,7 @@ export default function Tasks({ id, goBack, balance, goToBalance, user, goToTask
     useEffect(() => {
         if (!user?.id) return;
 
-        fetch(`https://ivanovskiystyle.ru/api/tasks/${user.id}`)
+        fetch(`${API_URL}/api/tasks/${user.id}`)
             .then(res => res.json())
             .then(data => {
                 setTasks(data);
@@ -99,7 +100,7 @@ export default function Tasks({ id, goBack, balance, goToBalance, user, goToTask
                                         formData.append('file', selectedFile);
 
                                         await fetch(
-                                            `https://ivanovskiystyle.ru/api/tasks/${activeTask.id}/answer-with-file`,
+                                            `${API_URL}/api/tasks/${activeTask.id}/answer-with-file`,
                                             {
                                                 method: 'POST',
                                                 body: formData
@@ -107,7 +108,7 @@ export default function Tasks({ id, goBack, balance, goToBalance, user, goToTask
                                         );
                                     } else {
                                         await fetch(
-                                            `https://ivanovskiystyle.ru/api/tasks/${activeTask.id}/answer`,
+                                            `${API_URL}/api/tasks/${activeTask.id}/answer`,
                                             {
                                                 method: 'POST',
                                                 headers: { 'Content-Type': 'application/json' },
@@ -123,7 +124,7 @@ export default function Tasks({ id, goBack, balance, goToBalance, user, goToTask
                                     setAnswer('');
                                     setSelectedFile(null);
 
-                                    const res = await fetch(`https://ivanovskiystyle.ru/api/tasks/${user.id}`);
+                                    const res = await fetch(`${API_URL}/api/tasks/${user.id}`);
                                     const data = await res.json();
                                     setTasks(data);
 

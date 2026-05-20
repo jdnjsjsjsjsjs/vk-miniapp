@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Panel, Div, Card, Button } from '@vkontakte/vkui';
 import { CustomText } from './CustomTypography';
 import { Icon28ChevronBack } from '@vkontakte/icons';
+import API_URL from './config';
 
 import coinIcon from './imgs/coin.png'
 import shopIcon from './imgs/shop1.png'
@@ -14,12 +15,12 @@ export default function Purchases({ id, goBack, user, balance, goToBalance, goTo
     useEffect(() => {
         const loadPurchases = async () => {
             // Получаем покупки пользователя
-            const resPurchases = await fetch(`https://ivanovskiystyle.ru/api/user/${user.id}/purchases`);
+            const resPurchases = await fetch(`${API_URL}/api/user/${user.id}/purchases`);
             const purchasesData = await resPurchases.json();
             setPurchases(purchasesData);
 
             // Получаем товары магазина (чтобы отобразить картинки и названия)
-            const resItems = await fetch('https://ivanovskiystyle.ru/api/shop');
+            const resItems = await fetch(`${API_URL}/api/shop`);
             const itemsData = await resItems.json();
             setItems(itemsData.items || itemsData);
         };
@@ -178,7 +179,7 @@ export default function Purchases({ id, goBack, user, balance, goToBalance, goTo
                                         >
                                             {item.image ? (
                                                 <img
-                                                    src={`https://ivanovskiystyle.ru${item.image}`}
+                                                    src={`${API_URL}${item.image}`}
                                                     alt=""
                                                     style={{
                                                         width: '100%',
@@ -318,7 +319,7 @@ export default function Purchases({ id, goBack, user, balance, goToBalance, goTo
                                         >
                                             {item.image ? (
                                                 <img
-                                                    src={`https://ivanovskiystyle.ru${item.image}`}
+                                                    src={`${API_URL}${item.image}`}
                                                     alt=""
                                                     style={{
                                                         width: '100%',

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Panel, Div, Button, Card, ModalRoot, ModalCard } from '@vkontakte/vkui';
 import { Icon28ChevronBack, Icon24Cancel, Icon16Attach } from '@vkontakte/icons';
 import { CustomText } from './CustomTypography';
+import API_URL from './config';
 
 import coinIcon from './imgs/coin.png'
 import boxIcon from './imgs/box1.png'
@@ -80,7 +81,7 @@ export default function AdminShop({ id, user, goToAdminShopArchive, goToProfile 
     });
 
     const loadShop = async () => {
-        const res = await fetch(`https://ivanovskiystyle.ru/api/admin/shop?userId=${user.id}`);
+        const res = await fetch(`${API_URL}/api/admin/shop?userId=${user.id}`);
         const data = await res.json();
         setItems(data);
     };
@@ -90,7 +91,7 @@ export default function AdminShop({ id, user, goToAdminShopArchive, goToProfile 
     }, [user.id]);
 
     const archiveItem = async () => {
-        await fetch(`https://ivanovskiystyle.ru/api/admin/shop/${activeItem.id}/archive`, {
+        await fetch(`${API_URL}/api/admin/shop/${activeItem.id}/archive`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -117,7 +118,7 @@ export default function AdminShop({ id, user, goToAdminShopArchive, goToProfile 
     const deleteTempImage = async () => {
         if (!tempImage) return;
 
-        await fetch('https://ivanovskiystyle.ru/api/admin/delete-temp-image', {
+        await fetch(`${API_URL}/api/admin/delete-temp-image`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -130,7 +131,7 @@ export default function AdminShop({ id, user, goToAdminShopArchive, goToProfile 
     };
 
     const saveNewItem = async () => {
-        const res = await fetch('https://ivanovskiystyle.ru/api/admin/shop', {
+        const res = await fetch(`${API_URL}/api/admin/shop`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -160,7 +161,7 @@ export default function AdminShop({ id, user, goToAdminShopArchive, goToProfile 
     };
 
     const saveEditItem = async () => {
-        await fetch(`https://ivanovskiystyle.ru/api/admin/shop/${editItem.id}`, {
+        await fetch(`${API_URL}/api/admin/shop/${editItem.id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -189,7 +190,7 @@ export default function AdminShop({ id, user, goToAdminShopArchive, goToProfile 
     };
 
     const deleteItem = async () => {
-        await fetch(`https://ivanovskiystyle.ru/api/admin/shop/${activeItem.id}`, {
+        await fetch(`${API_URL}/api/admin/shop/${activeItem.id}`, {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ userId: user.id }),
@@ -209,7 +210,7 @@ export default function AdminShop({ id, user, goToAdminShopArchive, goToProfile 
 
         try {
             const res = await fetch(
-                'https://ivanovskiystyle.ru/api/admin/upload/shop-image',
+                `${API_URL}/api/admin/upload/shop-image`,
                 {
                     method: 'POST',
                     body: formData,
@@ -250,7 +251,7 @@ export default function AdminShop({ id, user, goToAdminShopArchive, goToProfile 
                 {/* Фото */}
                 {activeItem?.image ? (
                     <img
-                        src={`https://ivanovskiystyle.ru${activeItem.image}`}
+                        src={`${API_URL}${activeItem.image}`}
                         alt=""
                         style={{
                             width: '100%',
@@ -495,7 +496,7 @@ export default function AdminShop({ id, user, goToAdminShopArchive, goToProfile 
 
                     {tempImage && (
                         <img
-                            src={`https://ivanovskiystyle.ru${tempImage}`}
+                            src={`${API_URL}${tempImage}`}
                             alt=""
                             style={{
                                 width: 120,
@@ -531,7 +532,7 @@ export default function AdminShop({ id, user, goToAdminShopArchive, goToProfile 
                     header="Редактировать товар"
                     onClose={async () => {
                         if (tempImage && tempImage !== editItem?.image) {
-                            await fetch('https://ivanovskiystyle.ru/api/admin/delete-temp-image', {
+                            await fetch(`${API_URL}/api/admin/delete-temp-image`, {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify({ userId: user.id, imagePath: tempImage }),
@@ -654,7 +655,7 @@ export default function AdminShop({ id, user, goToAdminShopArchive, goToProfile 
                                 if (!file) return;
 
                                 if (tempImage && tempImage !== editItem?.image) {
-                                    await fetch('https://ivanovskiystyle.ru/api/admin/delete-temp-image', {
+                                    await fetch(`${API_URL}/api/admin/delete-temp-image`, {
                                         method: 'POST',
                                         headers: { 'Content-Type': 'application/json' },
                                         body: JSON.stringify({
@@ -675,7 +676,7 @@ export default function AdminShop({ id, user, goToAdminShopArchive, goToProfile 
 
                     {tempImage && (
                         <img
-                            src={`https://ivanovskiystyle.ru${tempImage}`}
+                            src={`${API_URL}${tempImage}`}
                             alt=""
                             style={{ width: 120, height: 120, objectFit: 'cover', borderRadius: 8, marginBottom: 12, border: '1px solid #ddd' }}
                         />

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Panel, Div, Button, Card } from '@vkontakte/vkui';
 import { Icon28ChevronBack } from '@vkontakte/icons';
 import { CustomText } from './CustomTypography';
+import API_URL from './config';
 
 import coinIcon from './imgs/coin.png';
 
@@ -30,7 +31,7 @@ export default function TaskPage({ id, goBack, task, balance, goToBalance, user 
     useEffect(() => {
         if (!user?.id || !task?.id) return;
 
-        fetch(`https://ivanovskiystyle.ru/api/tasks/${task.id}/my-answer/${user.id}`)
+        fetch(`${API_URL}/api/tasks/${task.id}/my-answer/${user.id}`)
             .then(res => res.json())
             .then(setMyAnswer)
             .catch(() => {});
@@ -69,7 +70,7 @@ export default function TaskPage({ id, goBack, task, balance, goToBalance, user 
                 });
 
                 await fetch(
-                    `https://ivanovskiystyle.ru/api/tasks/${task.id}/answer-with-file`,
+                    `${API_URL}/api/tasks/${task.id}/answer-with-file`,
                     {
                         method: 'POST',
                         body: formData
@@ -79,7 +80,7 @@ export default function TaskPage({ id, goBack, task, balance, goToBalance, user 
             } else {
 
                 await fetch(
-                    `https://ivanovskiystyle.ru/api/tasks/${task.id}/answer`,
+                    `${API_URL}/api/tasks/${task.id}/answer`,
                     {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },

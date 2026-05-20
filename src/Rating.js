@@ -4,6 +4,7 @@ import { Panel, Div, Button, Card } from '@vkontakte/vkui';
 import { CustomText } from './CustomTypography';
 import { Icon28ChevronBack } from '@vkontakte/icons';
 import bridge from '@vkontakte/vk-bridge';
+import API_URL from './config';
 
 import coinIcon from './imgs/coin.png'
 import cupsIcon from './imgs/cups.png'
@@ -21,7 +22,7 @@ export default function Balance({ id, goBack, balance, goToBalance }) {
     }, []);
 
     useEffect(() => {
-        fetch('https://ivanovskiystyle.ru/api/users') // endpoint для всех пользователей
+        fetch(`${API_URL}/api/users`) // endpoint для всех пользователей
             .then(res => res.json())
             .then(data => {
                 const sorted = data.sort((a, b) => b.totalEarned - a.totalEarned);

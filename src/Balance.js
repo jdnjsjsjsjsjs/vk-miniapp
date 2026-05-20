@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Panel, Div, Button, Card} from '@vkontakte/vkui';
 import { Icon28ChevronBack } from '@vkontakte/icons';
 import { CustomText } from './CustomTypography';
+import API_URL from './config';
 
 import coinsIcon from './imgs/coins.png'
 import coinicon from './imgs/coin.png'
@@ -12,7 +13,7 @@ export default function Balance({ id, goBack, balance, goToTasks, totalEarned, u
   useEffect(() => {
     async function fetchTransactions() {
       try {
-        const res = await fetch(`https://ivanovskiystyle.ru/api/user/${userId}/transactions`);
+        const res = await fetch(`${API_URL}/api/user/${userId}/transactions`);
         const data = await res.json();
 
         const grouped = data.reduce((acc, tx) => {
