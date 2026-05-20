@@ -239,12 +239,21 @@ db.run(`
   CREATE TABLE IF NOT EXISTS shop_items (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT NOT NULL,
-    description TEXT,
+    quantity INTEGER DEFAULT 0,
     price INTEGER NOT NULL,
     image TEXT,
     archived INTEGER DEFAULT 0
   )
 `);
+
+db.run(`
+  ALTER TABLE shop_items
+  ADD COLUMN quantity INTEGER DEFAULT 0
+`, (err) => {
+  if (err && !err.message.includes('duplicate column')) {
+    console.error(err.message);
+  }
+});
 
 db.run(`
   CREATE TABLE IF NOT EXISTS user_items (
@@ -764,7 +773,7 @@ app.get('/api/tasks/task/:id', (req, res) => {
 app.get('/api/shop', (req, res) => {
   const { userId } = req.query;
 
-  db.all('SELECT * FROM shop_items', (err, items) => {
+  db.all('SELECT * FROM shop_items WHERE quantity > 0', (err, items) => {
     if (err) return res.status(500).json({ error: err.message });
 
     if (!userId) {
@@ -817,7 +826,7 @@ app.get('/api/admin/shop', (req, res) => {
 
 // Админ — добавить товар
 app.post('/api/admin/shop', (req, res) => {
-  const { userId, title, description, price, image } = req.body;
+  const { userId, title, quantity, price, image } = req.body;
 
   db.get('SELECT role FROM users WHERE id = ?', [userId], (err, user) => {
     if (!user || user.role !== 'admin') {
@@ -825,9 +834,9 @@ app.post('/api/admin/shop', (req, res) => {
     }
 
     db.run(
-      `INSERT INTO shop_items (title, description, price, image)
+      `INSERT INTO shop_items (title, quantity, price, image)
        VALUES (?, ?, ?, ?)`,
-      [title, description, price, image],
+      [title, quantity, price, image],
       function (err) {
         if (err) return res.status(500).json({ error: err.message });
         res.json({ id: this.lastID });
@@ -838,7 +847,7 @@ app.post('/api/admin/shop', (req, res) => {
 
 // Админ — редактировать товар
 app.put('/api/admin/shop/:id', (req, res) => {
-  const { userId, title, description, price, image } = req.body;
+  const { userId, title, quantity, price, image } = req.body;
   const itemId = req.params.id;
 
   db.get('SELECT role FROM users WHERE id = ?', [userId], (err, user) => {
@@ -848,9 +857,9 @@ app.put('/api/admin/shop/:id', (req, res) => {
 
     db.run(
       `UPDATE shop_items
-       SET title = ?, description = ?, price = ?, image = ?
+       SET title = ?, quantity = ?, price = ?, image = ?
        WHERE id = ?`,
-      [title, description, price, image, itemId],
+      [title, quantity, price, image, itemId],
       err => {
         if (err) return res.status(500).json({ error: err.message });
         res.json({ success: true });
@@ -1101,13 +1110,20 @@ app.post('/api/cart/checkout', (req, res) => {
   const { userId } = req.body;
 
   db.all(`
-    SELECT c.item_id, c.quantity, s.price
+    SELECT c.item_id, c.quantity, s.price, s.quantity as stock
     FROM cart_items c
     JOIN shop_items s ON s.id = c.item_id
     WHERE c.user_id = ?
   `, [userId], (err, cartItems) => {
     if (err) return res.status(500).json({ error: err.message });
     if (!cartItems || cartItems.length === 0) return res.status(400).json({ error: 'Cart is empty' });
+    for (const item of cartItems) {
+      if (item.stock < item.quantity) {
+        return res.status(400).json({
+          error: `Недостаточно товара на складе`
+        });
+      }
+    }
 
     // получаем баланс пользователя
     db.get('SELECT balance FROM users WHERE id = ?', [userId], (err, user) => {
@@ -1135,6 +1151,12 @@ app.post('/api/cart/checkout', (req, res) => {
               VALUES (?, ?, ?, 0, ?)
             `, [userId, item.item_id, orderId, item.price]);
           }
+
+          db.run(`
+            UPDATE shop_items
+            SET quantity = quantity - ?
+            WHERE id = ?
+          `, [item.quantity, item.item_id]);
         });
 
         db.run('UPDATE users SET balance = balance - ?, totalSpent = totalSpent + ? WHERE id = ?', [totalPrice, totalPrice, userId]);

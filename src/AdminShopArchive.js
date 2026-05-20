@@ -105,7 +105,7 @@ export default function AdminShop({ id, user, goToAdminShop }) {
 
     const [newItem, setNewItem] = useState({
         title: '',
-        description: '',
+        quantity: '',
         price: '',
         image: '',
     });
@@ -142,7 +142,7 @@ export default function AdminShop({ id, user, goToAdminShop }) {
             body: JSON.stringify({
             userId: user.id,
             title: newItem.title,
-            description: newItem.description,
+            quantity: Number(newItem.quantity),
             price: Number(newItem.price),
             image: tempImage,
         }),
@@ -155,7 +155,7 @@ export default function AdminShop({ id, user, goToAdminShop }) {
         ...prev,
     ]);
 
-    setNewItem({ title: '', description: '', price: '' });
+    setNewItem({ title: '', quantity: '', price: '' });
         setSuccessState(prev => ({ ...prev, add: true }));
 
         setTimeout(() => {
@@ -172,7 +172,7 @@ export default function AdminShop({ id, user, goToAdminShop }) {
             body: JSON.stringify({
                 userId: user.id,
                 title: editItem.title,
-                description: editItem.description,
+                quantity: editItem.quantity,
                 price: Number(editItem.price),
                 image: tempImage,
             }),
@@ -322,7 +322,7 @@ export default function AdminShop({ id, user, goToAdminShop }) {
                                     lineHeight: '18px',
                                 }}
                             >
-                                {activeItem?.description}
+                                {activeItem?.quantity}
                             </CustomText>
                         </div>
 
@@ -408,14 +408,14 @@ export default function AdminShop({ id, user, goToAdminShop }) {
                         weight="1"
                         style={{ fontSize: 14, color: '#000', marginBottom: 3 }}
                     >
-                        Описание
+                        Количество
                     </CustomText>
                     
                     <input
-                        type="text"
-                        placeholder="описание артефакта..."
-                            value={newItem.description}
-                            onChange={e => setNewItem({ ...newItem, description: e.target.value })}
+                        type="number"
+                        placeholder="количество артефактов..."
+                            value={newItem.quantity}
+                            onChange={e => setNewItem({ ...newItem, quantity: e.target.value })}
                             className="search-input"
                             style={{
                                 width: '92%',
@@ -574,14 +574,14 @@ export default function AdminShop({ id, user, goToAdminShop }) {
                         weight="1"
                         style={{ fontSize: 14, color: '#000', marginBottom: 3 }}
                     >
-                        Описание
+                        Количество
                     </CustomText>
                     
                     <input
-                        type="text"
-                        placeholder="описание артефакта..."
-                            value={editItem?.description || ''}
-                            onChange={e => setEditItem({ ...editItem, description: e.target.value })}
+                        type="number"
+                        placeholder="количество артефактов..."
+                            value={editItem?.quantity || ''}
+                            onChange={e => setEditItem({ ...editItem, quantity: e.target.value })}
                             className="search-input"
                             style={{
                                 width: '92%',
