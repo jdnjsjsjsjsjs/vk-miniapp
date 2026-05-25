@@ -380,7 +380,7 @@ export default function App() {
             >
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <div>
-                  <CustomText weight="1" style={{ fontWeight: 700, fontSize: window.innerWidth < 768 ? 10 : 13, color: '#000', paddingBottom: 4 }}>
+                  <CustomText weight="1" style={{ fontWeight: 700, fontSize: window.innerWidth < 768 ? 11 : 13, color: '#000', paddingBottom: 4 }}>
                     Баланс
                   </CustomText>
                   <CustomText style={{ fontSize: window.innerWidth < 768 ? 25 : 30, fontWeight: 1000, color: '#8c64d7' }}>
@@ -417,7 +417,7 @@ export default function App() {
                   zIndex: 2,
                 }}
               >
-                <CustomText weight="1" style={{ fontWeight: 700, fontSize: window.innerWidth < 768 ? 10 : 13, color: '#000', paddingBottom: 4 }}>
+                <CustomText weight="1" style={{ fontWeight: 700, fontSize: window.innerWidth < 768 ? 11 : 13, color: '#000', paddingBottom: 4 }}>
                   Ежедневный вход
                 </CustomText>
 
@@ -811,7 +811,7 @@ export default function App() {
                 }}
               />
               <CustomText weight='1' style={{fontSize: window.innerWidth < 768 ? 11 : 14, color: '#000', lineHeight: window.innerWidth < 768 ? '11px' : '14px' }} ><span style={{ fontWeight: '500' }}>от</span> <span style={{ fontWeight: '1000', fontSize: window.innerWidth < 768 ? 13 : 14 }}>100</span></CustomText>
-              <CustomText style={{fontSize: window.innerWidth < 768 ? 9 : 12, color: '#000', lineHeight: window.innerWidth < 768 ? '11px' : '14px' }}>капиталов</CustomText>
+              <CustomText style={{fontSize: window.innerWidth < 768 ? 11 : 14, color: '#000', lineHeight: window.innerWidth < 768 ? '11px' : '14px' }}>капиталов</CustomText>
             </Card>
 
             <Card mode="shadow" 
@@ -839,7 +839,7 @@ export default function App() {
                 }}
               />
               <CustomText weight='1' style={{fontSize: window.innerWidth < 768 ? 11 : 14, color: '#000', lineHeight: window.innerWidth < 768 ? '11px' : '14px' }} ><span style={{ fontWeight: '500' }}>от</span> <span style={{ fontWeight: '1000', fontSize: window.innerWidth < 768 ? 13 : 14 }}>500</span></CustomText>
-              <CustomText style={{fontSize: window.innerWidth < 768 ? 9 : 12, color: '#000', lineHeight: window.innerWidth < 768 ? '11px' : '14px' }}>капиталов</CustomText>
+              <CustomText style={{fontSize: window.innerWidth < 768 ? 11 : 14, color: '#000', lineHeight: window.innerWidth < 768 ? '11px' : '14px' }}>капиталов</CustomText>
             </Card>
 
             <Card mode="shadow" 
@@ -867,7 +867,7 @@ export default function App() {
                 }}
               />
               <CustomText weight='1' style={{fontSize: window.innerWidth < 768 ? 11 : 14, color: '#000', lineHeight: window.innerWidth < 768 ? '11px' : '14px' }} ><span style={{ fontWeight: '500' }}>от</span> <span style={{ fontWeight: '1000', fontSize: window.innerWidth < 768 ? 13 : 14 }}>1000</span></CustomText>
-              <CustomText style={{fontSize: window.innerWidth < 768 ? 10 : 12, color: '#000', lineHeight: window.innerWidth < 768 ? '11px' : '14px' }}>капиталов</CustomText>
+              <CustomText style={{fontSize: window.innerWidth < 768 ? 11 : 14, color: '#000', lineHeight: window.innerWidth < 768 ? '11px' : '14px' }}>капиталов</CustomText>
             </Card>
           </Div>
         </Div>
