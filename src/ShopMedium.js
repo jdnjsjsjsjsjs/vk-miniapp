@@ -196,7 +196,7 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
                                     lineHeight: '18px',
                                 }}
                             >
-                                Количество: {activeItem?.quantity}
+                                В наличии: {activeItem?.quantity}
                             </CustomText>
                         </div>
 

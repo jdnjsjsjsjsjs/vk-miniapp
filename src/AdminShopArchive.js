@@ -384,12 +384,12 @@ export default function AdminShop({ id, user, goToAdminShop }) {
                         weight="1"
                         style={{ fontSize: 14, color: '#000', marginBottom: 3 }}
                     >
-                        Количество
+                        В наличии
                     </CustomText>
                     
                     <input
                         type="number"
-                        placeholder="количество артефактов..."
+                        placeholder="артефактов в наличии..."
                             value={newItem.quantity}
                             onChange={e => setNewItem({ ...newItem, quantity: e.target.value })}
                             className="search-input"
@@ -550,12 +550,12 @@ export default function AdminShop({ id, user, goToAdminShop }) {
                         weight="1"
                         style={{ fontSize: 14, color: '#000', marginBottom: 3 }}
                     >
-                        Количество
+                        В наличии
                     </CustomText>
                     
                     <input
                         type="number"
-                        placeholder="количество артефактов..."
+                        placeholder="артефактов в наличии..."
                             value={editItem?.quantity || ''}
                             onChange={e => setEditItem({ ...editItem, quantity: e.target.value })}
                             className="search-input"

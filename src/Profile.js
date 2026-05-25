@@ -150,7 +150,7 @@ export default function Profile({ id, goBack, user, balance, goToPurchases, goTo
               let handleClick;
               if (item === 'Купленные артефакты') handleClick = goToPurchases;
               else if (item === 'Справочник') handleClick = goToGuide;
-              else if (item === 'Сообщество ВКонтакте') handleClick = () => window.open('https://vk.com/', '_blank');
+              else if (item === 'Сообщество ВКонтакте') handleClick = () => window.open('https://vk.ru/ivmolod', '_blank');
 
               return (
                 <div
