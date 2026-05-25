@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Panel, Div, Card, Button, ModalRoot, ModalCard } from '@vkontakte/vkui';
-import { Icon28ChevronBack, Icon24Cancel, Icon24Attach, Icon16Attach } from '@vkontakte/icons';
+import { Panel, Div, Card, Button, ModalRoot, ModalCard, ModalDismissButton } from '@vkontakte/vkui';
+import { Icon28ChevronBack, Icon24Attach, Icon16Attach } from '@vkontakte/icons';
 import { CustomText } from './CustomTypography';
 import API_URL from './config';
 
@@ -115,29 +115,6 @@ export default function ArchiveTasks({ id, goBack, user, goToTasks }) {
     }
   };
 
-  const ModalCloseButton = ({ onClick }) => (
-    <div
-      onClick={onClick}
-      style={{
-        position: 'absolute',
-        top: 12,
-        right: 20,
-        width: 26,
-        height: 26,
-        borderRadius: '50%',
-        border: '1px solid #d9d9d9',
-        backgroundColor: '#fff',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        cursor: 'pointer',
-        zIndex: 10,
-      }}
-    >
-        <Icon24Cancel width={18} height={18} fill="#000" />
-    </div>
-  );
-
   return (
     <>
       {/* МОДАЛКИ */}
@@ -149,7 +126,7 @@ export default function ArchiveTasks({ id, goBack, user, goToTasks }) {
             setActiveTask(null);
           }}
         >
-          <ModalCloseButton onClick={() => setActiveModal(null)} />
+          <ModalDismissButton onClick={() => setActiveModal(null)} />
 
           {/* Название */}
           <CustomText
@@ -233,11 +210,11 @@ export default function ArchiveTasks({ id, goBack, user, goToTasks }) {
           id="editTask"
           onClose={() => { setEditTask(null); setActiveModal(null); }}
         >
-          <ModalCloseButton onClick={() => setActiveModal(null)} />
+          <ModalDismissButton onClick={() => setActiveModal(null)} />
 
           <CustomText
             weight="1"
-            style={{ fontSize: 16, color: '#000', marginTop: 27, marginBottom: 10 }}
+            style={{ fontSize: 16, color: '#000', marginBottom: 10 }}
           >
             Редактировать
           </CustomText>
@@ -449,9 +426,9 @@ export default function ArchiveTasks({ id, goBack, user, goToTasks }) {
           id="restoreTask"
           onClose={() => setActiveModal(null)}
         >
-          <ModalCloseButton onClick={() => setActiveModal(null)} />
+          <ModalDismissButton onClick={() => setActiveModal(null)} />
 
-          <CustomText style={{ marginBottom: 12, marginTop: 27 }}>
+          <CustomText style={{ marginBottom: 12 }}>
             Выберите новый срок выполнения:
           </CustomText>
 

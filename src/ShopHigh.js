@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'; 
-import { Panel, Div, Button, ModalCard, ModalRoot, Card } from '@vkontakte/vkui';
+import { Panel, Div, Button, ModalCard, ModalRoot, Card, ModalDismissButton } from '@vkontakte/vkui';
 import { CustomText } from './CustomTypography';
-import { Icon28ChevronBack, Icon28ShoppingCartOutline, Icon24Cancel } from '@vkontakte/icons';
+import { Icon28ChevronBack, Icon28ShoppingCartOutline } from '@vkontakte/icons';
 import API_URL from './config';
 
 import coinIcon from './imgs/coin.png'
@@ -16,29 +16,6 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
     const [checkoutConfirm, setCheckoutConfirm] = useState(false);
     const [checkoutSuccess, setCheckoutSuccess] = useState(false);
     const [isClosing, setIsClosing] = useState(false);
-
-    const ModalCloseButton = ({ onClick }) => (
-        <div
-            onClick={onClick}
-            style={{
-                position: 'absolute',
-                top: 12,
-                right: 20,
-                width: 26,
-                height: 26,
-                borderRadius: '50%',
-                border: '1px solid #d9d9d9',
-                backgroundColor: '#fff',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                zIndex: 10,
-            }}
-        >
-            <Icon24Cancel width={18} height={18} fill="#000" />
-        </div>
-    );
 
     const loadShop = async () => {
         const res = await fetch(`${API_URL}/api/shop?userId=${user.id}`);
@@ -145,7 +122,7 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
                         setActiveItem(null);
                     }}
                 >
-                    <ModalCloseButton
+                    <ModalDismissButton
                         onClick={() => {
                             setActiveModal(null);
                             setActiveItem(null);
@@ -160,7 +137,6 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
                             width: '100%',
                             borderRadius: 12,
                             marginBottom: 12,
-                            marginTop: 27,
                         }}
                         />
                     ) : (
@@ -341,7 +317,7 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
                     id="cart"
                     onClose={() => setActiveModal(null)}
                 >
-                    <ModalCloseButton
+                    <ModalDismissButton
                         onClick={() => {
                             setActiveModal(null);
                             setActiveItem(null);
@@ -576,7 +552,7 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
                     id="checkoutConfirm"
                     onClose={() => setCheckoutConfirm(false)}
                 >
-                    <ModalCloseButton onClick={() => setCheckoutConfirm(false)} />
+                    <ModalDismissButton onClick={() => setCheckoutConfirm(false)} />
                     <CustomText weight="1" style={{ marginBottom: 20 }}>
                         Вы подтверждаете покупку товаров?
                     </CustomText>

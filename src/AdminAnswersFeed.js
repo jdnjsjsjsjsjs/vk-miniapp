@@ -5,9 +5,10 @@ import {
   Card,
   Button,
   ModalRoot,
-  ModalCard
+  ModalCard,
+  ModalDismissButton
 } from '@vkontakte/vkui';
-import { Icon28ChevronBack, Icon24Cancel } from '@vkontakte/icons';
+import { Icon28ChevronBack } from '@vkontakte/icons';
 import { CustomText } from './CustomTypography';
 import API_URL from './config';
 
@@ -88,29 +89,6 @@ export default function AdminAnswersFeed({ id, user, goBack, goToTasks }) {
     setConfirmAction(null);
   }
 
-  const ModalCloseButton = ({ onClick }) => (
-    <div
-      onClick={onClick}
-      style={{
-        position: 'absolute',
-        top: 10,
-        right: 18,
-        width: 24,
-        height: 24,
-        borderRadius: '50%',
-        border: '1px solid #d9d9d9',
-        backgroundColor: '#fff',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        cursor: 'pointer',
-        zIndex: 10,
-      }}
-    >
-      <Icon24Cancel width={16} height={16} fill="#000" />
-    </div>
-  );
-
   return (
     <>
       <ModalRoot activeModal={activeModal}>
@@ -123,7 +101,7 @@ export default function AdminAnswersFeed({ id, user, goBack, goToTasks }) {
             setActiveAnswer(null);
           }}
         >
-          <ModalCloseButton onClick={() => setActiveModal(null)} />
+          <ModalDismissButton onClick={() => setActiveModal(null)} />
 
           {/* ID и имя пользователя */}
           <CustomText
@@ -331,7 +309,7 @@ export default function AdminAnswersFeed({ id, user, goBack, goToTasks }) {
             setConfirmAction(null);
           }}
         >
-          <ModalCloseButton onClick={() => setActiveModal(null)} />
+          <ModalDismissButton onClick={() => setActiveModal(null)} />
           <CustomText weight="1" style={{ marginBottom: 20 }}>
             {confirmAction === 'accept'
               ? 'Подтвердить принятие'

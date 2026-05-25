@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
-import { Panel, Div, Button, Card, ModalRoot, ModalCard } from '@vkontakte/vkui';
+import { Panel, Div, Button, Card, ModalRoot, ModalCard, ModalDismissButton } from '@vkontakte/vkui';
 import { CustomText } from './CustomTypography';
-import { Icon28ChevronBack, Icon24Cancel } from '@vkontakte/icons';
+import { Icon28ChevronBack } from '@vkontakte/icons';
 
 import coinIcon from './imgs/coin.png'
 import medalIcon from './imgs/awards.png'
@@ -81,28 +81,6 @@ export default function Achievements({ id, goBack, balance, goToBalance, user, t
         }
         ];
 
-    const ModalCloseButton = ({ onClick }) => (
-        <div
-            onClick={onClick}
-            style={{
-                position: 'absolute',
-                top: 10,
-                right: 18,
-                width: 24,
-                height: 24,
-                borderRadius: '50%',
-                border: '1px solid #d9d9d9',
-                backgroundColor: '#fff',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                zIndex: 10,
-            }}
-        >
-            <Icon24Cancel width={16} height={16} fill="#000" />
-        </div>
-    );
     return (
         <Panel id={id} style={{backgroundColor: '#ceaeff', minHeight: '100vh'}}>
             <ModalRoot activeModal={activeModal} onClose={closeModal}>
@@ -112,7 +90,7 @@ export default function Achievements({ id, goBack, balance, goToBalance, user, t
                         onClose={closeModal}
                         style={{ padding: 0 }}
                     >
-                        <ModalCloseButton
+                        <ModalDismissButton
                             onClick={() => {
                                 setActiveModal(null);
                             }}

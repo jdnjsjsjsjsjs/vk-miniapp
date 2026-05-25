@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Panel, Div, Button, Card, ModalRoot, ModalCard } from '@vkontakte/vkui';
-import { Icon28ChevronBack, Icon24Cancel, Icon16Attach } from '@vkontakte/icons';
+import { Panel, Div, Button, Card, ModalRoot, ModalCard, ModalDismissButton } from '@vkontakte/vkui';
+import { Icon28ChevronBack, Icon16Attach } from '@vkontakte/icons';
 import { CustomText } from './CustomTypography';
 import API_URL from './config';
 
@@ -49,29 +49,6 @@ export default function AdminShop({ id, user, goToAdminShopArchive, goToProfile 
       opacity: 1;
     }
   `;
-
-    const ModalCloseButton = ({ onClick }) => (
-        <div
-            onClick={onClick}
-            style={{
-                position: 'absolute',
-                top: 12,
-                right: 20,
-                width: 26,
-                height: 26,
-                borderRadius: '50%',
-                border: '1px solid #d9d9d9',
-                backgroundColor: '#fff',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                zIndex: 10,
-            }}
-        >
-            <Icon24Cancel width={18} height={18} fill="#000" />
-        </div>
-    );
 
     const [newItem, setNewItem] = useState({
         title: '',
@@ -242,7 +219,7 @@ export default function AdminShop({ id, user, goToAdminShopArchive, goToProfile 
                     setActiveItem(null);
                 }}
             >
-                <ModalCloseButton
+                <ModalDismissButton
                     onClick={() => {
                         setActiveModal(null);
                         setActiveItem(null);
@@ -257,7 +234,6 @@ export default function AdminShop({ id, user, goToAdminShopArchive, goToProfile 
                             width: '100%',
                             borderRadius: 12,
                             marginBottom: 12,
-                            marginTop: 27,
                         }}
                     />
                 ) : (
@@ -374,10 +350,10 @@ export default function AdminShop({ id, user, goToAdminShopArchive, goToProfile 
                         setActiveModal(null);
                     }}
                 >
-                    <ModalCloseButton onClick={() => setActiveModal(null)} />
+                    <ModalDismissButton onClick={() => setActiveModal(null)} />
                     <CustomText
                         weight="1"
-                        style={{ fontSize: 14, color: '#000', marginTop: 27, marginBottom: 3 }}
+                        style={{ fontSize: 14, color: '#000', marginBottom: 3 }}
                     >
                         Артефакт
                     </CustomText>
@@ -544,10 +520,10 @@ export default function AdminShop({ id, user, goToAdminShopArchive, goToProfile 
                         setActiveModal(null);
                     }}
                 >
-                    <ModalCloseButton onClick={() => setActiveModal(null)} />
+                    <ModalDismissButton onClick={() => setActiveModal(null)} />
                     <CustomText
                         weight="1"
-                        style={{ fontSize: 14, color: '#000', marginTop: 27, marginBottom: 3 }}
+                        style={{ fontSize: 14, color: '#000', marginBottom: 3 }}
                     >
                         Артефакт
                     </CustomText>
@@ -704,7 +680,7 @@ export default function AdminShop({ id, user, goToAdminShopArchive, goToProfile 
                     id="delete"
                     onClose={() => setActiveModal(null)}
                 >
-                    <ModalCloseButton onClick={() => setActiveModal(null)} />
+                    <ModalDismissButton onClick={() => setActiveModal(null)} />
                     <CustomText weight="1" style={{ marginBottom: 20 }}>
                         Удалить <b style={{ color: '#8c64d7' }}>{activeItem?.title}</b> навсегда?
                     </CustomText>
