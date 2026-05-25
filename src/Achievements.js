@@ -31,14 +31,20 @@ export default function Achievements({ id, goBack, balance, goToBalance, user, t
             title: <> Срубил <s>капусту</s> щаницу </>,
             description: 'накопи 5000 капиталов',
             target: 5000,
-            icon: kapustaIcon
+            icon: kapustaIcon,
+            cardSizeSmall: 40,
+            cardSizeBig: 75,
+            modalSize: 110,
         },
         {
             id: 2,
             title: 'Капитальный капитал',
             description: 'накопи 10000 капиталов',
             target: 10000,
-            icon: coinsIcon
+            icon: coinsIcon,
+            cardSizeSmall: 40,
+            cardSizeBig: 75,
+            modalSize: 110,
         },
         {
             id: 3,
@@ -46,7 +52,10 @@ export default function Achievements({ id, goBack, balance, goToBalance, user, t
             description: 'заходи 10 дней подряд',
             target: 10,
             type: 'streak',
-            icon: boxcalIcon
+            icon: boxcalIcon,
+            cardSizeSmall: 65,
+            cardSizeBig: 100,
+            modalSize: 140,
         },
         {
             id: 4,
@@ -54,7 +63,10 @@ export default function Achievements({ id, goBack, balance, goToBalance, user, t
             description: 'собери 10 артефактов',
             target: 10,
             type: 'received',
-            icon: collectIcon
+            icon: collectIcon,
+            cardSizeSmall: 65,
+            cardSizeBig: 100,
+            modalSize: 140,
         },
         {
             id: 5,
@@ -62,7 +74,10 @@ export default function Achievements({ id, goBack, balance, goToBalance, user, t
             description: 'подпишись на группу Ивановский Стиль',
             target: 1,
             type: 'vk_subscribed',
-            icon: lockIcon
+            icon: lockIcon,
+            cardSizeSmall: 65,
+            cardSizeBig: 100,
+            modalSize: 140,
         }
         ];
 
@@ -121,7 +136,7 @@ export default function Achievements({ id, goBack, balance, goToBalance, user, t
                                     <img
                                         src={selectedAchievement.icon}
                                         alt=""
-                                        style={{ width: 130, height: 130, position: 'absolute', top: 0, right: '30%' }}
+                                        style={{ width: selectedAchievement.modalSize, height: selectedAchievement.modalSize, position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)' }}
                                     />
 
                                     {/* Название */}
@@ -354,7 +369,7 @@ export default function Achievements({ id, goBack, balance, goToBalance, user, t
                                         transform: 'translate(-50%, -60%)'
                                     }}
                                 >
-                                    <img src={ach.icon} alt="" style={{ width: window.innerWidth > 600 ? 100 : 65, height: window.innerWidth > 600 ? 100 : 65 }} />
+                                    <img src={ach.icon} alt="" style={{ width: window.innerWidth > 600 ? ach.cardSizeBig : ach.cardSizeSmall, height: window.innerWidth > 600 ? ach.cardSizeBig : ach.cardSizeSmall }} />
                                 </div>
 
                                 {/* Кастомный прогресс-бар */}
