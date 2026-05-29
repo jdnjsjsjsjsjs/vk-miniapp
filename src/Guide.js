@@ -12,7 +12,7 @@ export default function Guide({ id, goBack }) {
       color: #ceaeff;
       opacity: 1;
     }
-  ]`;
+  `;
 
   return (
     <>

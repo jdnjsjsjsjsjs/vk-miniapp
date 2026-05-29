@@ -37,7 +37,7 @@ export default function AdminTasks({ id, goBack, user, goToBalance, balance, goT
       .then(res => res.json())
       .then(setTasks)
       .catch(err => console.error('Ошибка загрузки админ-заданий', err));
-  }, [user]);
+  }, [user?.id]);
 
   function getTimeLeft(expiresAt) {
     if (!expiresAt) return 'бессрочно';

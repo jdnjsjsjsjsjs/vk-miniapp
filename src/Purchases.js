@@ -26,7 +26,7 @@ export default function Purchases({ id, goBack, user, balance, goToBalance, goTo
         };
 
         loadPurchases();
-    }, [user.id]);
+    }, [user?.id]);
 
     // Разделяем покупки
     const notReceived = purchases.filter(p => !p.received);

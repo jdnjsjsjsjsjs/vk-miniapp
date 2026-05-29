@@ -94,8 +94,11 @@ export default function App() {
     };
 
     window.addEventListener('scroll', onScroll);
-    return () => window.removeEventListener('scroll', onScroll);
-  }, [lastScrollY]);
+
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+    };
+  }, []);
 
   useEffect(() => {
     async function fetchUser() {
@@ -120,41 +123,45 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user?.id) return;
 
     async function fetchAll() {
-      const res = await fetch(`${API_URL}/api/user/${user.id}`);
-      const data = await res.json();
+      try {
+        const res = await fetch(`${API_URL}/api/user/${user.id}`);
+        const data = await res.json();
 
-      setUser(prev => ({
-        ...prev,
-        role: data.role,
-        achievementCount: data.achievementCount,
-        streak_days: data.streak_days,
-        max_streak_days: data.max_streak_days,
-        last_login_date: data.last_login_date,
-        received_count: data.received_count,
-        vk_subscribed: data.vk_subscribed
-      }));
+        setUser(prev => ({
+          ...prev,
+          role: data.role,
+          achievementCount: data.achievementCount,
+          streak_days: data.streak_days,
+          max_streak_days: data.max_streak_days,
+          last_login_date: data.last_login_date,
+          received_count: data.received_count,
+          vk_subscribed: data.vk_subscribed
+        }));
 
-      setBalance(data.balance);
-      setTotalEarned(data.totalEarned);
-      setTotalSpent(data.totalSpent || 0);
+        setBalance(data.balance);
+        setTotalEarned(data.totalEarned);
+        setTotalSpent(data.totalSpent || 0);
 
-      const today = new Date().toISOString().slice(0, 10);
-      const canClaim = data.last_gift_date !== today;
+        const today = new Date().toISOString().slice(0, 10);
+        const canClaim = data.last_gift_date !== today;
 
-      setCanClaimGift(canClaim);
+        setCanClaimGift(canClaim);
 
-      if (!canClaim) {
-        setGiftTimeLeft(calculateTimeLeft());
-      } else {
-        setGiftTimeLeft('00:00:00');
+        if (!canClaim) {
+          setGiftTimeLeft(calculateTimeLeft());
+        } else {
+          setGiftTimeLeft('00:00:00');
+        }
+      } catch (e) {
+        console.error('Ошибка fetchAll', e);
       }
     }
 
     fetchAll();
-  }, [user]);
+  }, [user?.id]);
 
   useEffect(() => {
     if (canClaimGift) return;
@@ -208,7 +215,7 @@ export default function App() {
     }
 
     fetchLastTasks();
-  }, [user]);
+  }, [user?.id]);
 
   function calculateTimeLeft() {
     const now = new Date();
@@ -251,12 +258,6 @@ export default function App() {
   const goToAdminPurchases = () => setActivePanel('adminPurchases');
   const goToAdminShop = () => setActivePanel('adminShop');
   const goToAdminShopArchive = () => setActivePanel('adminShopArchive');
-
-  useEffect(() => {
-    if (user) {
-      fetchUsers();
-    }
-  }, [user, balance, totalEarned]);
 
   const isUserInTop3 = (() => {
     if (!user || usersList.length === 0) return false;

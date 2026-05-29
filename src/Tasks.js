@@ -20,13 +20,9 @@ export default function Tasks({ id, goBack, balance, goToBalance, user, goToTask
 
         fetch(`${API_URL}/api/tasks/${user.id}`)
             .then(res => res.json())
-            .then(data => {
-                setTasks(data);
-            })
-            .catch(err => {
-                console.error('Ошибка загрузки заданий', err);
-            });
-    }, [user]);
+            .then(setTasks)
+            .catch(console.error);
+    }, [user?.id]);
 
     function getTimeLeft(expiresAt) {
         if (!expiresAt) return 'бессрочно';

@@ -10,10 +10,13 @@ export default function AdminPurchases({ id, goToProfile, user, balance }) {
   const [purchases, setPurchases] = useState([]);
 
   useEffect(() => {
+    if (!user?.id) return;
+
     fetch(`${API_URL}/api/admin/purchases?userId=${user.id}`)
       .then(res => res.json())
-      .then(setPurchases);
-  }, [user.id]);
+      .then(setPurchases)
+      .catch(err => console.error('Ошибка загрузки покупок', err));
+  }, [user?.id]);
 
   const markReceived = async (orderId) => {
     try {

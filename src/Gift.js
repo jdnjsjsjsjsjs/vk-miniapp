@@ -44,9 +44,15 @@ export default function Gift({ id, goBack, balance, goToBalance}) {
     };
 
     useEffect(() => {
-        bridge.send('VKWebAppGetUserInfo').then(user => {
-            setUserId(user.id);
-        });
+        let mounted = true;
+
+        bridge.send('VKWebAppGetUserInfo')
+            .then(user => {
+                if (mounted && user?.id) setUserId(user.id);
+            })
+            .catch(console.error);
+
+        return () => { mounted = false; };
     }, []);
 
     useEffect(() => {
