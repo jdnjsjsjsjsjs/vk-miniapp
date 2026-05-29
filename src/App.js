@@ -122,46 +122,55 @@ export default function App() {
     fetchUser();
   }, []);
 
+  const fetchAll = async () => {
+    if (!user?.id) return;
+
+    try {
+      const res = await fetch(`${API_URL}/api/user/${user.id}`);
+      const data = await res.json();
+
+      setUser(prev => ({
+        ...prev,
+        role: data.role,
+        achievementCount: data.achievementCount,
+        streak_days: data.streak_days,
+        max_streak_days: data.max_streak_days,
+        last_login_date: data.last_login_date,
+        received_count: data.received_count,
+        vk_subscribed: data.vk_subscribed
+      }));
+
+      setBalance(data.balance);
+      setTotalEarned(data.totalEarned);
+      setTotalSpent(data.totalSpent || 0);
+
+      const today = new Date().toISOString().slice(0, 10);
+      const canClaim = data.last_gift_date !== today;
+
+      setCanClaimGift(canClaim);
+
+      if (!canClaim) {
+        setGiftTimeLeft(calculateTimeLeft());
+      } else {
+        setGiftTimeLeft('00:00:00');
+      }
+
+    } catch (e) {
+      console.error('Ошибка fetchAll', e);
+    }
+  };
+
   useEffect(() => {
     if (!user?.id) return;
 
-    async function fetchAll() {
-      try {
-        const res = await fetch(`${API_URL}/api/user/${user.id}`);
-        const data = await res.json();
-
-        setUser(prev => ({
-          ...prev,
-          role: data.role,
-          achievementCount: data.achievementCount,
-          streak_days: data.streak_days,
-          max_streak_days: data.max_streak_days,
-          last_login_date: data.last_login_date,
-          received_count: data.received_count,
-          vk_subscribed: data.vk_subscribed
-        }));
-
-        setBalance(data.balance);
-        setTotalEarned(data.totalEarned);
-        setTotalSpent(data.totalSpent || 0);
-
-        const today = new Date().toISOString().slice(0, 10);
-        const canClaim = data.last_gift_date !== today;
-
-        setCanClaimGift(canClaim);
-
-        if (!canClaim) {
-          setGiftTimeLeft(calculateTimeLeft());
-        } else {
-          setGiftTimeLeft('00:00:00');
-        }
-      } catch (e) {
-        console.error('Ошибка fetchAll', e);
-      }
-    }
-
     fetchAll();
   }, [user?.id]);
+
+  useEffect(() => {
+    if (activePanel === 'main' && user?.id) {
+      fetchAll();
+    }
+  }, [activePanel]);
 
   useEffect(() => {
     if (canClaimGift) return;
