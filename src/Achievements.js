@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { Panel, Div, Button, Card, ModalRoot, ModalCard, ModalDismissButton } from '@vkontakte/vkui';
+import { Panel, Div, Button, Card, ModalRoot, ModalCard } from '@vkontakte/vkui';
 import { CustomText } from './CustomTypography';
 import { Icon28ChevronBack } from '@vkontakte/icons';
 
@@ -90,11 +90,6 @@ export default function Achievements({ id, goBack, balance, goToBalance, user, t
                         onClose={closeModal}
                         style={{ padding: 0 }}
                     >
-                        <ModalDismissButton
-                            onClick={() => {
-                                setActiveModal(null);
-                            }}
-                        />
                         {(() => {
                             let value = totalEarned;
 
