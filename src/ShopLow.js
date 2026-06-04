@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'; 
-import { Panel, Div, Button, ModalCard, ModalRoot, Card, ModalDismissButton } from '@vkontakte/vkui';
+import { Panel, Div, Button, ModalCard, ModalRoot, Card } from '@vkontakte/vkui';
 import { CustomText } from './CustomTypography';
 import { Icon28ChevronBack, Icon28ShoppingCartOutline } from '@vkontakte/icons';
 import API_URL from './config';
@@ -122,12 +122,6 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
                         setActiveItem(null);
                     }}
                 >
-                    <ModalDismissButton
-                        onClick={() => {
-                            setActiveModal(null);
-                            setActiveItem(null);
-                        }}
-                    />
                     {/* Фото */}
                     {activeItem?.image ? (
                         <img
@@ -317,12 +311,6 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
                     id="cart"
                     onClose={() => setActiveModal(null)}
                 >
-                    <ModalDismissButton
-                        onClick={() => {
-                            setActiveModal(null);
-                            setActiveItem(null);
-                        }}
-                    />
                     {/* Заголовок */}
                     <CustomText
                         weight="1"
@@ -552,7 +540,6 @@ export default function Shop({ id, goBack, go, balance, goToBalance, user }) {
                     id="checkoutConfirm"
                     onClose={() => setCheckoutConfirm(false)}
                 >
-                    <ModalDismissButton onClick={() => setCheckoutConfirm(false)} />
                     <CustomText weight="1" style={{ marginBottom: 20 }}>
                         Вы подтверждаете покупку товаров?
                     </CustomText>

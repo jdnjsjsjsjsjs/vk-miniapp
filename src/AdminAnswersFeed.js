@@ -5,8 +5,7 @@ import {
   Card,
   Button,
   ModalRoot,
-  ModalCard,
-  ModalDismissButton
+  ModalCard
 } from '@vkontakte/vkui';
 import { Icon28ChevronBack } from '@vkontakte/icons';
 import { CustomText } from './CustomTypography';
@@ -101,7 +100,6 @@ export default function AdminAnswersFeed({ id, user, goBack, goToTasks }) {
             setActiveAnswer(null);
           }}
         >
-          <ModalDismissButton onClick={() => setActiveModal(null)} />
 
           {/* ID и имя пользователя */}
           <CustomText
@@ -309,7 +307,6 @@ export default function AdminAnswersFeed({ id, user, goBack, goToTasks }) {
             setConfirmAction(null);
           }}
         >
-          <ModalDismissButton onClick={() => setActiveModal(null)} />
           <CustomText weight="1" style={{ marginBottom: 20 }}>
             {confirmAction === 'accept'
               ? 'Подтвердить принятие'

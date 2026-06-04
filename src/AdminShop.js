@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Panel, Div, Button, Card, ModalRoot, ModalCard, ModalDismissButton } from '@vkontakte/vkui';
+import { Panel, Div, Button, Card, ModalRoot, ModalCard } from '@vkontakte/vkui';
 import { Icon28ChevronBack, Icon16Attach } from '@vkontakte/icons';
 import { CustomText } from './CustomTypography';
 import API_URL from './config';
@@ -219,12 +219,6 @@ export default function AdminShop({ id, user, goToAdminShopArchive, goToProfile 
                     setActiveItem(null);
                 }}
             >
-                <ModalDismissButton
-                    onClick={() => {
-                        setActiveModal(null);
-                        setActiveItem(null);
-                    }}
-                />
                 {/* Фото */}
                 {activeItem?.image ? (
                     <img
@@ -350,7 +344,6 @@ export default function AdminShop({ id, user, goToAdminShopArchive, goToProfile 
                         setActiveModal(null);
                     }}
                 >
-                    <ModalDismissButton onClick={() => setActiveModal(null)} />
                     <CustomText
                         weight="1"
                         style={{ fontSize: 14, color: '#000', marginBottom: 3 }}
@@ -520,7 +513,6 @@ export default function AdminShop({ id, user, goToAdminShopArchive, goToProfile 
                         setActiveModal(null);
                     }}
                 >
-                    <ModalDismissButton onClick={() => setActiveModal(null)} />
                     <CustomText
                         weight="1"
                         style={{ fontSize: 14, color: '#000', marginBottom: 3 }}
@@ -680,7 +672,6 @@ export default function AdminShop({ id, user, goToAdminShopArchive, goToProfile 
                     id="delete"
                     onClose={() => setActiveModal(null)}
                 >
-                    <ModalDismissButton onClick={() => setActiveModal(null)} />
                     <CustomText weight="1" style={{ marginBottom: 20 }}>
                         Удалить <b style={{ color: '#8c64d7' }}>{activeItem?.title}</b> навсегда?
                     </CustomText>

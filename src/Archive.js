@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Panel, Div, Card, Button, ModalRoot, ModalCard, ModalDismissButton } from '@vkontakte/vkui';
+import { Panel, Div, Card, Button, ModalRoot, ModalCard } from '@vkontakte/vkui';
 import { Icon28ChevronBack, Icon24Attach, Icon16Attach } from '@vkontakte/icons';
 import { CustomText } from './CustomTypography';
 import API_URL from './config';
@@ -126,8 +126,6 @@ export default function ArchiveTasks({ id, goBack, user, goToTasks }) {
             setActiveTask(null);
           }}
         >
-          <ModalDismissButton onClick={() => setActiveModal(null)} />
-
           {/* Название */}
           <CustomText
             weight="1"
@@ -210,8 +208,6 @@ export default function ArchiveTasks({ id, goBack, user, goToTasks }) {
           id="editTask"
           onClose={() => { setEditTask(null); setActiveModal(null); }}
         >
-          <ModalDismissButton onClick={() => setActiveModal(null)} />
-
           <CustomText
             weight="1"
             style={{ fontSize: 16, color: '#000', marginBottom: 10 }}
@@ -426,8 +422,6 @@ export default function ArchiveTasks({ id, goBack, user, goToTasks }) {
           id="restoreTask"
           onClose={() => setActiveModal(null)}
         >
-          <ModalDismissButton onClick={() => setActiveModal(null)} />
-
           <CustomText style={{ marginBottom: 12 }}>
             Выберите новый срок выполнения:
           </CustomText>
